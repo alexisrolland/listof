@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>ListOf...</title>
+  </head>
+
+  <body class="bg-dark text-light">
+    <nav class="navbar bg-light text-dark">
+        <span class="navbar-brand">ListOf...</span>
+        <button class="btn btn-success" type="submit">Create</button>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                    <form class="form-inline mt-2 mb-2">
+                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-secondary ml-2" type="submit">Search</button>
+                    </form>
+
+                <ul>
+                    <li>List 1</li>
+                    <li>List 2</li>
+                </ul>
+            </div>
+
+            <div class="col">
+                <p><h1>ListOf...</h1></p>
+                <p class="lead">Create a new list of values...</p>
+                <p>
+                    <button class="btn btn-success btn-lg" type="submit">Create</button>
+                </p>
+
+                <div id="app">
+                    {{ message }}
+                </div>
+
+                <div id="app-2">
+                    <span v-bind:title="message">
+                        Hover your mouse over me for a few seconds
+                        to see my dynamically bound title!
+                    </span>
+                </div>
+
+                <div id="app-3">
+                    <span v-if="seen">Now you see me</span>
+                </div>
+
+                <div id="app-4">
+                    <ol>
+                        <li v-for="todo in todos">{{ todo.text }}</li>
+                    </ol>
+                </div>
+
+                <div id="app-7">
+                    <ol>
+                        <todo-item
+                            v-for="item in groceryList"
+                            v-bind:item="item"
+                            v-bind:key="item.id"
+                        ></todo-item>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <!-- Vue JS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

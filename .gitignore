@@ -1,0 +1,21 @@
+# python files
+__pycache__
+
+# ignore intellij
+.idea
+
+# configuration files
+.env
+scripts.cfg
+
+# editor specific config files
+.vscode/
+
+# unit test results
+test/results/*.xml
+
+# keys
+public.pem
+private.pem
+cert.pem
+key.pem
