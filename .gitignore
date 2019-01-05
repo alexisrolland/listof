@@ -1,12 +1,8 @@
 # python files
 __pycache__
 
-# ignore intellij
-.idea
-
 # configuration files
 .env
-scripts.cfg
 
 # editor specific config files
 .vscode/
