@@ -1,18 +1,18 @@
-// Application left menu
 Vue.component('left-menu', {
     template: `
         <ul>
-            <li v-for="item in lists">
-                {{ item.name }}
+            <li v-for="list in lists">
+                <a href="#" v-on:click="goToEditValue(list.id)">{{ list.name }}</a>
             </li>
         </ul>
     `,
     data: function () {
         return {
             'lists': [],
-            'query': ` {
+            'query': `query getAllLists{
                 allSysLists(orderBy:NAME_ASC) {
                     nodes {
+                        id
                         name
                     }
                 }
@@ -20,18 +20,21 @@ Vue.component('left-menu', {
         }
     },
     created: function () {
-      this.post();
+      this.getAllLists();
     },
     methods: {
-      post() {
-        // Method to get list of lists
-        this.$http.post(Vue.prototype.$graphqlUrl, { 'query': this.query }).then (
-          function(response){
-            if(response.status == "200"){
-              this.lists = response.data.data.allSysLists.nodes;
-            }
-          }
-        )
+        getAllLists() {
+            // Method to get list of lists
+            this.$http.post(Vue.prototype.$graphqlUrl, { 'query': this.query }).then (
+                function(response){
+                    if(response.status == "200"){
+                        this.lists = response.data.data.allSysLists.nodes;
+                    }
+                }
+            )
+        },
+      goToEditValue(listId) {
+        window.location.href = 'edit-value.html?listId=' + listId;
       }
     }
 });

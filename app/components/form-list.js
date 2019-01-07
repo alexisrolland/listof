@@ -1,23 +1,30 @@
-// Application home page
 Vue.component('form-list', {
     template: `
         <div>
-            <div class="form-group">
-                <label for="listName">
+            <div class="form-group row">
+                <label for="listName" class="col-sm-2 col-form-label">
                     Name:
                 </label>
-                <input id="listName" type="text" class="form-control form-control-sm" placeholder="List name" />
-                <small id="listNameHelp" class="form-text text-muted">
-                    Avoid special characters as the list name will be used to generate a database table name.
-                </small>
+                <input id="listName" type="text" class="form-control form-control-sm col-sm" placeholder="List name" />
             </div>
 
-            <div class="form-group">
-                <label for="listDescription">
+            <div class="form-group row">
+                <label for="listDescription" class="col-sm-2 col-form-label">
                     Description:
                 </label>
-                <textarea id="listDescription" class="form-control form-control-sm"  placeholder="List description" rows="3" />
+                <textarea id="listDescription" class="form-control form-control-sm col-sm" placeholder="List description" rows="3" />
             </div>
+
+            <!-- Button Menu -->
+            <button type="submit" class="btn btn-success btn-sm">
+                Save
+            </button>
+            <button type="submit" class="btn btn-danger btn-sm">
+                Delete
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm">
+                Cancel
+            </button>
         </div>
     `
 });
