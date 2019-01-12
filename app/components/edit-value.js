@@ -13,7 +13,7 @@ Vue.component('edit-value', {
     data: function () {
         return {
             'list': {},
-            'query': `query getList($id: Int!) {
+            'queryGetList': `query getList($id: Int!) {
                 sysListById(id: $id) {
                     id
                     name
@@ -32,7 +32,7 @@ Vue.component('edit-value', {
         getList(listId) {
             // Method to get a list
             payload = {
-                'query': this.query,
+                'query': this.queryGetList,
                 'variables': { 'id': listId }
             };
             this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
@@ -41,7 +41,7 @@ Vue.component('edit-value', {
                         this.list = response.data.data.sysListById;
                     }
                 }
-            )
+            );
         }
     }
 });

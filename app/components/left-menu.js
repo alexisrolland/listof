@@ -31,10 +31,11 @@ Vue.component('left-menu', {
                         this.lists = response.data.data.allSysLists.nodes;
                     }
                 }
-            )
+            );
         },
-      goToEditValue(listId) {
-        window.location.href = 'edit-value.html?listId=' + listId;
+        goToEditValue(listId) {
+            // Method to navigate to the edit value page
+            window.location.href = 'edit-value.html?listId=' + listId;
       }
     }
 });
