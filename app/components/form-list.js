@@ -17,8 +17,8 @@ Vue.component('form-list', {
                 <label for="listDescription" class="col-sm-2 col-form-label">
                     Description:
                 </label>
-                <textarea 
-                    id="listDescription" 
+                <textarea
+                    id="listDescription"
                     class="form-control form-control-sm col-sm"
                     placeholder="List description"
                     rows="3"
@@ -26,20 +26,40 @@ Vue.component('form-list', {
             </div>
 
             <!-- Button Menu -->
-            <button type="submit" class="btn btn-success btn-sm" v-on:click="saveList(list.id)">
+            <button type="button" class="btn btn-success btn-sm" v-on:click="saveList(list.id)">
                 Save
             </button>
-            <button type="submit" class="btn btn-danger btn-sm">
+            <button type="button" class="btn btn-danger btn-sm">
                 Delete
             </button>
             <button type="button" class="btn btn-secondary btn-sm">
                 Cancel
             </button>
+
+            <div aria-live="polite" aria-atomic="true" style="position: absolute; top: 0; right: 0; min-width: 300px;">
+                <div id="alertToast" class="toast text-dark" style="position: absolute; top: 0; right: 0;">
+                    <div class="toast-header">
+                        <strong class="mr-auto">
+                            {{ alertMessage.title }}
+                        </strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        {{ alertMessage.message }}
+                    </div>
+                </div>
+            </div>
         </div>
     `,
     data: function () {
         return {
             'list': {},
+            'alertMessage': {
+                'title': String,
+                'message': String
+            },
             'queryGetList': `query getList($id: Int!) {
                 sysListById(id: $id) {
                     id
@@ -60,8 +80,8 @@ Vue.component('form-list', {
     },
     mounted: function () {
         // Get list Id from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const listId = parseInt(urlParams.get('listId'));
+        var urlParams = new URLSearchParams(window.location.search);
+        var listId = parseInt(urlParams.get('listId'));
         if (!isNaN(listId)) {
             this.getList(listId);
         }
@@ -97,7 +117,16 @@ Vue.component('form-list', {
                 this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
                     function(response){
                         if(response.status == "200"){
-                            this.list = response.data.data.createSysList;
+                            if(response.data.errors){
+                                  this.alertMessage['title'] = 'Error';
+                                  this.alertMessage['message'] = response.data.errors[0].message;
+                                  $('#alertToast').toast({ autohide: false }).toast('show');
+                            } else {
+                                this.list = response.data.data.createSysList.sysList;
+                                this.alertMessage['title'] = 'Success';
+                                this.alertMessage['message'] = 'Record successfully saved.';
+                                $('#alertToast').toast({ autohide: true, delay: 1000 }).toast('show');
+                            }
                         }
                     }
                 );

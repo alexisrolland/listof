@@ -24,8 +24,8 @@ Vue.component('edit-value', {
     },
     mounted: function () {
         // Get list Id from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const listId = parseInt(urlParams.get('listId'));
+        var urlParams = new URLSearchParams(window.location.search);
+        var listId = parseInt(urlParams.get('listId'));
         this.getList(listId);
       },
     methods: {
