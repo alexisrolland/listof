@@ -1,10 +1,12 @@
 // Application home page
 Vue.component('edit-value', {
     template: `
-        <div class="col" style="min-width: 1080px;">
-            <h1 class="mt-2">
+        <div class="col-8">
+
+            <h1 class="mt-5">
                 {{ list.name }}
             </h1>
+
             <p class="lead">
                 {{ list.description }}
             </p>

@@ -1,104 +1,237 @@
 Vue.component('form-attribute', {
     template: `
-        <div>
-            <div class="form-group row">
-                <label for="attributeName" class="col-sm-2 col-form-label">
-                    Name:
-                </label>
-                <input id="attributeName" type="text" class="form-control form-control-sm col-sm" placeholder="Attribute name" />
-            </div>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
 
-            <div class="form-group row">
-                <label for="attributeDescription" class="col-sm-2 col-form-label">
-                    Description:
-                </label>
-                <textarea id="attributeDescription" class="form-control form-control-sm col-sm" placeholder="Attribute description" rows="3" />
-            </div>
-
-            <div class="form-group row">
-                <label for="attributeMandatory" class="col-sm-2 col-form-label">
-                    Mandatory:
-                </label>
-                <div class="form-check form-check-inline">
-                    <input id="attributeMandatory" class="form-check-input" type="checkbox" value="" />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="attributeUnique" class="col-sm-2 col-form-label">
-                    Unique:
-                </label>
-                <div class="form-check form-check-inline">
-                    <input id="attributeUnique" class="form-check-input" type="checkbox" value="" />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="attributeListOfValues" class="col-sm-2 col-form-label">
-                    List Of Values:
-                </label>
-                <select id="attributeListOfValues" class="form-control form-control-sm col-sm">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                </select>
-            </div>
-
-            <div class="form-group row">
-                <label for="attributeDataType" class="col-sm-2 col-form-label">
-                    Data Type:
-                </label>
-                <select id="attributeDataType" class="form-control form-control-sm col-sm">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                </select>
-            </div>
-
-            <div class="form-group row">
-                <label for="attributeDefaultValue" class="col-sm-2 col-form-label">
-                    Default Value:
-                </label>
-                <input id="attributeDefaultValue" class="form-control form-control-sm col-sm" type="text" placeholder="Attribute default value" />
-            </div>
-
-            <!-- Button Menu -->
-            <button type="submit" class="btn btn-success btn-sm">
-                Save
-            </button>
-            <button type="submit" class="btn btn-danger btn-sm">
-                Delete
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm">
-                Cancel
-            </button>
-
-
-
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-            Launch demo modal
-            </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                <!-- Header -->
+                <div class="modal-header bg-light text-dark">
+                    <h5 class="modal-title" id="attributeModaleTitle">
+                        Edit Attribute
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">
+                            &times;
+                        </span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-                </div>
-            </div>
-            </div>
 
+                <!-- Attribute Form -->
+                <div class="modal-body bg-dark text-light">
+                    <form>
+                        <div class="form-group">
+                            <label for="attributeName" class="col-form-label">
+                                Name:
+                            </label>
+                            <input
+                                id="attributeName"
+                                type="text"
+                                class="form-control col-sm"
+                                placeholder="Attribute name"
+                                v-model="attribute.name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeDescription" class="col-form-label">
+                                Description:
+                            </label>
+                            <textarea
+                                id="attributeDescription"
+                                class="form-control col-sm"
+                                placeholder="Attribute description"
+                                rows="3"
+                                v-model="attribute.description" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeMandatory" class="col-form-label">
+                                Mandatory:
+                            </label>
+                            <div class="form-check form-check-inline">
+                                <input
+                                    id="attributeMandatory"
+                                    class="form-check-input"
+                                    type="checkbox" value=""
+                                    v-model="attribute.flagMandatory" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeUnique" class="col-form-label">
+                                Unique:
+                            </label>
+                            <div class="form-check form-check-inline">
+                                <input
+                                    id="attributeUnique"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value=""
+                                    v-model="attribute.flagUnique" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeListOfValues" class="col-form-label">
+                                List Of Values:
+                            </label>
+                            <select
+                                id="attributeListOfValues"
+                                class="form-control col-sm"
+                                v-model="attribute.listOfValue">
+                                    <option selected>1</option>
+                                    <option>1</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeDataType" class="col-form-label">
+                                Data Type:
+                            </label>
+                            <select
+                                id="attributeDataType"
+                                class="form-control col-sm"
+                                v-model="attribute.dataTypeId">
+                                    <option selected>1</option>
+                                    <option>1</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeDefaultValue" class="col-form-label">
+                                Default Value:
+                            </label>
+                            <input
+                                id="attributeDefaultValue"
+                                class="form-control col-sm"
+                                type="text"
+                                placeholder="Attribute default value"
+                                v-model="attribute.defaultValue" />
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Button Menu -->
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-success" v-on:click="saveAttribute(attribute.id)">
+                        Save
+                    </button>
+
+                    <button type="button" class="btn btn-danger">
+                        Delete
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
         </div>
-    `
+    `,
+    props: {
+        'listId': Number,
+        'attribute': Object
+    },
+    data: function () {
+        return {
+            'queryGetAttribute': `query getAttribute($id: Int!) {
+                sysAttributeById(id: $id) {
+                    id
+                    name
+                    description
+                    flagMandatory
+                    flagUnique
+                    listOfValue
+                    sysDataTypeByDataTypeId {
+                        name
+                    }
+                    defaultValue
+                }
+            }`,
+            'mutationCreateAttribute': `mutation createAttribute($sysAttribute: SysAttributeInput!) {
+                createSysAttribute(input: {sysAttribute: $sysAttribute}) {
+                    sysAttribute {
+                        id
+                        name
+                        description
+                        flagMandatory
+                        flagUnique
+                        listOfValue
+                        sysDataTypeByDataTypeId {
+                            name
+                        }
+                        defaultValue
+                    }
+                }
+            }`
+        }
+    },
+    mounted: function () {
+        // This is not need because attribute data is sent by parent in the props
+        // Get attribute Id from props
+        // if (!isNaN(this.attributeId)) {
+        //     this.getAttribute(this.attributeId);
+        // }
+      },
+    methods: {
+        getAttribute(attributeId) {
+            // Method to get an attribute
+            payload = {
+                'query': this.queryGetAttribute,
+                'variables': { 'id': attributeId }
+            };
+            this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                function(response){
+                    if(response.status == "200"){
+                        this.attribute = response.data.data.sysAttributeById;
+                    }
+                }
+            );
+        },
+        saveAttribute(attributeId) {
+            // Method to create or update an attribute
+            // Create a new attribute
+            if (isNaN(attributeId)) {
+                payload = {
+                    'query': this.mutationCreateAttribute,
+                    'variables': {
+                        'sysAttribute': {
+                            'name': this.attribute.name,
+                            'description': this.attribute.description,
+                            'flagUnique': this.attribute.flagUnique,
+                            'flagMandatory': this.attribute.flagMandatory,
+                            'listOfValue': this.attribute.listOfValue,
+                            'dataTypeId': this.attribute.dataTypeId,
+                            'defaultValue': this.attribute.defaultValue,
+                            'listId': this.listId
+                        }
+                    }
+                };
+                this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                    function(response){
+                        if(response.status == "200"){
+                            if(response.data.errors){
+                                    $('#alert').append(`
+                                        <div class="alert alert-danger alert-dismissable text-danger">
+                                            Error: ` + response.data.errors[0].message + `
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                        </div>`
+                                    );
+                                  
+                            } else {
+                                this.hideModal(this.attribute.id);
+                            }
+                        }
+                    }
+                );
+            }
+            // Update an existing attribute
+            else {
+                alert('update attribute');
+            }
+        },
+        hideModal(modalId) {
+            $('#' + modalId).modal('hide');
+        },
+    }
 });

@@ -4,7 +4,7 @@ Vue.component('top-header', {
             <span class="navbar-brand">
                 <a href=index.html>ListOf...</a>
             </span>
-            <button class="btn btn-success btn-sm" v-on:click="goToCreate">
+            <button class="btn btn-success" v-on:click="goToCreate">
                 Create
             </button>
         </nav>

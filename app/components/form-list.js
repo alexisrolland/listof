@@ -1,70 +1,136 @@
 Vue.component('form-list', {
     template: `
         <div>
-            <div class="form-group row">
-                <label for="listName" class="col-sm-2 col-form-label">
+            <!-- List Form -->
+            <div class="form-group">
+                <label for="listName" class="col-form-label">
                     Name:
                 </label>
                 <input
                     id="listName"
                     type="text"
-                    class="form-control form-control-sm col-sm"
+                    class="form-control col-sm"
                     placeholder="List name"
                     v-model="list.name" />
             </div>
 
-            <div class="form-group row">
-                <label for="listDescription" class="col-sm-2 col-form-label">
+            <div class="form-group">
+                <label for="listDescription" class="col-form-label">
                     Description:
                 </label>
                 <textarea
                     id="listDescription"
-                    class="form-control form-control-sm col-sm"
+                    class="form-control col-sm"
                     placeholder="List description"
                     rows="3"
                     v-model="list.description" />
             </div>
 
             <!-- Button Menu -->
-            <button type="button" class="btn btn-success btn-sm" v-on:click="saveList(list.id)">
+            <button type="button" class="btn btn-success" v-on:click="saveList(list.id)">
                 Save
             </button>
-            <button type="button" class="btn btn-danger btn-sm">
+
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#attributeModal">
+                Add Attribute
+            </button>
+
+            <button type="button" class="btn btn-danger">
                 Delete
             </button>
-            <button type="button" class="btn btn-secondary btn-sm">
+
+            <button type="button" class="btn btn-outline-secondary">
                 Cancel
             </button>
 
-            <div aria-live="polite" aria-atomic="true" style="position: absolute; top: 0; right: 0; min-width: 300px;">
-                <div id="alertToast" class="toast text-dark" style="position: absolute; top: 0; right: 0;">
-                    <div class="toast-header">
-                        <strong class="mr-auto">
-                            {{ alertMessage.title }}
-                        </strong>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="toast-body">
-                        {{ alertMessage.message }}
-                    </div>
-                </div>
+            <!-- Attributes List -->
+            <h1 class="mt-5">Attributes</h1>
+
+            <table class="table table-striped table-dark table-hover table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            Name
+                        </th>
+                        <th scope="col">
+                            Mandatory
+                        </th>
+                        <th scope="col">
+                            Unique
+                        </th>
+                        <th scope="col">
+                            List Of Value
+                        </th>
+                        <th scope="col">
+                            Data Type
+                        </th>
+                        <th scope="col">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="attribute in attributes">
+                        <td>
+                            {{ attribute.name }}
+                        </td>
+                        <td>
+                            {{ attribute.flagMandatory }}
+                        </td>
+                        <td>
+                            {{ attribute.flagUnique }}
+                        </td>
+                        <td>
+                            {{ attribute.listOfValue }}
+                        </td>
+                        <td>
+                            {{ attribute.sysDataTypeByDataTypeId.name }}
+                        </td>
+                        <td>
+                            <a href="#" class="badge badge-secondary" v-on:click="showModal(attribute.id)">
+                                Edit Attribute
+                            </a>
+
+                            <!-- Update Attribute Modal -->
+                            <div class="modal fade" v-bind:id="attribute.id" tabindex="-1" role="dialog" aria-labelledby="attributeModalTitle" aria-hidden="true">
+                                <form-attribute v-bind:listId="list.id" v-bind:attribute="attribute">
+                                </form-attribute>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- New  Attribute Modal -->
+            <div class="modal fade" id="attributeModal" tabindex="-1" role="dialog" aria-labelledby="attributeModalTitle" aria-hidden="true">
+                <form-attribute v-bind:listId="list.id" v-bind:attribute="{}">
+                </form-attribute>
             </div>
         </div>
     `,
     data: function () {
         return {
             'list': {},
-            'alertMessage': {
-                'title': String,
-                'message': String
-            },
+            'attributes': [],
             'queryGetList': `query getList($id: Int!) {
                 sysListById(id: $id) {
                     id
                     name
                     description
+                    sysAttributesByListId {
+                        nodes {
+                            id
+                            name
+                            description
+                            flagMandatory
+                            flagUnique
+                            listOfValue
+                            sysDataTypeByDataTypeId {
+                                name
+                              }
+                            defaultValue
+                        }
+                    }
                 }
             }`,
             'mutationCreateList': `mutation createList($sysList: SysListInput!) {
@@ -97,6 +163,7 @@ Vue.component('form-list', {
                 function(response){
                     if(response.status == "200"){
                         this.list = response.data.data.sysListById;
+                        this.attributes = this.list.sysAttributesByListId.nodes;
                     }
                 }
             );
@@ -118,14 +185,18 @@ Vue.component('form-list', {
                     function(response){
                         if(response.status == "200"){
                             if(response.data.errors){
-                                  this.alertMessage['title'] = 'Error';
-                                  this.alertMessage['message'] = response.data.errors[0].message;
-                                  $('#alertToast').toast({ autohide: false }).toast('show');
+                                    $('#alert').append(`
+                                        <div class="alert alert-danger alert-dismissable text-danger">
+                                            Error: ` + response.data.errors[0].message + `
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                        </div>`
+                                    );
+                                  
                             } else {
                                 this.list = response.data.data.createSysList.sysList;
-                                this.alertMessage['title'] = 'Success';
-                                this.alertMessage['message'] = 'Record successfully saved.';
-                                $('#alertToast').toast({ autohide: true, delay: 1000 }).toast('show');
+                                this.attributes = this.list.sysAttributesByListId.nodes;
                             }
                         }
                     }
@@ -135,6 +206,9 @@ Vue.component('form-list', {
             else {
                 alert('update list');
             }
+        },
+        showModal(modalId) {
+            $('#' + modalId).modal('show');
         }
     }
 });
