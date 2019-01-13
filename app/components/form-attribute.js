@@ -25,6 +25,7 @@ Vue.component('form-attribute', {
                             <input
                                 id="attributeName"
                                 type="text"
+                                required="true"
                                 class="form-control col-sm"
                                 placeholder="Attribute name"
                                 v-model="attribute.name" />
@@ -40,6 +41,20 @@ Vue.component('form-attribute', {
                                 placeholder="Attribute description"
                                 rows="3"
                                 v-model="attribute.description" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attributeDataType" class="col-form-label">
+                                Data Type:
+                            </label>
+                            <select
+                                id="attributeDataType"
+                                required="true"
+                                class="form-control col-sm"
+                                v-model="attribute.dataTypeId">
+                                    <option selected>1</option>
+                                    <option>1</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -83,19 +98,6 @@ Vue.component('form-attribute', {
                         </div>
 
                         <div class="form-group">
-                            <label for="attributeDataType" class="col-form-label">
-                                Data Type:
-                            </label>
-                            <select
-                                id="attributeDataType"
-                                class="form-control col-sm"
-                                v-model="attribute.dataTypeId">
-                                    <option selected>1</option>
-                                    <option>1</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
                             <label for="attributeDefaultValue" class="col-form-label">
                                 Default Value:
                             </label>
@@ -115,12 +117,12 @@ Vue.component('form-attribute', {
                         Save
                     </button>
 
-                    <button type="button" class="btn btn-danger">
+                    <button type="button" class="btn btn-danger" v-on:click="deleteAttribute(attribute.id)">
                         Delete
                     </button>
 
                     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
-                        Cancel
+                        Close
                     </button>
                 </div>
             </div>
@@ -161,17 +163,41 @@ Vue.component('form-attribute', {
                         defaultValue
                     }
                 }
+            }`,
+            'mutationUpdateAttribute': `mutation updateAttribute($id: Int!, $sysAttributePatch: SysAttributePatch!) {
+                updateSysAttributeById(input: {id: $id, sysAttributePatch: $sysAttributePatch }) {
+                    sysAttribute {
+                        id
+                        name
+                        description
+                        flagMandatory
+                        flagUnique
+                        listOfValue
+                        sysDataTypeByDataTypeId {
+                            name
+                        }
+                        defaultValue
+                    }
+                }
+            }`,
+            'mutationDeleteAttribute': `mutation deleteAttribute($id: Int!) {
+                deleteSysAttributeById(input: {id: $id}){
+                    sysAttribute {
+                        id
+                    }
+                }
             }`
         }
     },
     mounted: function () {
-        // This is not need because attribute data is sent by parent in the props
+        // This is not used because attribute data is sent by parent in the props
         // Get attribute Id from props
         // if (!isNaN(this.attributeId)) {
         //     this.getAttribute(this.attributeId);
         // }
       },
     methods: {
+        // This is not used because attribute data is sent by parent in the props
         getAttribute(attributeId) {
             // Method to get an attribute
             payload = {
@@ -188,8 +214,9 @@ Vue.component('form-attribute', {
         },
         saveAttribute(attributeId) {
             // Method to create or update an attribute
-            // Create a new attribute
+            // Verify if attributeId is provided
             if (isNaN(attributeId)) {
+                // Create a new attribute
                 payload = {
                     'query': this.mutationCreateAttribute,
                     'variables': {
@@ -219,16 +246,81 @@ Vue.component('form-attribute', {
                                     );
                                   
                             } else {
-                                this.hideModal(this.attribute.id);
+                                this.hideModal('attributeModal');
+                                window.location.href = 'edit-list.html?listId=' + this.listId;
                             }
                         }
                     }
                 );
             }
-            // Update an existing attribute
             else {
-                alert('update attribute');
+                // Update an existing attribute
+                payload = {
+                    'query': this.mutationUpdateAttribute,
+                    'variables': { 
+                        'id': attributeId,
+                        'sysAttributePatch': {
+                            'name': this.attribute.name,
+                            'description': this.attribute.description,
+                            'flagUnique': this.attribute.flagUnique,
+                            'flagMandatory': this.attribute.flagMandatory,
+                            'listOfValue': this.attribute.listOfValue,
+                            'dataTypeId': this.attribute.dataTypeId,
+                            'defaultValue': this.attribute.defaultValue,
+                            'listId': this.listId
+                        }
+                    }
+                };
+                this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                    function(response){
+                        if(response.status == "200"){
+                            if(response.data.errors){
+                                    $('#alert').append(`
+                                        <div class="alert alert-danger alert-dismissable text-danger">
+                                            Error: ` + response.data.errors[0].message + `
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                        </div>`
+                                    );
+                                  
+                            } else {
+                                this.hideModal(this.attribute.id);
+                                window.location.href = 'edit-list.html?listId=' + this.listId;
+                            }
+                        }
+                    }
+                );
             }
+        },
+        deleteAttribute(attributeId) {
+            // Method to delete an attribute
+            payload = {
+                'query': this.mutationDeleteAttribute,
+                'variables': {
+                    'id': attributeId
+                }
+            };
+            this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                function(response){
+                    if(response.status == "200"){
+                        if(response.data.errors){
+                                $('#alert').append(`
+                                    <div class="alert alert-danger alert-dismissable text-danger">
+                                        Error: ` + response.data.errors[0].message + `
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>`
+                                );
+                              
+                        } else {
+                            this.hideModal(this.attribute.id);
+                            window.location.href = 'edit-list.html?listId=' + this.listId;
+                        }
+                    }
+                }
+            );
         },
         hideModal(modalId) {
             $('#' + modalId).modal('hide');

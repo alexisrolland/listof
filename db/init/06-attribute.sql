@@ -21,7 +21,7 @@ COMMENT ON FUNCTION base.generate_column_name IS
 /*Create table for list attributes*/
 CREATE TABLE base.sys_attribute (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL UNIQUE
+  , name TEXT NOT NULL
   , description TEXT
   , column_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
@@ -35,6 +35,7 @@ CREATE TABLE base.sys_attribute (
   , user_group_id INTEGER DEFAULT 0 REFERENCES base.sys_user_group(id)
   , list_id INTEGER NOT NULL REFERENCES base.sys_list(id)
   , data_type_id INTEGER NOT NULL REFERENCES base.sys_data_type(id)
+  , UNIQUE (name, list_id)
 );
 
 COMMENT ON TABLE base.sys_attribute IS

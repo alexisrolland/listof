@@ -9,6 +9,7 @@ Vue.component('form-list', {
                 <input
                     id="listName"
                     type="text"
+                    required="true"
                     class="form-control col-sm"
                     placeholder="List name"
                     v-model="list.name" />
@@ -20,6 +21,7 @@ Vue.component('form-list', {
                 </label>
                 <textarea
                     id="listDescription"
+                    required="true"
                     class="form-control col-sm"
                     placeholder="List description"
                     rows="3"
@@ -35,12 +37,12 @@ Vue.component('form-list', {
                 Add Attribute
             </button>
 
-            <button type="button" class="btn btn-danger">
+            <button type="button" class="btn btn-danger" v-on:click="deleteList(list.id)">
                 Delete
             </button>
 
-            <button type="button" class="btn btn-outline-secondary">
-                Cancel
+            <button type="button" class="btn btn-outline-secondary" v-on:click="goToHome()">
+                Close
             </button>
 
             <!-- Attributes List -->
@@ -141,6 +143,22 @@ Vue.component('form-list', {
                         description
                     }
                 }
+            }`,
+            'mutationUpdateList': `mutation updateList($id: Int!, $sysListPatch: SysListPatch!) {
+                updateSysListById(input: {id: $id, sysListPatch: $sysListPatch }) {
+                    sysList {
+                        id
+                        name
+                        description
+                    }
+                }
+            }`,
+            'mutationDeleteList': `mutation deleteList($id: Int!) {
+                deleteSysListById(input: {id: $id}){
+                    sysList {
+                        id
+                    }
+                }
             }`
         }
     },
@@ -170,8 +188,9 @@ Vue.component('form-list', {
         },
         saveList(listId) {
             // Method to create or update a list
-            // Create a new list
+            // Verify if listId is provided
             if (isNaN(listId)) {
+                // Create a new list
                 payload = {
                     'query': this.mutationCreateList,
                     'variables': {
@@ -196,19 +215,78 @@ Vue.component('form-list', {
                                   
                             } else {
                                 this.list = response.data.data.createSysList.sysList;
-                                this.attributes = this.list.sysAttributesByListId.nodes;
+                                window.location.href = 'edit-list.html?listId=' + this.list.id;
                             }
                         }
                     }
                 );
             }
-            // Update an existing list
             else {
-                alert('update list');
+                // Update an existing list
+                payload = {
+                    'query': this.mutationUpdateList,
+                    'variables': { 
+                        'id': this.list.id,
+                        'sysListPatch': {
+                            "name": this.list.name,
+                            "description": this.list.description,
+                        }
+                    }
+                };
+                this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                    function(response){
+                        if(response.status == "200"){
+                            if(response.data.errors){
+                                    $('#alert').append(`
+                                        <div class="alert alert-danger alert-dismissable text-danger">
+                                            Error: ` + response.data.errors[0].message + `
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                        </div>`
+                                    );
+                                  
+                            } else {
+                                this.list = response.data.data.updateSysListById.sysList;
+                            }
+                        }
+                    }
+                );
             }
+        },
+        deleteList(listId) {
+            // Method to delete a list
+            payload = {
+                'query': this.mutationDeleteList,
+                'variables': {
+                    'id': listId
+                }
+            };
+            this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                function(response){
+                    if(response.status == "200"){
+                        if(response.data.errors){
+                                $('#alert').append(`
+                                    <div class="alert alert-danger alert-dismissable text-danger">
+                                        Error: ` + response.data.errors[0].message + `
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>`
+                                );
+                              
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }
+                }
+            );
         },
         showModal(modalId) {
             $('#' + modalId).modal('show');
+        },
+        goToHome() {
+            window.location.href = 'index.html';
         }
     }
 });

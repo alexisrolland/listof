@@ -45,7 +45,7 @@ base.generate_table_name();
 /*Triggers on delete*/
 CREATE TRIGGER list_delete_attribute BEFORE DELETE
 ON base.sys_list FOR EACH ROW EXECUTE PROCEDURE
-base.delete_children('sys_list', 'list_id');
+base.delete_children('sys_attribute', 'list_id');
 
 
 
