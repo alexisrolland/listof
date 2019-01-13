@@ -72,10 +72,11 @@ Vue.component('home', {
             );
         },
         goToEditList(listId) {
+            // Method to navigate to edit list page
             window.location.href = 'edit-list.html?listId=' + listId;
         },
         goToEditValue(listId) {
-            // Method to navigate to the edit value page
+            // Method to navigate to edit value page
             window.location.href = 'edit-value.html?listId=' + listId;
         }
     }

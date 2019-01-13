@@ -37,6 +37,10 @@ Vue.component('form-list', {
                 Add Attribute
             </button>
 
+            <button type="button" class="btn btn-secondary" v-on:click="goToEditValue(list.id)">
+                Edit Values
+            </button>
+
             <button type="button" class="btn btn-danger" v-on:click="deleteList(list.id)">
                 Delete
             </button>
@@ -285,7 +289,12 @@ Vue.component('form-list', {
         showModal(modalId) {
             $('#' + modalId).modal('show');
         },
+        goToEditValue(listId) {
+            // Method to navigate to edit value page
+            window.location.href = 'edit-value.html?listId=' + listId;
+        },
         goToHome() {
+            // Method to navigate to home page
             window.location.href = 'index.html';
         }
     }
