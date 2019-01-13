@@ -44,6 +44,19 @@ Vue.component('form-attribute', {
                         </div>
 
                         <div class="form-group">
+                            <label for="attributeLinkedList" class="col-form-label">
+                                Linked List:
+                            </label>
+                            <select
+                                id="attributeLinkedList"
+                                class="form-control col-sm"
+                                v-model="attribute.linkedListId">
+                                    <option selected></option>
+                                    <option>1</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="attributeDataType" class="col-form-label">
                                 Data Type:
                             </label>
@@ -52,8 +65,18 @@ Vue.component('form-attribute', {
                                 required="true"
                                 class="form-control col-sm"
                                 v-model="attribute.dataTypeId">
-                                    <option selected>1</option>
+                                    <option selected></option>
                                     <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                    <option>11</option>
                             </select>
                         </div>
 
@@ -82,19 +105,6 @@ Vue.component('form-attribute', {
                                     value=""
                                     v-model="attribute.flagUnique" />
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeListOfValues" class="col-form-label">
-                                List Of Values:
-                            </label>
-                            <select
-                                id="attributeListOfValues"
-                                class="form-control col-sm"
-                                v-model="attribute.listOfValue">
-                                    <option selected>1</option>
-                                    <option>1</option>
-                            </select>
                         </div>
 
                         <div class="form-group">
@@ -141,7 +151,7 @@ Vue.component('form-attribute', {
                     description
                     flagMandatory
                     flagUnique
-                    listOfValue
+                    linkedListId
                     sysDataTypeByDataTypeId {
                         name
                     }
@@ -156,7 +166,7 @@ Vue.component('form-attribute', {
                         description
                         flagMandatory
                         flagUnique
-                        listOfValue
+                        linkedListId
                         sysDataTypeByDataTypeId {
                             name
                         }
@@ -172,7 +182,7 @@ Vue.component('form-attribute', {
                         description
                         flagMandatory
                         flagUnique
-                        listOfValue
+                        linkedListId
                         sysDataTypeByDataTypeId {
                             name
                         }
@@ -225,7 +235,7 @@ Vue.component('form-attribute', {
                             'description': this.attribute.description,
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
-                            'listOfValue': this.attribute.listOfValue,
+                            'linkedListId': this.attribute.linkedListId,
                             'dataTypeId': this.attribute.dataTypeId,
                             'defaultValue': this.attribute.defaultValue,
                             'listId': this.listId
@@ -264,7 +274,7 @@ Vue.component('form-attribute', {
                             'description': this.attribute.description,
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
-                            'listOfValue': this.attribute.listOfValue,
+                            'linkedListId': this.attribute.linkedListId,
                             'dataTypeId': this.attribute.dataTypeId,
                             'defaultValue': this.attribute.defaultValue,
                             'listId': this.listId

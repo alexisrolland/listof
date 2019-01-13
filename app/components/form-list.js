@@ -61,7 +61,7 @@ Vue.component('form-list', {
                             Unique
                         </th>
                         <th scope="col">
-                            List Of Value
+                            Linked List
                         </th>
                         <th scope="col">
                             Data Type
@@ -83,7 +83,7 @@ Vue.component('form-list', {
                             {{ attribute.flagUnique }}
                         </td>
                         <td>
-                            {{ attribute.listOfValue }}
+                            {{ attribute.linkedListId }}
                         </td>
                         <td>
                             {{ attribute.sysDataTypeByDataTypeId.name }}
@@ -126,7 +126,7 @@ Vue.component('form-list', {
                             description
                             flagMandatory
                             flagUnique
-                            listOfValue
+                            linkedListId
                             sysDataTypeByDataTypeId {
                                 name
                               }
