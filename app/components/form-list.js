@@ -86,9 +86,10 @@ Vue.component('form-list', {
                         <td>
                             {{ attribute.flagUnique }}
                         </td>
-                        <td>
-                            {{ attribute.linkedListId }}
+                        <td v-if="attribute.sysListByLinkedListId">
+                            {{ attribute.sysListByLinkedListId.name }}
                         </td>
+                        <td v-else></td>
                         <td>
                             {{ attribute.sysDataTypeByDataTypeId.name }}
                         </td>
@@ -99,7 +100,11 @@ Vue.component('form-list', {
 
                             <!-- Update Attribute Modal -->
                             <div class="modal fade" v-bind:id="attribute.id" tabindex="-1" role="dialog" aria-labelledby="attributeModalTitle" aria-hidden="true">
-                                <form-attribute v-bind:listId="list.id" v-bind:attribute="attribute">
+                                <form-attribute
+                                    v-bind:listId="list.id"
+                                    v-bind:attribute="attribute"
+                                    v-bind:linkedLists="attribute.sysListByLinkedListId"
+                                    v-bind:dataTypes="attribute.sysDataTypeByDataTypeId">
                                 </form-attribute>
                             </div>
                         </td>
@@ -109,7 +114,11 @@ Vue.component('form-list', {
 
             <!-- New  Attribute Modal -->
             <div class="modal fade" id="attributeModal" tabindex="-1" role="dialog" aria-labelledby="attributeModalTitle" aria-hidden="true">
-                <form-attribute v-bind:listId="list.id" v-bind:attribute="{}">
+                <form-attribute
+                    v-bind:listId="list.id"
+                    v-bind:attribute="{}"
+                    v-bind:dataTypes="dataTypes"
+                    v-bind:linkedLists="linkedLists">
                 </form-attribute>
             </div>
         </div>
@@ -118,6 +127,8 @@ Vue.component('form-list', {
         return {
             'list': {},
             'attributes': [],
+            'dataTypes': [],
+            'linkedLists': [],
             'queryGetList': `query getList($id: Int!) {
                 sysListById(id: $id) {
                     id
@@ -130,12 +141,32 @@ Vue.component('form-list', {
                             description
                             flagMandatory
                             flagUnique
-                            linkedListId
+                            sysListByLinkedListId {
+                                id
+                                name
+                              }
                             sysDataTypeByDataTypeId {
+                                id
                                 name
                               }
                             defaultValue
                         }
+                    }
+                }
+            }`,
+            'queryGetDataType': `query getDataType {
+                allSysDataTypes(orderBy: NAME_ASC) {
+                    nodes {
+                        id
+                        name
+                    }
+                }
+            }`,
+            'queryGetAllLists': `query getAllLists{
+                allSysLists(orderBy: NAME_ASC) {
+                    nodes {
+                        id
+                        name
                     }
                 }
             }`,
@@ -172,7 +203,35 @@ Vue.component('form-list', {
         var listId = parseInt(urlParams.get('listId'));
         if (!isNaN(listId)) {
             this.getList(listId);
-        }
+        };
+
+        // Get list of values to populate data types dropdown lists
+        if (this.dataTypes.length === 0) {
+            payload = {
+                'query': this.queryGetDataType
+            };
+            this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                function(response){
+                    if(response.status == "200"){
+                        this.dataTypes = response.data.data.allSysDataTypes.nodes;
+                    }
+                }
+            );
+        };
+
+        // Get list of values to populate linked lists dropdown lists
+        if (this.linkedLists.length === 0) {
+            payload = {
+                'query': this.queryGetAllLists
+            };
+            this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                function(response){
+                    if(response.status == "200"){
+                        this.linkedLists = response.data.data.allSysLists.nodes;
+                    }
+                }
+            );
+        };
       },
     methods: {
         getList(listId) {

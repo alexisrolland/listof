@@ -47,7 +47,7 @@ Vue.component('home', {
         return {
             'lists': [],
             'query': `query getAllLists{
-                allSysLists(orderBy:NAME_ASC) {
+                allSysLists(orderBy: NAME_ASC) {
                     nodes {
                         id
                         name
