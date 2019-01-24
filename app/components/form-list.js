@@ -103,8 +103,8 @@ Vue.component('form-list', {
                                 <form-attribute
                                     v-bind:listId="list.id"
                                     v-bind:attribute="attribute"
-                                    v-bind:linkedLists="attribute.sysListByLinkedListId"
-                                    v-bind:dataTypes="attribute.sysDataTypeByDataTypeId">
+                                    v-bind:linkedLists="linkedLists"
+                                    v-bind:dataTypes="dataTypes">
                                 </form-attribute>
                             </div>
                         </td>
@@ -117,8 +117,8 @@ Vue.component('form-list', {
                 <form-attribute
                     v-bind:listId="list.id"
                     v-bind:attribute="{}"
-                    v-bind:dataTypes="dataTypes"
-                    v-bind:linkedLists="linkedLists">
+                    v-bind:linkedLists="linkedLists"
+                    v-bind:dataTypes="dataTypes">
                 </form-attribute>
             </div>
         </div>
@@ -141,14 +141,14 @@ Vue.component('form-list', {
                             description
                             flagMandatory
                             flagUnique
+                            linkedListId
                             sysListByLinkedListId {
-                                id
                                 name
-                              }
+                            }
+                            dataTypeId
                             sysDataTypeByDataTypeId {
-                                id
                                 name
-                              }
+                            }
                             defaultValue
                         }
                     }
@@ -245,6 +245,7 @@ Vue.component('form-list', {
                     if(response.status == "200"){
                         this.list = response.data.data.sysListById;
                         this.attributes = this.list.sysAttributesByListId.nodes;
+                        console.log(this.attributes.value);
                     }
                 }
             );
@@ -267,15 +268,14 @@ Vue.component('form-list', {
                     function(response){
                         if(response.status == "200"){
                             if(response.data.errors){
-                                    $('#alert').append(`
-                                        <div class="alert alert-danger alert-dismissable text-danger">
-                                            Error: ` + response.data.errors[0].message + `
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                                &times;
-                                            </button>
-                                        </div>`
-                                    );
-                                  
+                                $('#alert').append(`
+                                    <div class="alert alert-danger alert-dismissable text-danger">
+                                        Error: ` + response.data.errors[0].message + `
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>`
+                                );
                             } else {
                                 this.list = response.data.data.createSysList.sysList;
                                 window.location.href = 'edit-list.html?listId=' + this.list.id;
@@ -300,15 +300,14 @@ Vue.component('form-list', {
                     function(response){
                         if(response.status == "200"){
                             if(response.data.errors){
-                                    $('#alert').append(`
-                                        <div class="alert alert-danger alert-dismissable text-danger">
-                                            Error: ` + response.data.errors[0].message + `
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                                &times;
-                                            </button>
-                                        </div>`
-                                    );
-                                  
+                                $('#alert').append(`
+                                    <div class="alert alert-danger alert-dismissable text-danger">
+                                        Error: ` + response.data.errors[0].message + `
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>`
+                                );
                             } else {
                                 this.list = response.data.data.updateSysListById.sysList;
                             }

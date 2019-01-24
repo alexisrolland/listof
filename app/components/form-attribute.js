@@ -67,7 +67,6 @@ Vue.component('form-attribute', {
                                 required="true"
                                 class="form-control col-sm"
                                 v-model="attribute.dataTypeId">
-                                    <option selected></option>
                                     <option v-for="dataType in dataTypes" v-bind:value="dataType.id">
                                         {{ dataType.name }}
                                     </option>
@@ -135,8 +134,8 @@ Vue.component('form-attribute', {
     props: {
         'listId': Number,
         'attribute': Object,
-        'dataTypes': Array,
         'linkedLists': Array,
+        'dataTypes': Array
     },
     data: function () {
         return {
@@ -147,8 +146,12 @@ Vue.component('form-attribute', {
                     description
                     flagMandatory
                     flagUnique
-                    linkedListId
+                    sysListByLinkedListId {
+                        id
+                        name
+                    }
                     sysDataTypeByDataTypeId {
+                        id
                         name
                     }
                     defaultValue
@@ -164,6 +167,7 @@ Vue.component('form-attribute', {
                         flagUnique
                         linkedListId
                         sysDataTypeByDataTypeId {
+                            id
                             name
                         }
                         defaultValue
@@ -180,6 +184,7 @@ Vue.component('form-attribute', {
                         flagUnique
                         linkedListId
                         sysDataTypeByDataTypeId {
+                            id
                             name
                         }
                         defaultValue
@@ -242,15 +247,14 @@ Vue.component('form-attribute', {
                     function(response){
                         if(response.status == "200"){
                             if(response.data.errors){
-                                    $('#alert').append(`
-                                        <div class="alert alert-danger alert-dismissable text-danger">
-                                            Error: ` + response.data.errors[0].message + `
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                                &times;
-                                            </button>
-                                        </div>`
-                                    );
-                                  
+                                $('#alert').append(`
+                                    <div class="alert alert-danger alert-dismissable text-danger">
+                                        Error: ` + response.data.errors[0].message + `
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>`
+                                );
                             } else {
                                 this.hideModal('attributeModal');
                                 window.location.href = 'edit-list.html?listId=' + this.listId;
@@ -281,15 +285,14 @@ Vue.component('form-attribute', {
                     function(response){
                         if(response.status == "200"){
                             if(response.data.errors){
-                                    $('#alert').append(`
-                                        <div class="alert alert-danger alert-dismissable text-danger">
-                                            Error: ` + response.data.errors[0].message + `
-                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-                                                &times;
-                                            </button>
-                                        </div>`
-                                    );
-                                  
+                                $('#alert').append(`
+                                    <div class="alert alert-danger alert-dismissable text-danger">
+                                        Error: ` + response.data.errors[0].message + `
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                    </div>`
+                                );
                             } else {
                                 this.hideModal(this.attribute.id);
                                 window.location.href = 'edit-list.html?listId=' + this.listId;
