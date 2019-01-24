@@ -245,7 +245,6 @@ Vue.component('form-list', {
                     if(response.status == "200"){
                         this.list = response.data.data.sysListById;
                         this.attributes = this.list.sysAttributesByListId.nodes;
-                        console.log(this.attributes.value);
                     }
                 }
             );
