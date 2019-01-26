@@ -9,6 +9,7 @@ CREATE TABLE base.sys_attribute (
   , name TEXT NOT NULL
   , description TEXT
   , column_name TEXT
+  , graphql_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
   , flag_mandatory BOOLEAN DEFAULT FALSE
   , default_value TEXT
@@ -120,6 +121,27 @@ COMMENT ON FUNCTION base.create_list_column IS
 
 
 
+/*Create function to automatically rename a column on a list table when an attribute is renamed*/
+CREATE OR REPLACE FUNCTION base.rename_list_column()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_table_name TEXT;
+BEGIN
+    SELECT name 
+    INTO v_table_name
+    FROM base.sys_list
+    WHERE id = OLD.list_id;
+
+    EXECUTE format('ALTER TABLE base.%I RENAME COLUMN %I TO %I;', v_table_name, OLD.column_name, NEW.column_name);
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.rename_list_column IS
+'Function used to automatically rename a column on a list table when an attribute is renamed.';
+
+
+
 /*Create function to automatically delete a column on a list table when an attribute is deleted*/
 CREATE OR REPLACE FUNCTION base.delete_list_column()
 RETURNS TRIGGER AS $$
@@ -167,6 +189,10 @@ CREATE TRIGGER attribute_generate_column_name BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.generate_column_name();
 
+CREATE TRIGGER attribute_generate_graphql_name BEFORE INSERT
+ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
+base.generate_graphql_name();
+
 CREATE TRIGGER attribute_create_list_column AFTER INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.create_list_column();
@@ -188,3 +214,11 @@ base.update_updated_date();
 CREATE TRIGGER attribute_update_updated_by_id BEFORE UPDATE
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.update_updated_by_id();
+
+CREATE TRIGGER attribute_update_column_name BEFORE UPDATE
+ON base.sys_attribute FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
+EXECUTE PROCEDURE base.generate_column_name();
+
+CREATE TRIGGER attribute_update_graphql_name BEFORE UPDATE
+ON base.sys_attribute FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
+EXECUTE PROCEDURE base.generate_graphql_name();

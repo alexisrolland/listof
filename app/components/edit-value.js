@@ -12,7 +12,7 @@ Vue.component('edit-value', {
             </p>
 
             <!-- Button Menu -->
-            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#attributeModal">
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#valueModal">
                 Add Value
             </button>
 
@@ -36,9 +36,21 @@ Vue.component('edit-value', {
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    <tr v-for="value in values">
+                        <td v-for="attribute in attributes">
+                            {{ value[attribute.graphQlName] }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+
+            <!-- New Value Modal -->
+            <div class="modal fade" id="valueModal" tabindex="-1" role="dialog" aria-labelledby="valueModalTitle" aria-hidden="true">
+                <form-value
+                    v-bind:listId="list.id"
+                    v-bind:attributes="{attributes}">
+                </form-value>
+            </div>
         </div>
     `,
     data: function () {
@@ -47,17 +59,27 @@ Vue.component('edit-value', {
             'attributes': Array,
             'graphQlQueryName': String,
             'graphQlAttributeNames': Array,
-            'values': Object,
+            'values': Array,
             'queryGetList': `query getList($id: Int!) {
                 sysListById(id: $id) {
                     id
                     name
                     description
                     tableName
+                    graphqlName
                     sysAttributesByListId {
                         nodes {
+                            id
                             name
+                            description
                             columnName
+                            graphqlName
+                            flagUnique
+                            flagMandatory
+                            defaultValue
+                            sysDataTypeByDataTypeId {
+                                name
+                            }
                         }
                     }
                 }
@@ -81,10 +103,7 @@ Vue.component('edit-value', {
 
         // Get list meta data
         this.getList(listId);
-
-        // Build query to get list values
-        this.buildQuery();
-      },
+    },
     methods: {
         getList(listId) {
             // Method to get a list
@@ -95,17 +114,18 @@ Vue.component('edit-value', {
             this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
                 function(response){
                     if(response.status == "200"){
+                        // Get list and its attributes
                         this.list = response.data.data.sysListById;
                         this.attributes = this.list.sysAttributesByListId.nodes;
 
-                        // Convert list table name to GraphQL name
+                        // Convert table name to GraphQL name
                         var wordsList = this.list.tableName.split('_');
                         for (var i = 0; i < wordsList.length; i++) {
                             wordsList[i] = wordsList[i].charAt(0).toUpperCase() + wordsList[i].slice(1);
                         };
                         this.graphQlQueryName = 'all' + wordsList.join('') + 's';
 
-                        // Convert attributes column name to GraphQL name
+                        // Convert column name to GraphQL name
                         this.graphQlAttributeNames = [];
                         for (var i = 0; i < this.attributes.length; i++) {
                             var wordsList = this.attributes[i].columnName.split('_');
@@ -113,25 +133,28 @@ Vue.component('edit-value', {
                                 wordsList[j] = wordsList[j].charAt(0).toUpperCase() + wordsList[j].slice(1);
                             };
                             this.graphQlAttributeNames.push(wordsList.join(''));
+                            this.attributes[i]['graphQlName'] = wordsList.join('');
                         };
 
-                        // Build GraphQL query
+                        // Build GraphQL query to fetch list values
                         this.queryGetAllValues = this.queryGetAllValues.replace('graphQlQueryName', this.graphQlQueryName);
                         this.queryGetAllValues = this.queryGetAllValues.replace('graphQlAttributeNames', this.graphQlAttributeNames.join(' '));
+                        
+                        // Get values of list
+                        this.getValues();
                     };
                 }
             );
         },
         getValues() {
-            // Method to get a list
+            // Method to get values of a list
             payload = {
                 'query': this.queryGetAllValues
             };
             this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
                 function(response){
                     if(response.status == "200"){
-                        this.list = response.data.data.sysListById;
-                        this.attributes = this.list.sysAttributesByListId.nodes;
+                        this.values = response.data.data[this.graphQlQueryName]['nodes'];
                     };
                 }
             );

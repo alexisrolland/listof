@@ -1,12 +1,12 @@
-Vue.component('form-attribute', {
+Vue.component('form-value', {
     template: `
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
 
                 <!-- Header -->
                 <div class="modal-header bg-light text-dark">
-                    <h5 class="modal-title" id="attributeModalTitle">
-                        Edit Attribute
+                    <h5 class="modal-title" id="valueModalTitle">
+                        Edit Value
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">
@@ -15,112 +15,30 @@ Vue.component('form-attribute', {
                     </button>
                 </div>
 
-                <!-- Attribute Form -->
+                <!-- Value Form -->
                 <div class="modal-body bg-dark text-light">
                     <form>
-                        <div class="form-group">
+                        <div v-for="attribute in attributes.attributes" class="form-group">
                             <label for="attributeName" class="col-form-label">
-                                Name:
+                                {{ attribute.name }}:
                             </label>
                             <input
                                 id="attributeName"
                                 type="text"
                                 required="true"
                                 class="form-control col-sm"
-                                placeholder="Attribute name"
-                                v-model="attribute.name" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeDescription" class="col-form-label">
-                                Description:
-                            </label>
-                            <textarea
-                                id="attributeDescription"
-                                class="form-control col-sm"
-                                placeholder="Attribute description"
-                                rows="3"
-                                v-model="attribute.description" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeLinkedList" class="col-form-label">
-                                Linked List:
-                            </label>
-                            <select
-                                id="attributeLinkedList"
-                                class="form-control col-sm"
-                                v-model="attribute.linkedListId">
-                                    <option selected></option>
-                                    <option v-for="linkedList in linkedLists" v-bind:value="linkedList.id">
-                                        {{ linkedList.name }}
-                                    </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeDataType" class="col-form-label">
-                                Data Type:
-                            </label>
-                            <select
-                                id="attributeDataType"
-                                required="true"
-                                class="form-control col-sm"
-                                v-model="attribute.dataTypeId">
-                                    <option v-for="dataType in dataTypes" v-bind:value="dataType.id">
-                                        {{ dataType.name }}
-                                    </option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeMandatory" class="col-form-label">
-                                Mandatory:
-                            </label>
-                            <div class="form-check form-check-inline">
-                                <input
-                                    id="attributeMandatory"
-                                    class="form-check-input"
-                                    type="checkbox" value=""
-                                    v-model="attribute.flagMandatory" />
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeUnique" class="col-form-label">
-                                Unique:
-                            </label>
-                            <div class="form-check form-check-inline">
-                                <input
-                                    id="attributeUnique"
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value=""
-                                    v-model="attribute.flagUnique" />
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="attributeDefaultValue" class="col-form-label">
-                                Default Value:
-                            </label>
-                            <input
-                                id="attributeDefaultValue"
-                                class="form-control col-sm"
-                                type="text"
-                                placeholder="Attribute default value"
-                                v-model="attribute.defaultValue" />
+                                 />
                         </div>
                     </form>
                 </div>
 
                 <!-- Button Menu -->
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-success" v-on:click="saveAttribute(attribute.id)">
+                    <button type="button" class="btn btn-success" v-on:click="saveValue(value.id)">
                         Save
                     </button>
 
-                    <button type="button" class="btn btn-danger" v-on:click="deleteAttribute(attribute.id)">
+                    <button type="button" class="btn btn-danger" v-on:click="deleteValue(value.id)">
                         Delete
                     </button>
 
@@ -133,31 +51,11 @@ Vue.component('form-attribute', {
     `,
     props: {
         'listId': Number,
-        'attribute': Object,
-        'linkedLists': Array,
-        'dataTypes': Array
+        'attributes': Object
     },
     data: function () {
         return {
-            'queryGetAttribute': `query getAttribute($id: Int!) {
-                sysAttributeById(id: $id) {
-                    id
-                    name
-                    description
-                    flagMandatory
-                    flagUnique
-                    sysListByLinkedListId {
-                        id
-                        name
-                    }
-                    sysDataTypeByDataTypeId {
-                        id
-                        name
-                    }
-                    defaultValue
-                }
-            }`,
-            'mutationCreateAttribute': `mutation createAttribute($sysAttribute: SysAttributeInput!) {
+            'mutationCreateValue': `mutation createAttribute($sysAttribute: SysAttributeInput!) {
                 createSysAttribute(input: {sysAttribute: $sysAttribute}) {
                     sysAttribute {
                         id
@@ -200,14 +98,21 @@ Vue.component('form-attribute', {
             }`
         }
     },
+    mounted: function () {
+        // Build GraphQL mutations
+        this.buildMutation();
+    },
     methods: {
-        saveAttribute(attributeId) {
-            // Method to create or update an attribute
-            // Verify if attributeId is provided
-            if (isNaN(attributeId)) {
-                // Create a new attribute
+        buildMutation() {
+            
+        },
+        saveValue(valueId) {
+            // Method to add or update a value
+            // Verify if valueId is provided
+            if (isNaN(valueId)) {
+                // Add a new value
                 payload = {
-                    'query': this.mutationCreateAttribute,
+                    'query': this.mutationCreateValue,
                     'variables': {
                         'sysAttribute': {
                             'name': this.attribute.name,
@@ -280,7 +185,7 @@ Vue.component('form-attribute', {
                 );
             }
         },
-        deleteAttribute(attributeId) {
+        deleteValue(valueId) {
             // Method to delete an attribute
             payload = {
                 'query': this.mutationDeleteAttribute,
@@ -311,6 +216,6 @@ Vue.component('form-attribute', {
         },
         hideModal(modalId) {
             $('#' + modalId).modal('hide');
-        }
+        },
     }
 });

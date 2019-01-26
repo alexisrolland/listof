@@ -112,7 +112,7 @@ Vue.component('form-list', {
                 </tbody>
             </table>
 
-            <!-- New  Attribute Modal -->
+            <!-- New Attribute Modal -->
             <div class="modal fade" id="attributeModal" tabindex="-1" role="dialog" aria-labelledby="attributeModalTitle" aria-hidden="true">
                 <form-attribute
                     v-bind:listId="list.id"
