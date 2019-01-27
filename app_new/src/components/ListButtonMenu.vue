@@ -42,9 +42,9 @@ export default {
     methods: {
         saveList() {
             // Method to create or update a list
-            if (list.id) {
+            if (this.list.id) {
                 // Update an existing list
-                payload = {
+                var payload = {
                     'query': this.mutationUpdateList,
                     'variables': { 
                         'id': this.list.id,
@@ -59,15 +59,13 @@ export default {
                         if(response.data.errors){
                             this.$store.state.errorObject.flag = true;
                             this.$store.state.errorObject.message = response.data.errors[0].message;
-                        } else {
-                            this.list = response.data.data.updateSysListById.sysList;
                         }
                     }
                 );
             }
             else {
                 // Create a new list
-                payload = {
+                var payload = {
                     'query': this.mutationCreateList,
                     'variables': {
                         'sysList': {
@@ -76,13 +74,11 @@ export default {
                         }
                     }
                 };
-                this.$http.post(Vue.prototype.$graphqlUrl, payload).then (
+                this.$http.post(this.$store.state.graphqlUrl, payload).then (
                     function(response){
                         if(response.data.errors){
                             this.$store.state.errorObject.flag = true;
                             this.$store.state.errorObject.message = response.data.errors[0].message;
-                        } else {
-                            this.list = response.data.data.updateSysListById.sysList;
                         }
                     }
                 );
