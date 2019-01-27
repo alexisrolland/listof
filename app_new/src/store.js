@@ -1,9 +1,6 @@
 import Vue from 'vue';
-import VueResource  from 'vue-resource';
 import Vuex from 'vuex';
 
-// Tell Vue to use libraries
-Vue.use(VueResource);
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
