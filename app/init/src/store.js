@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
             message: ''
         },
 
+        // Data types
         dataTypes: Array,
         queryGetAllDataTypes: `query getAllDataTypes {
             allSysDataTypes(orderBy: NAME_ASC) {
@@ -21,6 +22,7 @@ export const store = new Vuex.Store({
             }
         }`,
 
+        // Lists
         lists: Array,
         queryGetAllLists: `query getAllLists{
             allSysLists(orderBy: NAME_ASC) {
@@ -41,18 +43,14 @@ export const store = new Vuex.Store({
                     nodes {
                         id
                         name
-                        description
                         flagMandatory
                         flagUnique
-                        linkedListId
                         sysListByLinkedListId {
                             name
                         }
-                        dataTypeId
                         sysDataTypeByDataTypeId {
                             name
                         }
-                        defaultValue
                     }
                 }
             }
@@ -62,8 +60,6 @@ export const store = new Vuex.Store({
             createSysList(input: {sysList: $sysList}) {
                 sysList {
                     id
-                    name
-                    description
                 }
             }
         }`,
@@ -72,8 +68,6 @@ export const store = new Vuex.Store({
             updateSysListById(input: {id: $id, sysListPatch: $sysListPatch }) {
                 sysList {
                     id
-                    name
-                    description
                 }
             }
         }`,
@@ -81,6 +75,50 @@ export const store = new Vuex.Store({
         mutationDeleteList: `mutation deleteList($id: Int!) {
             deleteSysListById(input: {id: $id}){
                 sysList {
+                    id
+                }
+            }
+        }`,
+
+        // List attributes
+        queryGetAttribute: `query getAttribute($id: Int!) {
+            sysAttributeById(id: $id) {
+                id
+                name
+                description
+                flagMandatory
+                flagUnique
+                linkedListId
+                sysListByLinkedListId {
+                    name
+                }
+                dataTypeId
+                sysDataTypeByDataTypeId {
+                    name
+                }
+                defaultValue
+            }
+        }`,
+
+        mutationCreateAttribute: `mutation createAttribute($sysAttribute: SysAttributeInput!) {
+            createSysAttribute(input: {sysAttribute: $sysAttribute}) {
+                sysAttribute {
+                    id
+                }
+            }
+        }`,
+
+        mutationUpdateAttribute: `mutation updateAttribute($id: Int!, $sysAttributePatch: SysAttributePatch!) {
+            updateSysAttributeById(input: {id: $id, sysAttributePatch: $sysAttributePatch }) {
+                sysAttribute {
+                    id
+                }
+            }
+        }`,
+
+        mutationDeleteAttribute: `mutation deleteAttribute($id: Int!) {
+            deleteSysAttributeById(input: {id: $id}){
+                sysAttribute {
                     id
                 }
             }

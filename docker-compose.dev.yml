@@ -24,9 +24,9 @@ services:
 
   app:
     volumes:
-      - ./app/src:/usr/src/app/src:ro
-      - ./app/public:/usr/src/app/public:ro
+      - ./app/init/:/srv/app
     expose:
-      - 5499
+      - 5435
     ports:
-      - 5499:3000
+      - 5435:8080
+    command: ["npm", "run", "dev"]

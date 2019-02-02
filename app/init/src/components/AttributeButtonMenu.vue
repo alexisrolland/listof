@@ -1,0 +1,120 @@
+<template>
+    <div>
+        <button type="button" class="btn btn-success" v-on:click="saveAttribute()">
+            Save
+        </button>
+
+        <router-link v-bind:to="'/lists/' + listId">
+            <button type="button" class="btn btn-outline-secondary">
+                Close
+            </button>
+        </router-link>
+
+        <router-link v-if="attribute.id" v-bind:to="'/lists/' + listId">
+            <button type="button" class="btn btn-danger float-right" v-on:click="deleteAttribute()">
+                Delete
+            </button>
+        </router-link>
+    </div>
+</template>
+
+<script>
+export default {
+    props: {
+        attribute: Object
+    },
+    data: function () {
+        return {
+            'mutationCreateAttribute': this.$store.state.mutationCreateAttribute,
+            'mutationUpdateAttribute': this.$store.state.mutationUpdateAttribute,
+            'mutationDeleteAttribute': this.$store.state.mutationDeleteAttribute,
+        }
+    },
+    computed: {
+        listId() {
+            return parseInt(this.$route.params.listId);
+        }
+    },
+    methods: {
+        saveAttribute() {
+            // Method to create or update an attribute
+            if (this.attribute.id) {
+                // Update an existing attribute
+                var payload = {
+                    'query': this.mutationUpdateAttribute,
+                    'variables': { 
+                        'id': this.attribute.id,
+                        'sysAttributePatch': {
+                            'name': this.attribute.name,
+                            'description': this.attribute.description,
+                            'flagUnique': this.attribute.flagUnique,
+                            'flagMandatory': this.attribute.flagMandatory,
+                            'linkedListId': this.attribute.linkedListId,
+                            'dataTypeId': this.attribute.dataTypeId,
+                            'defaultValue': this.attribute.defaultValue,
+                            'listId': this.listId
+                        }
+                    }
+                };
+                this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                    function(response){
+                        if(response.data.errors){
+                            this.$store.state.errorObject.flag = true;
+                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                        }
+                    }
+                );
+            }
+            else {
+                // Create a new attribute
+                var payload = {
+                    'query': this.mutationCreateAttribute,
+                    'variables': {
+                        'sysAttribute': {
+                            'name': this.attribute.name,
+                            'description': this.attribute.description,
+                            'flagUnique': this.attribute.flagUnique,
+                            'flagMandatory': this.attribute.flagMandatory,
+                            'linkedListId': this.attribute.linkedListId,
+                            'dataTypeId': this.attribute.dataTypeId,
+                            'defaultValue': this.attribute.defaultValue,
+                            'listId': this.listId
+                        }
+                    }
+                };
+                this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                    function(response){
+                        if(response.data.errors){
+                            this.$store.state.errorObject.flag = true;
+                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                        } else {
+                            // Capture new attribute Id in case user wants to delete or update it
+                            this.attribute.id = response.data.data.createSysAttribute.sysAttribute.id;
+                            this.$router.push({ name: 'attributes', params: { attributeId: this.attribute.id } });
+                        }
+                    }
+                );
+            }
+        },
+        deleteAttribute() {
+            // Method to delete an attribute
+            if (this.attribute.id) {
+                var payload = {
+                    'query': this.mutationDeleteAttribute,
+                    'variables': { 
+                        'id': this.attribute.id
+                    }
+                };
+                this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                    function(response){
+                        if(response.data.errors){
+                            this.$store.state.errorObject.flag = true;
+                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                        }
+                    }
+                );
+            }
+        }
+    }
+}
+</script>

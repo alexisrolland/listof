@@ -4,7 +4,9 @@ import VueRouter from 'vue-router';
 import App from './App.vue';
 import Home from './Home.vue';
 import List from './List.vue';
+import Attribute from './Attribute.vue';
 import Value from './Value.vue';
+import Record from './Record.vue';
 
 import { store } from './store';
 
@@ -14,9 +16,11 @@ Vue.use(VueRouter);
 
 // Declare application URLs
 const routes = [
-    { path: '/', component: Home },
-    { path: '/lists/:listId', component: List },
-    { path: '/lists/:listId/values', component: Value }
+    { name: 'home', path: '/', component: Home },
+    { name: 'lists', path: '/lists/:listId', component: List },
+    { name: 'attributes', path: '/lists/:listId/attributes/:attributeId', component: Attribute },
+    { name: 'values', path: '/lists/:listId/values', component: Value },
+    { name: 'records', path: '/lists/:listId/values/:recordId', component: Record },
 ];
 
 // Configure router

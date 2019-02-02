@@ -58,8 +58,7 @@ services:
     build:
       context: ./app
     volumes:
-      - ./app/src:/usr/src/app/src:ro
-      - ./app/public:/usr/src/app/public:ro
+      - ./app/init:/srv/app:ro
     env_file:
       - ./.env
     environment:
@@ -69,6 +68,7 @@ services:
       - graphql
     networks:
       - default
+    command: ["npm", "run", "build"]
 
   nginx:
     container_name: listof-nginx

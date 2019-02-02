@@ -2,7 +2,7 @@
   "name": "listof",
   "description": "Simple and flexible application to manage lists of values.",
   "version": "1.0.0",
-  "author": "Alexis ROLLAND <alexisrolland@hotmail.com>",
+  "author": "Alexis ROLLAND",
   "license": "Apache-2.0",
   "private": true,
   "scripts": {

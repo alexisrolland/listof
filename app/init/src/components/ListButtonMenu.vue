@@ -4,30 +4,33 @@
             Save
         </button>
 
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#attributeModal">
-            Add Attribute
-        </button>
+        <router-link v-if="list.id" v-bind:to="list.id + '/attributes/new'">
+            <button type="button" class="btn btn-secondary">
+                Add Attribute
+            </button>
+        </router-link>
 
-        <router-link to="'/lists/' + list.id + '/values'">
+        <router-link v-if="list.id" v-bind:to="list.id + '/values'">
             <button type="button" class="btn btn-secondary">
                 Edit Values
             </button>
         </router-link>
-
-        <button type="button" class="btn btn-danger float-right" v-on:click="deleteList(list.id)">
-            Delete
-        </button>
 
         <router-link to="/">
             <button type="button" class="btn btn-outline-secondary">
                 Close
             </button>
         </router-link>
+
+        <router-link v-if="list.id" to="/">
+            <button type="button" class="btn btn-danger float-right" v-on:click="deleteList()">
+                Delete
+            </button>
+        </router-link>
     </div>
 </template>
 
 <script>
-
 export default {
     props: {
         list: Object
@@ -79,6 +82,29 @@ export default {
                         if(response.data.errors){
                             this.$store.state.errorObject.flag = true;
                             this.$store.state.errorObject.message = response.data.errors[0].message;
+                        } else {
+                            // Capture new list Id in case user wants to delete or update it
+                            this.list.id = response.data.data.createSysList.sysList.id;
+                            this.$router.push({ name: 'lists', params: { listId: this.list.id } });
+                        }
+                    }
+                );
+            }
+        },
+        deleteList() {
+            // Method to delete a list
+            if (this.list.id) {
+                var payload = {
+                    'query': this.mutationDeleteList,
+                    'variables': { 
+                        'id': this.list.id
+                    }
+                };
+                this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                    function(response){
+                        if(response.data.errors){
+                            this.$store.state.errorObject.flag = true;
+                            this.$store.state.errorObject.message = response.data.errors[0].message;
                         }
                     }
                 );
@@ -87,3 +113,4 @@ export default {
     }
 }
 </script>
+
