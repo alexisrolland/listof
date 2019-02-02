@@ -1,5 +1,8 @@
 <template>
     <div>
+        <h1 class="mt-5">{{ list.name }}</h1>
+        <p>{{ list.description }}</p>
+
         <h1 class="mt-5">Edit Value</h1>
 
         <div v-for="attribute in attributes" v-bind:key="attribute.id" class="form-group">

@@ -37,7 +37,9 @@
                         {{ attribute.flagUnique }}
                     </td>
                     <td v-if="attribute.sysListByLinkedListId">
-                        {{ attribute.sysListByLinkedListId.name }}
+                        <router-link v-bind:to="'/lists/' + attribute.linkedListId">
+                            {{ attribute.sysListByLinkedListId.name }}
+                        </router-link>
                     </td>
                     <td v-else></td>
                     <td>

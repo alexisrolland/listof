@@ -2,20 +2,20 @@
     <div>
         <h1 class="mt-5">Edit list</h1>
 
-        <div class="form-group">
+        <div class="form-group required">
             <label for="listName" class="col-form-label">
                 Name:
             </label>
             <input
                 id="listName"
                 type="text"
-                required="true"
+                required="required"
                 class="form-control col-sm"
                 placeholder="List name"
                 v-model="list.name" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group required">
             <label for="listDescription" class="col-form-label">
                 Description:
             </label>

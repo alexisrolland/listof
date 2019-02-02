@@ -46,6 +46,7 @@ export const store = new Vuex.Store({
                         name
                         flagMandatory
                         flagUnique
+                        linkedListId
                         sysListByLinkedListId { name }
                         sysDataTypeByDataTypeId { name }
                         columnName

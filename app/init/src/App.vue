@@ -22,4 +22,8 @@ export default {
 </script>
 
 <style>
+.form-group.required .col-form-label:after {
+    content:"*";
+    color:OrangeRed;
+}
 </style>

@@ -2,7 +2,7 @@
     <div>
         <h1 class="mt-5">Edit Attribute</h1>
 
-        <div class="form-group">
+        <div class="form-group required">
             <label for="attributeName" class="col-form-label">
                 Name:
             </label>
@@ -69,7 +69,7 @@
             </select>
         </div>
 
-        <div v-if="!attribute.linkedListId" class="form-group">
+        <div v-if="!attribute.linkedListId" class="form-group required">
             <label for="attributeDataType" class="col-form-label">
                 Data Type:
             </label>
