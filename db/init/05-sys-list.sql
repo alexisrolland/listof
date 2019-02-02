@@ -59,7 +59,7 @@ CREATE OR REPLACE FUNCTION base.create_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
     EXECUTE format('
-        CREATE TABLE base.%I (
+        CREATE TABLE public.%I (
             id SERIAL PRIMARY KEY
             , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -82,7 +82,7 @@ COMMENT ON FUNCTION base.create_list_table IS
 CREATE OR REPLACE FUNCTION base.rename_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
-    EXECUTE format('ALTER TABLE IF EXISTS base.%I RENAME TO %I;', OLD.table_name, NEW.table_name);
+    EXECUTE format('ALTER TABLE IF EXISTS public.%I RENAME TO %I;', OLD.table_name, NEW.table_name);
     RETURN NEW;
 END;
 $$ language plpgsql;
@@ -96,7 +96,7 @@ COMMENT ON FUNCTION base.rename_list_table IS
 CREATE OR REPLACE FUNCTION base.delete_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
-    EXECUTE format('DROP TABLE base.%I;', OLD.table_name);
+    EXECUTE format('DROP TABLE public.%I;', OLD.table_name);
     RETURN OLD;
 END;
 $$ language plpgsql;

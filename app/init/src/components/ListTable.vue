@@ -40,16 +40,17 @@
 export default {
     data: function () {
         return {
-            'lists': Array,
-            'query': this.$store.state.queryGetAllLists
+            'lists': []
         }
     },
     created: function () {
-        var payload = { 'query': this.query };
-        var url = this.$store.state.graphqlUrl;
-        this.$http.post(url, payload).then (
+        var payload = { 'query': this.$store.state.queryGetAllLists };
+        this.$http.post(this.$store.state.graphqlUrl, payload).then (
             function(response){
-                if(response.status == "200"){
+                if(response.data.errors){
+                    this.$store.state.errorObject.flag = true;
+                    this.$store.state.errorObject.message = response.data.errors[0].message;
+                } else {
                     this.lists = response.data.data.allSysLists.nodes;
                 }
             }

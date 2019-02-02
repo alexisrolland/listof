@@ -1,27 +1,26 @@
 <template>
     <div>
         <h1 class="mt-5">{{ list.name }}</h1>
-        <div>{{ list.description }}</div>
+        <p>{{ list.description }}</p>
 
-        <value-button-menu></value-button-menu>
-        <value-table></value-table>
+        <list-value-button-menu></list-value-button-menu>
+        <value-table v-bind:list="list"></value-table>
     </div>
 </template>
 
 <script>
-import ValueButtonMenu from './ValueButtonMenu.vue';
+import ListValueButtonMenu from './ListValueButtonMenu.vue';
 import ValueTable from './ValueTable.vue';
 
 export default {
     components: {
-        'value-button-menu': ValueButtonMenu,
+        'list-value-button-menu': ListValueButtonMenu,
         'value-table': ValueTable
     },
     data: function () {
         return {
             'list': {},
-            'attributes': [],
-            'queryGetList': this.$store.state.queryGetList,
+            'values': []
         }
     },
     computed: {
@@ -33,7 +32,7 @@ export default {
     },
     created: function () {
         var payload = {
-            'query': this.queryGetList,
+            'query': this.$store.state.queryGetList,
             'variables': { 'id': this.listId }
         };
         this.$http.post(this.$store.state.graphqlUrl, payload).then (
@@ -43,7 +42,6 @@ export default {
                     this.$store.state.errorObject.message = response.data.errors[0].message;
                 } else {
                     this.list = response.data.data.sysListById;
-                    this.attributes = this.list.sysAttributesByListId.nodes;
                 }
             }
         );

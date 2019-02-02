@@ -11,7 +11,7 @@ export const store = new Vuex.Store({
             message: ''
         },
 
-        // Data types
+        // Data types queries
         dataTypes: Array,
         queryGetAllDataTypes: `query getAllDataTypes {
             allSysDataTypes(orderBy: NAME_ASC) {
@@ -22,7 +22,7 @@ export const store = new Vuex.Store({
             }
         }`,
 
-        // Lists
+        // Lists queries and mutations
         lists: Array,
         queryGetAllLists: `query getAllLists{
             allSysLists(orderBy: NAME_ASC) {
@@ -39,18 +39,16 @@ export const store = new Vuex.Store({
                 id
                 name
                 description
+                tableName
                 sysAttributesByListId {
                     nodes {
                         id
                         name
                         flagMandatory
                         flagUnique
-                        sysListByLinkedListId {
-                            name
-                        }
-                        sysDataTypeByDataTypeId {
-                            name
-                        }
+                        sysListByLinkedListId { name }
+                        sysDataTypeByDataTypeId { name }
+                        columnName
                     }
                 }
             }
@@ -80,7 +78,7 @@ export const store = new Vuex.Store({
             }
         }`,
 
-        // List attributes
+        // List attributes queries and mutations
         queryGetAttribute: `query getAttribute($id: Int!) {
             sysAttributeById(id: $id) {
                 id
@@ -89,13 +87,9 @@ export const store = new Vuex.Store({
                 flagMandatory
                 flagUnique
                 linkedListId
-                sysListByLinkedListId {
-                    name
-                }
+                sysListByLinkedListId { name }
                 dataTypeId
-                sysDataTypeByDataTypeId {
-                    name
-                }
+                sysDataTypeByDataTypeId { name }
                 defaultValue
             }
         }`,
@@ -122,6 +116,46 @@ export const store = new Vuex.Store({
                     id
                 }
             }
-        }`
+        }`,
+
+        // Generic query used as template to fetch all values from a list
+        queryGetAllValues: `query getAllValues {
+            all<GraphQlListName> {
+                nodes {
+                    id
+                    createdDate
+                    updatedDate
+                    <graphQlAttributeName>
+                }
+            }
+        }`,
+
+        // Generic query used as template to fetch all values from a list
+        queryGetValue: `query getValue($id: Int!) {
+            <graphQlListName>ById(id: $id) {
+                id
+                createdDate
+                updatedDate
+                <graphQlAttributeName>
+            }
+        }`,
+
+        // Generic mutation used as template to create a new value in a list
+        mutationCreateValue: `mutation createValue($<graphQlListName>: <GraphQlListName>Input!) {
+            create<GraphQlListName>(input: {<graphQlListName>: $<graphQlListName>}) {
+                <graphQlListName> {
+                    id
+                }
+            }
+        }`,
+
+        // Generic mutation used as template to delete a value in a list
+        mutationDeleteValue: `mutation deleteValue($id: Int!) {
+            delete<GraphQlListName>ById(input: {id: $id}){
+                <graphQlListName> {
+                    id
+                }
+            }
+        }`,
     }
 });

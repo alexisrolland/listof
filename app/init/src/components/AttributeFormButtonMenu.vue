@@ -23,13 +23,6 @@ export default {
     props: {
         attribute: Object
     },
-    data: function () {
-        return {
-            'mutationCreateAttribute': this.$store.state.mutationCreateAttribute,
-            'mutationUpdateAttribute': this.$store.state.mutationUpdateAttribute,
-            'mutationDeleteAttribute': this.$store.state.mutationDeleteAttribute,
-        }
-    },
     computed: {
         listId() {
             return parseInt(this.$route.params.listId);
@@ -41,7 +34,7 @@ export default {
             if (this.attribute.id) {
                 // Update an existing attribute
                 var payload = {
-                    'query': this.mutationUpdateAttribute,
+                    'query': this.$store.state.mutationUpdateAttribute,
                     'variables': { 
                         'id': this.attribute.id,
                         'sysAttributePatch': {
@@ -68,7 +61,7 @@ export default {
             else {
                 // Create a new attribute
                 var payload = {
-                    'query': this.mutationCreateAttribute,
+                    'query': this.$store.state.mutationCreateAttribute,
                     'variables': {
                         'sysAttribute': {
                             'name': this.attribute.name,
@@ -100,7 +93,7 @@ export default {
             // Method to delete an attribute
             if (this.attribute.id) {
                 var payload = {
-                    'query': this.mutationDeleteAttribute,
+                    'query': this.$store.state.mutationDeleteAttribute,
                     'variables': { 
                         'id': this.attribute.id
                     }

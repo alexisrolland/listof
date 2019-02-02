@@ -11,10 +11,6 @@
 
 <script>
 export default {
-    data: function () {
-        return {
-        }
-    },
     computed: {
         cssClass() {
             if (this.$store.state.errorObject.flag) { return 'display' }

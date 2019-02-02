@@ -20,7 +20,7 @@ const routes = [
     { name: 'lists', path: '/lists/:listId', component: List },
     { name: 'attributes', path: '/lists/:listId/attributes/:attributeId', component: Attribute },
     { name: 'values', path: '/lists/:listId/values', component: Value },
-    { name: 'records', path: '/lists/:listId/values/:recordId', component: Record },
+    { name: 'value', path: '/lists/:listId/values/:valueId', component: Record },
 ];
 
 // Configure router

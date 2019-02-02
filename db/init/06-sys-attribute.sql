@@ -59,7 +59,7 @@ BEGIN
     INTO v_table_name
     FROM base.sys_list
     WHERE id=NEW.list_id;
-    v_alter_table = format('ALTER TABLE base.%I ', v_table_name);
+    v_alter_table = format('ALTER TABLE public.%I ', v_table_name);
     
     /*Test if attribute should be a foreign key of another list*/
     IF (NEW.linked_list_id IS NOT NULL) THEN
@@ -76,7 +76,7 @@ BEGIN
         /*Add foreign key constraint*/
         v_alter_statement = v_alter_table || format('ADD CONSTRAINT %I_%I_fkey ', v_table_name, NEW.column_name);
         v_alter_statement = v_alter_statement || format('FOREIGN KEY (%I) ', NEW.column_name);
-        v_alter_statement = v_alter_statement || format('REFERENCES base.%I(id);', v_linked_table_name);
+        v_alter_statement = v_alter_statement || format('REFERENCES public.%I(id);', v_linked_table_name);
         EXECUTE v_alter_statement;
 
     /*If attribute is not a foreign key create column*/
@@ -127,12 +127,12 @@ RETURNS TRIGGER AS $$
 DECLARE
     v_table_name TEXT;
 BEGIN
-    SELECT name 
+    SELECT table_name 
     INTO v_table_name
     FROM base.sys_list
     WHERE id = OLD.list_id;
 
-    EXECUTE format('ALTER TABLE base.%I RENAME COLUMN %I TO %I;', v_table_name, OLD.column_name, NEW.column_name);
+    EXECUTE format('ALTER TABLE public.%I RENAME COLUMN %I TO %I;', v_table_name, OLD.column_name, NEW.column_name);
     RETURN NEW;
 END;
 $$ language plpgsql;
@@ -156,7 +156,7 @@ BEGIN
     INTO v_table_name
     FROM base.sys_list
     WHERE id=OLD.list_id;
-    v_alter_table = format('ALTER TABLE base.%I ', v_table_name);
+    v_alter_table = format('ALTER TABLE public.%I ', v_table_name);
     
     /*Test if attribute is a foreign key of another list*/
     IF (OLD.linked_list_id IS NOT NULL) THEN
@@ -222,3 +222,7 @@ EXECUTE PROCEDURE base.generate_column_name();
 CREATE TRIGGER attribute_update_graphql_name BEFORE UPDATE
 ON base.sys_attribute FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
 EXECUTE PROCEDURE base.generate_graphql_name();
+
+CREATE TRIGGER attribute_rename_list_column AFTER UPDATE
+ON base.sys_attribute FOR EACH ROW WHEN (OLD.column_name IS DISTINCT FROM NEW.column_name) 
+EXECUTE PROCEDURE base.rename_list_column();

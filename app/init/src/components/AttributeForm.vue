@@ -95,36 +95,28 @@
                 placeholder="Attribute default value"
                 v-model="attribute.defaultValue" />
         </div>
-        <attribute-button-menu v-bind:attribute="attribute"></attribute-button-menu>
+
+        <attribute-form-button-menu v-bind:attribute="attribute"></attribute-form-button-menu>
     </div>
 </template>
 
 <script>
-import AttributeButtonMenu from './AttributeButtonMenu.vue';
+import AttributeFormButtonMenu from './AttributeFormButtonMenu.vue';
 
 export default {
     components: {
-        'attribute-button-menu': AttributeButtonMenu
+        'attribute-form-button-menu': AttributeFormButtonMenu
     },
     data: function () {
         return {
-            'attribute': {},
-            'queryGetAttribute': this.$store.state.queryGetAttribute,
-            'queryGetAllDataTypes': this.$store.state.queryGetAllDataTypes,
-            'queryGetAllLists': this.$store.state.queryGetAllLists,
+            'attribute': {}
         }
     },
     computed: {
-        listId() {
-            return parseInt(this.$route.params.listId);
-        },
         attributeId() {
             var attributeId = parseInt(this.$route.params.attributeId);
-            if (isNaN(attributeId)) {
-                return null;
-            } else {
-                return attributeId;
-            }
+            if (isNaN(attributeId)) { return null; }
+            else { return attributeId; }
         },
         dataTypes() {
             return this.$store.state.dataTypes;
@@ -139,7 +131,7 @@ export default {
         var attributeId = parseInt(this.$route.params.attributeId);
         if (!isNaN(attributeId)) {
             var payload = {
-                'query': this.queryGetAttribute,
+                'query': this.$store.state.queryGetAttribute,
                 'variables': { 'id': attributeId }
             };
             this.$http.post(this.$store.state.graphqlUrl, payload).then (
@@ -155,7 +147,7 @@ export default {
         };
 
         // Get data types to populate dropdown box
-        var payload = { 'query': this.queryGetAllDataTypes };
+        var payload = { 'query': this.$store.state.queryGetAllDataTypes };
         this.$http.post(this.$store.state.graphqlUrl, payload).then (
             function(response){
                 if(response.data.errors){
@@ -168,7 +160,7 @@ export default {
         );
 
         // Get all linked lists to populate dropdown box
-        var payload = { 'query': this.queryGetAllLists };
+        var payload = { 'query': this.$store.state.queryGetAllLists };
         this.$http.post(this.$store.state.graphqlUrl, payload).then (
             function(response){
                 if(response.data.errors){

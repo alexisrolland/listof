@@ -35,20 +35,13 @@ export default {
     props: {
         list: Object
     },
-    data: function () {
-        return {
-            'mutationCreateList': this.$store.state.mutationCreateList,
-            'mutationUpdateList': this.$store.state.mutationUpdateList,
-            'mutationDeleteList': this.$store.state.mutationDeleteList,
-        }
-    },
     methods: {
         saveList() {
             // Method to create or update a list
             if (this.list.id) {
                 // Update an existing list
                 var payload = {
-                    'query': this.mutationUpdateList,
+                    'query': this.$store.state.mutationUpdateList,
                     'variables': { 
                         'id': this.list.id,
                         'sysListPatch': {
@@ -69,7 +62,7 @@ export default {
             else {
                 // Create a new list
                 var payload = {
-                    'query': this.mutationCreateList,
+                    'query': this.$store.state.mutationCreateList,
                     'variables': {
                         'sysList': {
                             'name': this.list.name,
@@ -95,7 +88,7 @@ export default {
             // Method to delete a list
             if (this.list.id) {
                 var payload = {
-                    'query': this.mutationDeleteList,
+                    'query': this.$store.state.mutationDeleteList,
                     'variables': { 
                         'id': this.list.id
                     }
@@ -113,4 +106,3 @@ export default {
     }
 }
 </script>
-

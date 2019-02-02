@@ -28,25 +28,23 @@
                 v-model="list.description" />
         </div>
 
-        <list-button-menu v-bind:list="list"></list-button-menu>
+        <list-form-button-menu v-bind:list="list"></list-form-button-menu>
         <attribute-table v-if="listId" v-bind:attributes="attributes"></attribute-table>
     </div>
 </template>
 
 <script>
-import ListButtonMenu from './ListButtonMenu.vue';
+import ListFormButtonMenu from './ListFormButtonMenu.vue';
 import AttributeTable from './AttributeTable.vue';
 
 export default {
     components: {
-        'list-button-menu': ListButtonMenu,
+        'list-form-button-menu': ListFormButtonMenu,
         'attribute-table': AttributeTable
     },
     data: function () {
         return {
             'list': {},
-            'attributes': [],
-            'queryGetList': this.$store.state.queryGetList,
         }
     },
     computed: {
@@ -54,6 +52,11 @@ export default {
             var listId = parseInt(this.$route.params.listId);
             if (isNaN(listId)) { return null; }
             else { return listId; }
+        },
+        attributes() {
+            if (this.list.sysAttributesByListId) {
+                return this.list.sysAttributesByListId.nodes;
+            }
         }
     },
     created: function () {
@@ -61,7 +64,7 @@ export default {
         // If list Id is not NaN then get corresponding list
         if (this.listId) {
             var payload = {
-                'query': this.queryGetList,
+                'query': this.$store.state.queryGetList,
                 'variables': { 'id': this.listId }
             };
             this.$http.post(this.$store.state.graphqlUrl, payload).then (
@@ -71,7 +74,6 @@ export default {
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
                         this.list = response.data.data.sysListById;
-                        this.attributes = this.list.sysAttributesByListId.nodes;
                     }
                 }
             );
