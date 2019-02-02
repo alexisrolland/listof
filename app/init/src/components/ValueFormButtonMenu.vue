@@ -31,12 +31,30 @@ export default {
         valueId() {
             return parseInt(this.$route.params.valueId);
         },
+        mutationCreateValue() {
+            // Compute GraphQL mutation to delete value
+            if (this.graphQlListName) {
+                var GraphQlListName = this.graphQlListName.charAt(0).toUpperCase() + this.graphQlListName.slice(1);  // Upper case first letter of list name
+                var graphQlMutation = this.$store.state.mutationCreateValue.replace(/<GraphQlListName>/g, GraphQlListName);
+                graphQlMutation = graphQlMutation.replace(/<graphQlListName>/g, this.graphQlListName);
+                return graphQlMutation;
+            }
+        },
+        mutationUpdateValue() {
+            // Compute GraphQL mutation to delete value
+            if (this.graphQlListName) {
+                var GraphQlListName = this.graphQlListName.charAt(0).toUpperCase() + this.graphQlListName.slice(1);  // Upper case first letter of list name
+                var graphQlMutation = this.$store.state.mutationUpdateValue.replace(/<GraphQlListName>/g, GraphQlListName);
+                graphQlMutation = graphQlMutation.replace(/<graphQlListName>/g, this.graphQlListName);
+                return graphQlMutation;
+            }
+        },
         mutationDeleteValue() {
             // Compute GraphQL mutation to delete value
             if (this.graphQlListName) {
                 var GraphQlListName = this.graphQlListName.charAt(0).toUpperCase() + this.graphQlListName.slice(1);  // Upper case first letter of list name
-                var graphQlMutation = this.$store.state.mutationDeleteValue.replace('<GraphQlListName>', GraphQlListName);
-                graphQlMutation = graphQlMutation.replace('<graphQlListName>', this.graphQlListName);
+                var graphQlMutation = this.$store.state.mutationDeleteValue.replace(/<GraphQlListName>/g, GraphQlListName);
+                graphQlMutation = graphQlMutation.replace(/<graphQlListName>/g, this.graphQlListName);
                 return graphQlMutation;
             }
         }
@@ -46,21 +64,12 @@ export default {
             // Method to create or update a value
             if (this.value.id) {
                 // Update an existing value
+                var variables = {};
+                variables['id'] = this.value.id;
+                variables[this.graphQlListName + 'Patch'] = this.value;
                 var payload = {
-                    'query': this.$store.state.mutationUpdateAttribute,
-                    'variables': { 
-                        'id': this.attribute.id,
-                        'sysAttributePatch': {
-                            'name': this.attribute.name,
-                            'description': this.attribute.description,
-                            'flagUnique': this.attribute.flagUnique,
-                            'flagMandatory': this.attribute.flagMandatory,
-                            'linkedListId': this.attribute.linkedListId,
-                            'dataTypeId': this.attribute.dataTypeId,
-                            'defaultValue': this.attribute.defaultValue,
-                            'listId': this.listId
-                        }
-                    }
+                    'query': this.mutationUpdateValue,
+                    'variables': variables
                 };
                 this.$http.post(this.$store.state.graphqlUrl, payload).then (
                     function(response){
@@ -73,20 +82,11 @@ export default {
             }
             else {
                 // Create a new value
+                var variables = {};
+                variables[this.graphQlListName] = this.value;
                 var payload = {
-                    'query': this.$store.state.mutationCreateAttribute,
-                    'variables': {
-                        'sysAttribute': {
-                            'name': this.attribute.name,
-                            'description': this.attribute.description,
-                            'flagUnique': this.attribute.flagUnique,
-                            'flagMandatory': this.attribute.flagMandatory,
-                            'linkedListId': this.attribute.linkedListId,
-                            'dataTypeId': this.attribute.dataTypeId,
-                            'defaultValue': this.attribute.defaultValue,
-                            'listId': this.listId
-                        }
-                    }
+                    'query': this.mutationCreateValue,
+                    'variables': variables
                 };
                 this.$http.post(this.$store.state.graphqlUrl, payload).then (
                     function(response){
@@ -95,8 +95,9 @@ export default {
                             this.$store.state.errorObject.message = response.data.errors[0].message;
                         } else {
                             // Capture new value Id in case user wants to delete or update it
-                            this.attribute.id = response.data.data.createSysAttribute.sysAttribute.id;
-                            this.$router.push({ name: 'attributes', params: { attributeId: this.attribute.id } });
+                            var GraphQlListName = this.graphQlListName.charAt(0).toUpperCase() + this.graphQlListName.slice(1);  // Upper case first letter of list name
+                            this.value.id = response.data.data['create' + GraphQlListName][this.graphQlListName].id;
+                            this.$router.push({ name: 'value', params: { valueId: this.value.id } });
                         }
                     }
                 );

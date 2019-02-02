@@ -15,10 +15,7 @@
                 v-model="value[attribute.graphQlAttributeName]" />
         </div>
 
-        <value-form-button-menu 
-            v-bind:graphQlListName="graphQlListName"
-            v-bind:value="value"
-            ></value-form-button-menu>
+        <value-form-button-menu v-bind:graphQlListName="graphQlListName" v-bind:value="value"></value-form-button-menu>
     </div>
 </template>
 

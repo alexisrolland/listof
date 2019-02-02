@@ -149,6 +149,15 @@ export const store = new Vuex.Store({
             }
         }`,
 
+        // Generic mutation used as template to update a value in a list
+        mutationUpdateValue: `mutation updateValue($id: Int!, $<graphQlListName>Patch: <GraphQlListName>Patch!) {
+            update<GraphQlListName>ById(input: {id: $id, <graphQlListName>Patch: $<graphQlListName>Patch }) {
+                <graphQlListName> {
+                    id
+                }
+            }
+        }`,
+
         // Generic mutation used as template to delete a value in a list
         mutationDeleteValue: `mutation deleteValue($id: Int!) {
             delete<GraphQlListName>ById(input: {id: $id}){
