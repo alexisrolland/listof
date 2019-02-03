@@ -2,11 +2,11 @@ import Vue from 'vue';
 import VueResource  from 'vue-resource';
 import VueRouter from 'vue-router';
 import App from './App.vue';
-import Home from './Home.vue';
-import List from './List.vue';
-import Attribute from './Attribute.vue';
-import Value from './Value.vue';
-import Record from './Record.vue';
+import Home from './components/Home.vue';
+import EditList from './components/EditList.vue';
+import EditListAttribute from './components/EditListAttribute.vue';
+import EditListValue from './components/EditListValue.vue';
+import ViewListValue from './components/ViewListValue.vue';
 
 import { store } from './store';
 
@@ -17,10 +17,10 @@ Vue.use(VueRouter);
 // Declare application URLs
 const routes = [
     { name: 'home', path: '/', component: Home },
-    { name: 'lists', path: '/lists/:listId', component: List },
-    { name: 'attributes', path: '/lists/:listId/attributes/:attributeId', component: Attribute },
-    { name: 'values', path: '/lists/:listId/values', component: Value },
-    { name: 'value', path: '/lists/:listId/values/:valueId', component: Record },
+    { name: 'edit-list', path: '/lists/:listId', component: EditList },
+    { name: 'edit-list-attribute', path: '/lists/:listId/attributes/:attributeId', component: EditListAttribute },
+    { name: 'edit-list-value', path: '/lists/:listId/values/:valueId', component: EditListValue },
+    { name: 'view-list-value', path: '/lists/:listId/values', component: ViewListValue },
 ];
 
 // Configure router

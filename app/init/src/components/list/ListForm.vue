@@ -29,18 +29,18 @@
         </div>
 
         <list-form-button-menu v-bind:list="list"></list-form-button-menu>
-        <attribute-table v-if="listId" v-bind:attributes="attributes"></attribute-table>
+        <list-attribute-table v-if="listId" v-bind:attributes="attributes"></list-attribute-table>
     </div>
 </template>
 
 <script>
 import ListFormButtonMenu from './ListFormButtonMenu.vue';
-import AttributeTable from './AttributeTable.vue';
+import ListAttributeTable from './ListAttributeTable.vue';
 
 export default {
     components: {
         'list-form-button-menu': ListFormButtonMenu,
-        'attribute-table': AttributeTable
+        'list-attribute-table': ListAttributeTable
     },
     data: function () {
         return {

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ListForm from './components/ListForm.vue';
+import ListForm from './list/ListForm.vue';
 
 export default {
     components: {

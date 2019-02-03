@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ValueForm from './components/ValueForm.vue';
+import ValueForm from './value/ValueForm.vue';
 
 export default {
     components: {

@@ -97,7 +97,7 @@ export default {
                             // Capture new value Id in case user wants to delete or update it
                             var GraphQlListName = this.graphQlListName.charAt(0).toUpperCase() + this.graphQlListName.slice(1);  // Upper case first letter of list name
                             this.value.id = response.data.data['create' + GraphQlListName][this.graphQlListName].id;
-                            this.$router.push({ name: 'value', params: { valueId: this.value.id } });
+                            this.$router.push({ name: 'edit-list-value', params: { valueId: this.value.id } });
                         }
                     }
                 );

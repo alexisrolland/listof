@@ -1,15 +1,15 @@
 <template>
     <div class="col-8">
-        <list-value></list-value>
+        <value-list></value-list>
     </div>
 </template>
 
 <script>
-import ListValue from './components/ListValue.vue';
+import ValueList from './value/ValueList.vue';
 
 export default {
     components: {
-        'list-value': ListValue
+        'value-list': ValueList
     }
 }
 </script>

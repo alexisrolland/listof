@@ -83,7 +83,7 @@ export default {
                         } else {
                             // Capture new attribute Id in case user wants to delete or update it
                             this.attribute.id = response.data.data.createSysAttribute.sysAttribute.id;
-                            this.$router.push({ name: 'attributes', params: { attributeId: this.attribute.id } });
+                            this.$router.push({ name: 'edit-list-attribute', params: { attributeId: this.attribute.id } });
                         }
                     }
                 );

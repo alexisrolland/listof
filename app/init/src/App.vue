@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <top-header></top-header>
+        <header-bar></header-bar>
         <error-message></error-message>
         <div id="main" class="row justify-content-center">
             <router-view :key="$route.fullPath"></router-view>
@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import TopHeader from './components/TopHeader.vue'
-import ErrorMessage from './components/ErrorMessage.vue'
+import HeaderBar from './components/header/HeaderBar.vue'
+import ErrorMessage from './components/error/ErrorMessage.vue'
 
 export default {
     name: 'app',
     components: {
-        'top-header': TopHeader,
+        'header-bar': HeaderBar,
         'error-message': ErrorMessage
     }
 }

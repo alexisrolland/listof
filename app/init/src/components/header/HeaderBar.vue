@@ -5,16 +5,16 @@
                 ListOf...
             </router-link>
         </span>
-        <list-button-create></list-button-create>
+        <header-button-create></header-button-create>
     </nav>
 </template>
 
 <script>
-import ListButtonCreate from './ListButtonCreate.vue';
+import HeaderButtonCreate from './HeaderButtonCreate.vue';
 
 export default {
     components: {
-        'list-button-create': ListButtonCreate
+        'header-button-create': HeaderButtonCreate
     }
 }
 </script>

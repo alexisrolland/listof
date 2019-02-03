@@ -3,18 +3,18 @@
         <h1 class="mt-5">{{ list.name }}</h1>
         <p>{{ list.description }}</p>
 
-        <list-value-button-menu></list-value-button-menu>
+        <value-list-button-menu></value-list-button-menu>
         <value-table v-bind:list="list"></value-table>
     </div>
 </template>
 
 <script>
-import ListValueButtonMenu from './ListValueButtonMenu.vue';
+import ValueListButtonMenu from './ValueListButtonMenu.vue';
 import ValueTable from './ValueTable.vue';
 
 export default {
     components: {
-        'list-value-button-menu': ListValueButtonMenu,
+        'value-list-button-menu': ValueListButtonMenu,
         'value-table': ValueTable
     },
     data: function () {

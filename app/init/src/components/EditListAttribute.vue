@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AttributeForm from './components/AttributeForm.vue';
+import AttributeForm from './attribute/AttributeForm.vue';
 
 export default {
     components: {

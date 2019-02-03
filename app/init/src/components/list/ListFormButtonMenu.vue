@@ -78,7 +78,7 @@ export default {
                         } else {
                             // Capture new list Id in case user wants to delete or update it
                             this.list.id = response.data.data.createSysList.sysList.id;
-                            this.$router.push({ name: 'lists', params: { listId: this.list.id } });
+                            this.$router.push({ name: 'edit-list', params: { listId: this.list.id } });
                         }
                     }
                 );
