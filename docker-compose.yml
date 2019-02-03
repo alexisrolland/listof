@@ -58,7 +58,7 @@ services:
     build:
       context: ./app
     volumes:
-      - ./app/init:/srv/app:ro
+      - ./app/init:/srv/app
     env_file:
       - ./.env
     depends_on:
