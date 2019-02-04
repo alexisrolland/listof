@@ -70,8 +70,8 @@ export default {
                     attributeName = this.attributes[i].graphQlAttributeName + ' ' + attributeName;
                 }
 
-                var graphQlQuery = this.$store.state.queryGetAllValues.replace('<GraphQlListName>', this.graphQlListName);
-                graphQlQuery = graphQlQuery.replace('<graphQlAttributeName>', attributeName);
+                var graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, this.graphQlListName);
+                graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
                 return graphQlQuery;
             }
         }

@@ -54,7 +54,15 @@ export const store = new Vuex.Store({
                         flagMandatory
                         flagUnique
                         linkedListId
-                        sysListByLinkedListId { name }
+                        sysListByLinkedListId {
+                            name
+                            tableName
+                        }
+                        linkedListAttributeId
+                        sysAttributeByLinkedListAttributeId {
+                            name
+                            columnName
+                        }
                         dataTypeId
                         sysDataTypeByDataTypeId { name }
                         columnName
@@ -62,15 +70,6 @@ export const store = new Vuex.Store({
                 }
             }
         }`,
-
-        queryGetListAttributes: `query getListAttributes($id: Int!) {
-            allSysAttributes(condition: {listId: $id}) {
-                nodes {
-                    name
-                }
-            }
-        }
-        `,
 
         mutationCreateList: `mutation createList($sysList: SysListInput!) {
             createSysList(input: {sysList: $sysList}) {
@@ -96,7 +95,7 @@ export const store = new Vuex.Store({
             }
         }`,
 
-        // List attributes queries and mutations
+        // Attributes queries and mutations
         queryGetAttribute: `query getAttribute($id: Int!) {
             sysAttributeById(id: $id) {
                 id
@@ -106,6 +105,8 @@ export const store = new Vuex.Store({
                 flagUnique
                 linkedListId
                 sysListByLinkedListId { name }
+                linkedListAttributeId
+                sysAttributeByLinkedListAttributeId { name }
                 dataTypeId
                 sysDataTypeByDataTypeId { name }
                 defaultValue

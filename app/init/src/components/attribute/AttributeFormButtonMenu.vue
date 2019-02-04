@@ -31,12 +31,17 @@ export default {
     methods: {
         saveAttribute() {
             // Method to create or update an attribute
+            // Compute data type Id default value
+            var dataTypeId;
+            if (this.attribute.linkedListId) { dataTypeId = 6 }
+            else { dataTypeId = this.attribute.dataTypeId }
+
+            // Clean values in case user selected and then unselected dropdown boxes
+            if (this.attribute.linkedListId == "" ) { this.attribute.linkedListId = null }
+            if (this.attribute.linkedListAttributeId == "" ) { this.attribute.linkedListAttributeId = null }
+
             if (this.attribute.id) {
                 // Update an existing attribute
-                // Compute data type Id default value
-                var dataTypeId;
-                if (this.attribute.linkedListId) { dataTypeId = 6 } else { dataTypeId = this.attribute.dataTypeId }
-                console.log(dataTypeId);
                 var payload = {
                     'query': this.$store.state.mutationUpdateAttribute,
                     'variables': { 
@@ -47,6 +52,7 @@ export default {
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
                             'linkedListId': this.attribute.linkedListId,
+                            'linkedListAttributeId': this.attribute.linkedListAttributeId,
                             'dataTypeId': dataTypeId,
                             'defaultValue': this.attribute.defaultValue,
                             'listId': this.listId
@@ -64,10 +70,6 @@ export default {
             }
             else {
                 // Create a new attribute
-                // Compute data type Id default value
-                var dataTypeId;
-                if (this.attribute.linkedListId) { dataTypeId = 6 } else { dataTypeId = this.attribute.dataTypeId }
-
                 var payload = {
                     'query': this.$store.state.mutationCreateAttribute,
                     'variables': {
@@ -77,6 +79,7 @@ export default {
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
                             'linkedListId': this.attribute.linkedListId,
+                            'linkedListAttributeId': this.attribute.linkedListAttributeId,
                             'dataTypeId': dataTypeId,
                             'defaultValue': this.attribute.defaultValue,
                             'listId': this.listId

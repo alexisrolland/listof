@@ -4,11 +4,11 @@
 
         <!-- Attribute Name -->
         <div class="form-group required">
-            <label for="attributeName" class="col-form-label">
+            <label for="name" class="col-form-label">
                 Name:
             </label>
             <input class="form-control col-sm"
-                id="attributeName"
+                id="name"
                 type="text"
                 required="true"
                 placeholder="Attribute name"
@@ -17,11 +17,11 @@
 
         <!-- Attribute Description -->
         <div class="form-group">
-            <label for="attributeDescription" class="col-form-label">
+            <label for="description" class="col-form-label">
                 Description:
             </label>
             <textarea
-                id="attributeDescription"
+                id="description"
                 class="form-control col-sm"
                 placeholder="Attribute description"
                 rows="3"
@@ -30,12 +30,12 @@
 
         <!-- Flag Attribute Mandatory -->
         <div class="form-group">
-            <label for="attributeMandatory" class="col-form-label">
+            <label for="mandatory" class="col-form-label">
                 Mandatory:
             </label>
             <div class="form-check form-check-inline">
                 <input class="form-check-input"
-                    id="attributeMandatory"
+                    id="mandatory"
                     type="checkbox" value=""
                     v-model="attribute.flagMandatory" />
             </div>
@@ -43,12 +43,12 @@
 
         <!-- Flag Attribute Unique -->
         <div class="form-group">
-            <label for="attributeUnique" class="col-form-label">
+            <label for="unique" class="col-form-label">
                 Unique:
             </label>
             <div class="form-check form-check-inline">
                 <input class="form-check-input"
-                    id="attributeUnique"
+                    id="unique"
                     type="checkbox"
                     value=""
                     v-model="attribute.flagUnique" />
@@ -57,13 +57,13 @@
 
         <!-- Linked List -->
         <div class="form-group">
-            <label for="attributeLinkedList" class="col-form-label">
+            <label for="linkedList" class="col-form-label">
                 Linked List:
             </label>
             <select class="form-control col-sm"
-                id="attributeLinkedList"
+                id="linkedList"
                 v-model="attribute.linkedListId">
-                    <option value="">Select a list</option>
+                    <option selected value></option>
                     <option v-for="linkedList in linkedLists"
                         v-bind:value="linkedList.id"
                         v-bind:key="linkedList.id">
@@ -73,14 +73,14 @@
         </div>
 
         <!-- Linked List Attribute -->
-        <div v-if="attribute.linkedListId" class="form-group required">
-            <label for="attributeLinkedList" class="col-form-label">
+        <div v-show="attribute.linkedListId" class="form-group required">
+            <label for="linkedListAttribute" class="col-form-label">
                 Linked List Attribute:
             </label>
             <select class="form-control col-sm"
-                id="attributeLinkedListAttribute"
+                id="linkedListAttribute"
                 v-model="attribute.linkedListAttributeId">
-                    <option value="">Select an attribute</option>
+                    <option selected value></option>
                     <option v-for="linkedListAttribute in linkedListAttributes[attribute.linkedListId]"
                         v-bind:value="linkedListAttribute.id"
                         v-bind:key="linkedListAttribute.id">
@@ -90,14 +90,15 @@
         </div>
 
         <!-- Attribute Data Type -->
-        <div v-if="!attribute.linkedListId" class="form-group required">
-            <label for="attributeDataType" class="col-form-label">
+        <div v-show="!attribute.linkedListId" class="form-group required">
+            <label for="dataType" class="col-form-label">
                 Data Type:
             </label>
             <select class="form-control col-sm"
-                id="attributeDataType"
+                id="dataType"
                 required="true"
                 v-model="attribute.dataTypeId">
+                    <option selected value></option>
                     <option v-for="dataType in dataTypes" v-bind:value="dataType.id" v-bind:key="dataType.id">
                         {{ dataType.name }}
                     </option>
@@ -106,11 +107,11 @@
 
         <!-- Attribute Default Value -->
         <div v-if="!attribute.linkedListId" class="form-group">
-            <label for="attributeDefaultValue" class="col-form-label">
+            <label for="defaultValue" class="col-form-label">
                 Default Value:
             </label>
             <input class="form-control col-sm"
-                id="attributeDefaultValue"
+                id="defaultValue"
                 type="text"
                 placeholder="Attribute default value"
                 v-model="attribute.defaultValue" />
@@ -130,7 +131,7 @@ export default {
     data: function () {
         return {
             'attribute': {},
-            'linkedListAttributes': {} // Used to generate the linked list dropdown box
+            'linkedListAttributes': {} // Used to generate the linked list attributes dropdown box
         }
     },
     computed: {
