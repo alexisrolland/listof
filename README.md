@@ -6,4 +6,8 @@ All data warehousing projects face similar challenges to standardize data coming
 - Create relationships and mappings between your lists of values.
 - Expose your lists of values via a web API (GraphQL).
 
-# Work In Progress
+# Demo
+Video to be added
+
+# Getting Started
+Following the Getting Started page on our Github Wiki: [Getting Started](https://github.com/alexisrolland/listof/wiki/Getting-Started).
