@@ -2,19 +2,20 @@
     <div>
         <h1 class="mt-5">Edit Attribute</h1>
 
+        <!-- Attribute Name -->
         <div class="form-group required">
             <label for="attributeName" class="col-form-label">
                 Name:
             </label>
-            <input
+            <input class="form-control col-sm"
                 id="attributeName"
                 type="text"
                 required="true"
-                class="form-control col-sm"
                 placeholder="Attribute name"
                 v-model="attribute.name" />
         </div>
 
+        <!-- Attribute Description -->
         <div class="form-group">
             <label for="attributeDescription" class="col-form-label">
                 Description:
@@ -27,56 +28,75 @@
                 v-model="attribute.description" />
         </div>
 
+        <!-- Flag Attribute Mandatory -->
         <div class="form-group">
             <label for="attributeMandatory" class="col-form-label">
                 Mandatory:
             </label>
             <div class="form-check form-check-inline">
-                <input
+                <input class="form-check-input"
                     id="attributeMandatory"
-                    class="form-check-input"
                     type="checkbox" value=""
                     v-model="attribute.flagMandatory" />
             </div>
         </div>
 
+        <!-- Flag Attribute Unique -->
         <div class="form-group">
             <label for="attributeUnique" class="col-form-label">
                 Unique:
             </label>
             <div class="form-check form-check-inline">
-                <input
+                <input class="form-check-input"
                     id="attributeUnique"
-                    class="form-check-input"
                     type="checkbox"
                     value=""
                     v-model="attribute.flagUnique" />
             </div>
         </div>
 
+        <!-- Linked List -->
         <div class="form-group">
             <label for="attributeLinkedList" class="col-form-label">
                 Linked List:
             </label>
-            <select
+            <select class="form-control col-sm"
                 id="attributeLinkedList"
-                class="form-control col-sm"
                 v-model="attribute.linkedListId">
-                    <option selected></option>
-                    <option v-for="linkedList in linkedLists" v-bind:value="linkedList.id" v-bind:key="linkedList.id">
-                        {{ linkedList.name }}
+                    <option value="">Select a list</option>
+                    <option v-for="linkedList in linkedLists"
+                        v-bind:value="linkedList.id"
+                        v-bind:key="linkedList.id">
+                            {{ linkedList.name }}
                     </option>
             </select>
         </div>
 
+        <!-- Linked List Attribute -->
+        <div v-if="attribute.linkedListId" class="form-group required">
+            <label for="attributeLinkedList" class="col-form-label">
+                Linked List Attribute:
+            </label>
+            <select class="form-control col-sm"
+                id="attributeLinkedListAttribute"
+                v-model="attribute.linkedListAttributeId">
+                    <option value="">Select an attribute</option>
+                    <option v-for="linkedListAttribute in linkedListAttributes[attribute.linkedListId]"
+                        v-bind:value="linkedListAttribute.id"
+                        v-bind:key="linkedListAttribute.id">
+                            {{ linkedListAttribute.name }}
+                    </option>
+            </select>
+        </div>
+
+        <!-- Attribute Data Type -->
         <div v-if="!attribute.linkedListId" class="form-group required">
             <label for="attributeDataType" class="col-form-label">
                 Data Type:
             </label>
-            <select
+            <select class="form-control col-sm"
                 id="attributeDataType"
                 required="true"
-                class="form-control col-sm"
                 v-model="attribute.dataTypeId">
                     <option v-for="dataType in dataTypes" v-bind:value="dataType.id" v-bind:key="dataType.id">
                         {{ dataType.name }}
@@ -84,13 +104,13 @@
             </select>
         </div>
 
-        <div class="form-group">
+        <!-- Attribute Default Value -->
+        <div v-if="!attribute.linkedListId" class="form-group">
             <label for="attributeDefaultValue" class="col-form-label">
                 Default Value:
             </label>
-            <input
+            <input class="form-control col-sm"
                 id="attributeDefaultValue"
-                class="form-control col-sm"
                 type="text"
                 placeholder="Attribute default value"
                 v-model="attribute.defaultValue" />
@@ -109,7 +129,8 @@ export default {
     },
     data: function () {
         return {
-            'attribute': {}
+            'attribute': {},
+            'linkedListAttributes': {} // Used to generate the linked list dropdown box
         }
     },
     computed: {
@@ -168,6 +189,13 @@ export default {
                     this.$store.state.errorObject.message = response.data.errors[0].message;
                 } else {
                     this.$store.state.lists = response.data.data.allSysLists.nodes;
+
+                    // Prepare attributes for each list in order to populate the dropdown box
+                    var i;
+                    var linkedLists = this.$store.state.lists;
+                    for (i = 0; i < linkedLists.length; i++) {
+                        this.linkedListAttributes[linkedLists[i]['id']] = linkedLists[i]['sysAttributesByListId']['nodes'];
+                    }
                 }
             }
         );

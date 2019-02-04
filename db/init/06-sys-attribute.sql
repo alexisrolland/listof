@@ -9,7 +9,6 @@ CREATE TABLE base.sys_attribute (
   , name TEXT NOT NULL
   , description TEXT
   , column_name TEXT
-  , graphql_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
   , flag_mandatory BOOLEAN DEFAULT FALSE
   , default_value TEXT
@@ -21,6 +20,7 @@ CREATE TABLE base.sys_attribute (
   , list_id INTEGER NOT NULL REFERENCES base.sys_list(id)
   , data_type_id INTEGER NOT NULL REFERENCES base.sys_data_type(id)
   , linked_list_id INTEGER NULL REFERENCES base.sys_list(id)
+  , linked_list_attribute_id INTEGER NULL REFERENCES base.sys_attribute(id)
   , UNIQUE (name, list_id)
 );
 
@@ -189,10 +189,6 @@ CREATE TRIGGER attribute_generate_column_name BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.generate_column_name();
 
-CREATE TRIGGER attribute_generate_graphql_name BEFORE INSERT
-ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
-base.generate_graphql_name();
-
 CREATE TRIGGER attribute_create_list_column AFTER INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.create_list_column();
@@ -218,10 +214,6 @@ base.update_updated_by_id();
 CREATE TRIGGER attribute_update_column_name BEFORE UPDATE
 ON base.sys_attribute FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
 EXECUTE PROCEDURE base.generate_column_name();
-
-CREATE TRIGGER attribute_update_graphql_name BEFORE UPDATE
-ON base.sys_attribute FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
-EXECUTE PROCEDURE base.generate_graphql_name();
 
 CREATE TRIGGER attribute_rename_list_column AFTER UPDATE
 ON base.sys_attribute FOR EACH ROW WHEN (OLD.column_name IS DISTINCT FROM NEW.column_name) 

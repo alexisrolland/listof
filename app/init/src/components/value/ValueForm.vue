@@ -5,17 +5,76 @@
 
         <h1 class="mt-5">Edit Value</h1>
 
-        <div v-for="attribute in attributes" v-bind:key="attribute.id" class="form-group">
-            <label v-bind:for="attribute.id" class="col-form-label">
-                {{ attribute.name }}:
-            </label>
-            <input
-                v-bind:id="attribute.id"
-                type="text"
-                required="true"
-                class="form-control col-sm"
-                placeholder="Attribute name"
-                v-model="value[attribute.graphQlAttributeName]" />
+        <div class="form-group"
+            v-for="attribute in attributes"
+            v-bind:key="attribute.id"
+            v-bind:class="{ required: attribute.flagMandatory }">
+
+                <label class="col-form-label"
+                    v-bind:for="attribute.id">
+                        {{ attribute.name }}:
+                </label>
+
+                <!-- Boolean input, used for data types boolean(2) -->
+                <div class="form-check form-check-inline"
+                    v-if="[2].includes(attribute.dataTypeId)">
+                    <input class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        v-bind:id="attribute.id"
+                        v-bind:required="attribute.flagMandatory"
+                        v-model="value[attribute.graphQlAttributeName]" />
+                </div>
+
+                <!-- Date input, used for data types date(4) -->
+                <input class="form-control col-sm"
+                    type="date"
+                    v-if="[4].includes(attribute.dataTypeId)"
+                    v-bind:id="attribute.id"
+                    v-bind:required="attribute.flagMandatory"
+                    v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
+                    v-model="value[attribute.graphQlAttributeName]" />
+                
+                <!-- Date time input, used for data types timestamp(10) -->
+                <input class="form-control col-sm"
+                    type="datetime-local"
+                    v-if="[10].includes(attribute.dataTypeId)"
+                    v-bind:id="attribute.id"
+                    v-bind:required="attribute.flagMandatory"
+                    v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
+                    v-model="value[attribute.graphQlAttributeName]" />
+
+                <!-- Number input, used for data types bigint(1), integer(6), smallint(8) -->
+                <input class="form-control col-sm"
+                    type="number"
+                    v-if="[1, 6, 8].includes(attribute.dataTypeId)"
+                    v-bind:id="attribute.id"
+                    v-bind:required="attribute.flagMandatory"
+                    v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
+                    v-model.number="value[attribute.graphQlAttributeName]" />
+                
+                <!-- Text input, used for non integer data types decimal(5), real(7) -->
+                <input class="form-control col-sm"
+                    type="text"
+                    v-if="[5, 7].includes(attribute.dataTypeId)"
+                    v-bind:id="attribute.id"
+                    v-bind:required="attribute.flagMandatory"
+                    v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
+                    v-model.number="value[attribute.graphQlAttributeName]" />
+
+                <!-- Text input, used for all other data types char(3), text(9), varchar(11) -->
+                <input class="form-control col-sm"
+                    type="text"
+                    v-if="[3, 9, 11].includes(attribute.dataTypeId)"
+                    v-bind:id="attribute.id"
+                    v-bind:required="attribute.flagMandatory"
+                    v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
+                    v-model="value[attribute.graphQlAttributeName]" />
+                
+                <small v-bind:id="attribute.id" class="form-text text-muted">
+                    {{ attribute.description }}
+                </small>
+
         </div>
 
         <value-form-button-menu v-bind:graphQlListName="graphQlListName" v-bind:value="value"></value-form-button-menu>

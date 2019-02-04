@@ -9,7 +9,6 @@ CREATE TABLE base.sys_list (
   , name TEXT NOT NULL UNIQUE
   , description TEXT NOT NULL
   , table_name TEXT
-  , graphql_name TEXT
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
@@ -33,24 +32,6 @@ $$ language plpgsql;
 
 COMMENT ON FUNCTION base.generate_table_name IS
 'Function used to generate a table name from a list name.';
-
-
-
-/*Create function to generate a graphql name from a list name*/
-CREATE OR REPLACE FUNCTION base.generate_graphql_name()
-RETURNS TRIGGER AS $$
-DECLARE
-    v_first_char TEXT;
-BEGIN
-    NEW.graphql_name = REPLACE(INITCAP(NEW.name), ' ', '');
-    v_first_char = LEFT(LOWER(NEW.graphql_name), 1);
-    NEW.graphql_name = v_first_char || RIGHT(NEW.graphql_name, LENGTH(NEW.graphql_name)-1);
-    RETURN NEW;
-END;
-$$ language plpgsql;
-
-COMMENT ON FUNCTION base.generate_graphql_name IS
-'Function used to generate a graphql name from a list or attribute name.';
 
 
 
@@ -111,10 +92,6 @@ CREATE TRIGGER list_generate_table_name BEFORE INSERT
 ON base.sys_list FOR EACH ROW EXECUTE PROCEDURE
 base.generate_table_name();
 
-CREATE TRIGGER list_generate_graphql_name BEFORE INSERT
-ON base.sys_list FOR EACH ROW EXECUTE PROCEDURE
-base.generate_graphql_name();
-
 CREATE TRIGGER list_create_list_table AFTER INSERT
 ON base.sys_list FOR EACH ROW EXECUTE PROCEDURE
 base.create_list_table();
@@ -144,10 +121,6 @@ base.update_updated_by_id();
 CREATE TRIGGER list_update_table_name BEFORE UPDATE
 ON base.sys_list FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
 EXECUTE PROCEDURE base.generate_table_name();
-
-CREATE TRIGGER list_update_graphql_name BEFORE UPDATE
-ON base.sys_list FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name) 
-EXECUTE PROCEDURE base.generate_graphql_name();
 
 CREATE TRIGGER list_rename_list_table AFTER UPDATE
 ON base.sys_list FOR EACH ROW WHEN (OLD.table_name IS DISTINCT FROM NEW.table_name) 

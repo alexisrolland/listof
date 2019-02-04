@@ -30,6 +30,12 @@ export const store = new Vuex.Store({
                     id
                     name
                     description
+                    sysAttributesByListId {
+                        nodes {
+                            id
+                            name
+                        }
+                    }
                 }
             }
         }`,
@@ -44,16 +50,27 @@ export const store = new Vuex.Store({
                     nodes {
                         id
                         name
+                        description
                         flagMandatory
                         flagUnique
                         linkedListId
                         sysListByLinkedListId { name }
+                        dataTypeId
                         sysDataTypeByDataTypeId { name }
                         columnName
                     }
                 }
             }
         }`,
+
+        queryGetListAttributes: `query getListAttributes($id: Int!) {
+            allSysAttributes(condition: {listId: $id}) {
+                nodes {
+                    name
+                }
+            }
+        }
+        `,
 
         mutationCreateList: `mutation createList($sysList: SysListInput!) {
             createSysList(input: {sysList: $sysList}) {
