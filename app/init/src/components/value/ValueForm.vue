@@ -3,6 +3,8 @@
         <h1 class="mt-5">{{ list.name }}</h1>
         <p>{{ list.description }}</p>
 
+        <value-list-button-menu></value-list-button-menu>
+
         <h1 class="mt-5">Edit Value</h1>
 
         <div class="form-group"
@@ -93,10 +95,12 @@
 </template>
 
 <script>
+import ValueListButtonMenu from './ValueListButtonMenu.vue';
 import ValueFormButtonMenu from './ValueFormButtonMenu.vue';
 
 export default {
     components: {
+        'value-list-button-menu': ValueListButtonMenu,
         'value-form-button-menu': ValueFormButtonMenu
     },
     data: function () {
