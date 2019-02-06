@@ -34,7 +34,7 @@
                     v-bind:required="attribute.flagMandatory"
                     v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
                     v-model="value[attribute.graphQlAttributeName]" />
-                
+
                 <!-- Date time input, used for data types timestamp(10) -->
                 <input class="form-control col-sm"
                     type="datetime-local"
@@ -75,21 +75,20 @@
                     v-if="[6].includes(attribute.dataTypeId) && attribute.linkedListId"
                     id="linkedList"
                     v-model="value[attribute.graphQlAttributeName]">
-                        <option selected value></option>
-                        <option v-for="dropDown in dropDownLists[attribute.graphQlAttributeName]"
-                            v-bind:value="dropDown.id"
-                            v-bind:key="dropDown.id">
-                                {{ dropDown[attribute.sysAttributeByLinkedListAttributeId.columnName] }}
+                        <option v-for="dropdown in attribute.dropdownList"
+                            v-bind:value="dropdown.id"
+                            v-bind:key="dropdown.id">
+                                {{ dropdown[attribute.sysAttributeByLinkedListAttributeId.columnName] }}
                         </option>
                 </select>
-                
+
                 <small v-bind:id="attribute.id" class="form-text text-muted">
                     {{ attribute.description }}
                 </small>
 
         </div>
 
-        <value-form-button-menu v-bind:graphQlListName="graphQlListName" v-bind:value="value"></value-form-button-menu>
+        <value-form-button-menu v-bind:graphQlListName="list.graphQlListName" v-bind:value="value"></value-form-button-menu>
     </div>
 </template>
 
@@ -103,8 +102,9 @@ export default {
     data: function () {
         return {
             'list': {},
-            'value': {},
-            'dropDownLists': {}
+            'attributes': [],
+            'queryGetValue': '',
+            'value': {}
         }
     },
     computed: {
@@ -117,136 +117,135 @@ export default {
             var valueId = parseInt(this.$route.params.valueId);
             if (isNaN(valueId)) { return null; }
             else { return valueId; }
-        },
-        attributes() {
-            // Extract attributes and compute their GraphQL attribute names
-            if (this.list.sysAttributesByListId) {
-                var inflection = require('inflection');
-                var attributes = this.list.sysAttributesByListId.nodes;
-                var i;
-                for (i = 0; i < attributes.length; i++) {
-                    attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true);
-                }
-                return attributes;
-            }
-        },
-        graphQlListName() {
-            // Compute GraphQL table name
-            if (this.list.tableName) {
-                var inflection = require('inflection');
-                var graphQlListName = inflection.singularize(this.list.tableName);
-                graphQlListName = inflection.camelize(graphQlListName, true);
-                return graphQlListName;
-            }
-        },
-        queryGetValue() {
-            // Compute GraphQL query to get value
-            if (this.graphQlListName && this.attributes) {
-                var attributeName = '';
-                var i;
-                for (i = 0; i < this.attributes.length; i++) {
-                    attributeName = this.attributes[i].graphQlAttributeName + ' ' + attributeName;
-                }
-
-                var graphQlQuery = this.$store.state.queryGetValue.replace(/<graphQlListName>/g, this.graphQlListName);
-                graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
-                return graphQlQuery;
-            }
-        },
-        queryGetDropDown() {
-            // Compute GraphQL query to get dropdown box values
-            if (this.graphQlListName && this.attributes) {
-                var queries = [];
-                var inflection = require('inflection');
-                var i;
-                for (i = 0; i < this.attributes.length; i++) {
-                    // Get GraphQL name of linked list
-                    if (this.attributes[i].sysListByLinkedListId) {
-                        var graphQlLinkedListName = inflection.pluralize(this.attributes[i].sysListByLinkedListId.tableName);
-                        graphQlLinkedListName = inflection.camelize(graphQlLinkedListName);
-                    }
-
-                    // Get GraphQL name of linked list attribute
-                    if (this.attributes[i].sysAttributeByLinkedListAttributeId) {
-                        var graphQlLinkedListAttribute = inflection.camelize(this.attributes[i].sysAttributeByLinkedListAttributeId.columnName, true);
-                    }
-
-                    // Compute GraphQL query
-                    if (this.attributes[i].sysListByLinkedListId && this.attributes[i].sysAttributeByLinkedListAttributeId) {
-                        var graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, graphQlLinkedListName);
-                        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQlLinkedListAttribute);
-                        var query = {};
-                        query['graphQlAttributeName'] = this.attributes[i].graphQlAttributeName;
-                        query['graphQlLinkedListName'] = graphQlLinkedListName;
-                        query['query'] = graphQlQuery;
-                        queries.push(query);
-                    }
-                }
-                return queries;
-            }
-        }
-    },
-    watch: {
-        // Execute query to get value
-        queryGetValue: function() {
-            if (this.valueId && this.queryGetValue) {
-                var payload = {
-                    'query': this.queryGetValue,
-                    'variables': { 'id': this.valueId }
-                };
-                this.$http.post(this.$store.state.graphqlUrl, payload).then (
-                    function(response){
-                        if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
-                        } else {
-                            this.value = response.data.data[this.graphQlListName + 'ById'];
-                        }
-                    }
-                );
-            }
-        },
-        // Execute query to get dropdown box values
-        queryGetDropDown: function() {
-            if (this.queryGetDropDown) {
-                var i;
-                for (i = 0; i < this.queryGetDropDown.length; i++) {
-                    var graphQlAttributeName = this.queryGetDropDown[i]['graphQlAttributeName'];
-                    var graphQlLinkedListName = this.queryGetDropDown[i]['graphQlLinkedListName'];
-                    var query = this.queryGetDropDown[i]['query'];
-
-                    var payload = { 'query': query };
-                    this.$http.post(this.$store.state.graphqlUrl, payload).then (
-                        function(response){
-                            if(response.data.errors){
-                                this.$store.state.errorObject.flag = true;
-                                this.$store.state.errorObject.message = response.data.errors[0].message;
-                            } else {
-                                var data = response.data.data['all' + graphQlLinkedListName].nodes;
-                                this.dropDownLists[graphQlAttributeName] = data;
-                            }
-                        }
-                    );
-                }
-            }
         }
     },
     created: function () {
-        // Get list information
-        var payload = {
-            'query': this.$store.state.queryGetList,
-            'variables': { 'id': this.listId }
-        };
-        this.$http.post(this.$store.state.graphqlUrl, payload).then (
-            function(response){
-                if(response.data.errors){
-                    this.$store.state.errorObject.flag = true;
-                    this.$store.state.errorObject.message = response.data.errors[0].message;
-                } else {
-                    this.list = response.data.data.sysListById;
+        this.getList();
+    },
+    methods: {
+        getList: function() {
+            // Get list information
+            var payload = {
+                'query': this.$store.state.queryGetList,
+                'variables': { 'id': this.listId }
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                function(response){
+                    if(response.data.errors){
+                        this.$store.state.errorObject.flag = true;
+                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                    } else {
+                        this.list = response.data.data.sysListById;
+
+                        // Compute GraphQL list name for the corresponding table name
+                        // This is used to build the GraphQL query to get the list value
+                        var inflection = require('inflection');
+                        var graphQlListName = inflection.singularize(this.list.tableName);
+                        graphQlListName = inflection.camelize(graphQlListName, true);
+                        this.list['graphQlListName'] = graphQlListName;
+
+                        // Extract attributes and compute their GraphQL column names
+                        // This is used to build the GraphQL query to get the list value
+                        if (this.list.sysAttributesByListId) {
+                            var attributes = this.list.sysAttributesByListId.nodes;
+                            for (let i = 0; i < attributes.length; i++) {
+                                // Add GraphQl attribute name
+                                attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true);
+
+                                // If attribute is a link with another list of value
+                                // Build GraphQL query to get dropdown list values
+                                if (attributes[i].sysListByLinkedListId) {
+                                    var linkedTableName = attributes[i].sysListByLinkedListId.tableName;
+                                    var linkedColumnName = attributes[i].sysAttributeByLinkedListAttributeId.columnName;
+                                    var result = this.getQueryDropdownList(linkedTableName, linkedColumnName);
+                                    var graphQlLinkedListName = result[0];
+                                    var graphQlQuery = result[1];
+
+                                    // Execute GraphQL query to get dropdown list values
+                                    attributes[i]['dropdownList'] = this.getDropdownList(graphQlLinkedListName, graphQlQuery);
+                                    var payload = { 'query': graphQlQuery };
+                                    this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                                        (response) => {
+                                            if(response.data.errors){
+                                                this.$store.state.errorObject.flag = true;
+                                                this.$store.state.errorObject.message = response.data.errors[0].message;
+                                            } else {
+                                                attributes[i]['dropdownList'] = response.data.data['all' + graphQlLinkedListName].nodes;
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                            this.attributes = attributes;
+                        }
+
+                        // if record exists, build GraphQL queries and get value
+                        if (this.valueId) {
+                            this.getQueryValue();
+                            this.getValue();
+                        }
+                    }
                 }
+            );
+        },
+        getQueryValue: function() {
+            // Compute GraphQL query to get value
+            var attributeName = '';
+            var i;
+            for (i = 0; i < this.attributes.length; i++) {
+                attributeName = this.attributes[i].graphQlAttributeName + ' ' + attributeName;
             }
-        );
+
+            var graphQlQuery = this.$store.state.queryGetValue.replace(/<graphQlListName>/g, this.list.graphQlListName);
+            graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
+            this.queryGetValue = graphQlQuery;
+        },
+        getValue: function() {
+            // Execute query to get value if record exists
+            var payload = {
+                'query': this.queryGetValue,
+                'variables': { 'id': this.valueId }
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                function(response){
+                    if(response.data.errors){
+                        this.$store.state.errorObject.flag = true;
+                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                    } else {
+                        this.value = response.data.data[this.list.graphQlListName + 'ById'];
+                    }
+                }
+            );
+        },
+        getQueryDropdownList: function(tableName, columnName) {
+            // Compute GraphQL query to get dropdown list values
+            var graphQlLinkedListName = tableName;
+            var graphQlLinkedListAttribute = columnName;
+            var graphQlQuery = this.$store.state.queryGetAllValues;
+            var inflection = require('inflection');
+
+            graphQlLinkedListName = inflection.pluralize(graphQlLinkedListName);
+            graphQlLinkedListName = inflection.camelize(graphQlLinkedListName);
+            graphQlLinkedListAttribute = inflection.camelize(graphQlLinkedListAttribute, true);
+            graphQlQuery = graphQlQuery.replace(/<GraphQlListName>/g, graphQlLinkedListName);
+            graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQlLinkedListAttribute);
+            return [graphQlLinkedListName, graphQlQuery];
+
+        },
+        getDropdownList: function(graphQlLinkedListName, graphQlQuery, attributeIndex) {
+            // Execute query to get dropdown lists values
+            var payload = { 'query': graphQlQuery };
+            this.$http.post(this.$store.state.graphqlUrl, payload).then (
+                function(response){
+                    if(response.data.errors){
+                        this.$store.state.errorObject.flag = true;
+                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                    } else {
+                        return response.data.data['all' + graphQlLinkedListName].nodes;
+                    }
+                }
+            );
+        }
     }
 }
 </script>
