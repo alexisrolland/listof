@@ -1,33 +1,7 @@
 <template>
-    <div>
-        <button type="button" class="btn btn-success" v-on:click="saveList()">
-            Save
-        </button>
-
-        <router-link v-if="list.id" v-bind:to="list.id + '/attributes/new'">
-            <button type="button" class="btn btn-secondary">
-                Add Attribute
-            </button>
-        </router-link>
-
-        <router-link v-if="list.id" v-bind:to="list.id + '/values'">
-            <button type="button" class="btn btn-secondary">
-                Edit Values
-            </button>
-        </router-link>
-
-        <router-link to="/">
-            <button type="button" class="btn btn-outline-secondary">
-                Close
-            </button>
-        </router-link>
-
-        <router-link v-if="list.id" to="/">
-            <button type="button" class="btn btn-danger float-right" v-on:click="deleteList()">
-                Delete
-            </button>
-        </router-link>
-    </div>
+    <button type="button" class="btn btn-success" v-on:click="saveList">
+        Save
+    </button>
 </template>
 
 <script>
@@ -38,9 +12,9 @@ export default {
     methods: {
         saveList() {
             // Method to create or update a list
+            // If list.id exists, update existing list
             if (this.list.id) {
-                // Update an existing list
-                var payload = {
+                let payload = {
                     'query': this.$store.state.mutationUpdateList,
                     'variables': { 
                         'id': this.list.id,
@@ -59,9 +33,9 @@ export default {
                     }
                 );
             }
+            // If list.id does not exist, create a new list
             else {
-                // Create a new list
-                var payload = {
+                let payload = {
                     'query': this.$store.state.mutationCreateList,
                     'variables': {
                         'sysList': {
@@ -78,26 +52,12 @@ export default {
                         } else {
                             // Capture new list Id in case user wants to delete or update it
                             this.list.id = response.data.data.createSysList.sysList.id;
-                            this.$router.push({ name: 'edit-list', params: { listId: this.list.id } });
-                        }
-                    }
-                );
-            }
-        },
-        deleteList() {
-            // Method to delete a list
-            if (this.list.id) {
-                var payload = {
-                    'query': this.$store.state.mutationDeleteList,
-                    'variables': { 
-                        'id': this.list.id
-                    }
-                };
-                this.$http.post(this.$store.state.graphqlUrl, payload).then (
-                    function(response){
-                        if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                            this.$router.push({
+                                name: 'edit-list',
+                                params: {
+                                    listId: this.list.id
+                                }
+                            });
                         }
                     }
                 );

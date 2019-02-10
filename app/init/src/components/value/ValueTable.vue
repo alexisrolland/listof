@@ -36,63 +36,43 @@ export default {
     },
     data: function () {
         return {
-            'values': []
+            attributes: [],
+            values: []
         }
     },
-    computed: {
-        attributes() {
-            // Extract attributes and compute GraphQL column names
-            if (this.list.sysAttributesByListId) {
-                var inflection = require('inflection');
-                var attributes = this.list.sysAttributesByListId.nodes;
-                var i;
-                for (i = 0; i < attributes.length; i++) {
-                    attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true);
-                }
-                return attributes;
-            }
-        },
-        graphQlListName() {
-            // Compute GraphQL table name
-            if (this.list.tableName) {
-                var inflection = require('inflection');
-                var graphQlListName = inflection.pluralize(this.list.tableName);
-                graphQlListName = inflection.camelize(graphQlListName);
-                return graphQlListName;
-            }
-        },
-        queryGetAllValues() {
-            // Compute GraphQL query
-            if (this.graphQlListName && this.attributes) {
-                var attributeName = '';
-                var i;
-                for (i = 0; i < this.attributes.length; i++) {
-                    attributeName = this.attributes[i].graphQlAttributeName + ' ' + attributeName;
-                }
+    created: function () {
+        // Compute GraphQL names for the list and attributes
+        let inflection = require('inflection');
 
-                var graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, this.graphQlListName);
-                graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
-                return graphQlQuery;
-            }
+        // GraphQL list name
+        let graphQlListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
+        graphQlListName = inflection.camelize(graphQlListName); // Example table_names > TableNames
+
+        // GraphQL attributes name
+        let attributes = this.list.sysAttributesByListId.nodes;
+        let attributeName = '';
+        for (let i = 0; i < attributes.length; i++) {
+            attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true); // Example colum_name > columnName
+            attributeName = attributes[i]['graphQlAttributeName'] + ' ' + attributeName;
         }
-    },
-    watch: {
-        // Execute query to get all values
-        queryGetAllValues: function() {
-            if (this.queryGetAllValues) {
-                var payload = { 'query': this.queryGetAllValues };
-                this.$http.post(this.$store.state.graphqlUrl, payload).then (
-                    function(response){
-                        if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
-                        } else {
-                            this.values = response.data.data['all' + this.graphQlListName].nodes;
-                        }
-                    }
-                );
+        this.attributes = attributes;
+
+        // Build GraphQL query
+        let graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, graphQlListName);
+        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
+
+        // Execute GraphQL query to get values
+        let payload = { 'query': graphQlQuery };
+        this.$http.post(this.$store.state.graphqlUrl, payload).then (
+            function(response){
+                if(response.data.errors){
+                    this.$store.state.errorObject.flag = true;
+                    this.$store.state.errorObject.message = response.data.errors[0].message;
+                } else {
+                    this.values = response.data.data['all' + graphQlListName].nodes;
+                }
             }
-        }
+        );
     }
 }
 </script>

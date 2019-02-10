@@ -44,7 +44,7 @@ export default {
         }
     },
     created: function () {
-        var payload = { 'query': this.$store.state.queryGetAllLists };
+        let payload = { 'query': this.$store.state.queryGetAllLists };
         this.$http.post(this.$store.state.graphqlUrl, payload).then (
             function(response){
                 if(response.data.errors){

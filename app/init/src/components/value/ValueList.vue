@@ -3,35 +3,40 @@
         <h1 class="mt-5">{{ list.name }}</h1>
         <p>{{ list.description }}</p>
 
-        <value-list-button-menu></value-list-button-menu>
-        <value-table v-bind:list="list"></value-table>
+         <!-- Button Menu -->
+        <div>
+            <value-button-add-value
+                v-bind:listId="list.id">
+            </value-button-add-value>
+        </div>
+
+        <!-- List of Values -->
+        <value-table v-if="list.id" v-bind:list="list"></value-table>
     </div>
 </template>
 
 <script>
-import ValueListButtonMenu from './ValueListButtonMenu.vue';
+import ValueButtonAddValue from './ValueButtonAddValue.vue';
 import ValueTable from './ValueTable.vue';
 
 export default {
     components: {
-        'value-list-button-menu': ValueListButtonMenu,
+        'value-button-add-value': ValueButtonAddValue,
         'value-table': ValueTable
     },
     data: function () {
         return {
-            'list': {},
-            'values': []
+            'list': {}
         }
     },
     computed: {
         listId() {
-            var listId = parseInt(this.$route.params.listId);
-            if (isNaN(listId)) { return null; }
-            else { return listId; }
+            return this.$route.params.listId;
         }
     },
     created: function () {
-        var payload = {
+        // Get list details
+        let payload = {
             'query': this.$store.state.queryGetList,
             'variables': { 'id': this.listId }
         };

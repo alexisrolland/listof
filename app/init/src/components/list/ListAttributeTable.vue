@@ -25,8 +25,8 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="attribute in attributes" v-bind:key="attribute.id">
+            <tbody v-if="list.sysAttributesByListId">
+                <tr v-for="attribute in list.sysAttributesByListId.nodes" v-bind:key="attribute.id">
                     <td>
                         {{ attribute.name }}
                     </td>
@@ -36,9 +36,10 @@
                     <td>
                         {{ attribute.flagUnique }}
                     </td>
-                    <td v-if="attribute.sysListByLinkedListId">
-                        <router-link v-bind:to="'/lists/' + attribute.linkedListId">
-                            {{ attribute.sysListByLinkedListId.name }}
+                    <td v-if="attribute.linkedListAttributeId">
+                        <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedListAttributeId.listId">
+                            {{ attribute.sysAttributeByLinkedListAttributeId.sysListByListId.name }} 
+                            ({{ attribute.sysAttributeByLinkedListAttributeId.name }})
                         </router-link>
                     </td>
                     <td v-else></td>
@@ -46,7 +47,7 @@
                         {{ attribute.sysDataTypeByDataTypeId.name }}
                     </td>
                     <td>
-                        <router-link class="badge badge-secondary" v-bind:to="listId + '/attributes/' + attribute.id">
+                        <router-link class="badge badge-secondary" v-bind:to="list.id + '/attributes/' + attribute.id">
                             Edit Attribute
                         </router-link>
                     </td>
@@ -61,12 +62,7 @@
 <script>
 export default {
     props: {
-        attributes: Array
-    },
-    computed: {
-        listId() {
-            return parseInt(this.$route.params.listId);
-        }
+        list: {}
     }
 }
 </script>

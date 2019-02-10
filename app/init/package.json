@@ -10,6 +10,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "0.0.38",
     "uppercamelcase": "^3.0.0",
     "vue": "^2.5.11",
     "vue-resource": "^1.5.1",

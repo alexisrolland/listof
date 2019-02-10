@@ -12,7 +12,6 @@ export const store = new Vuex.Store({
         },
 
         // Data types queries
-        dataTypes: Array,
         queryGetAllDataTypes: `query getAllDataTypes {
             allSysDataTypes(orderBy: NAME_ASC) {
                 nodes {
@@ -22,20 +21,41 @@ export const store = new Vuex.Store({
             }
         }`,
 
+        // Data for linked list & attributes drodpdown in attribute form
+        // Response labels must be formatted according to Treeselect requirements
+        queryGetLinkedLists: `query getAllLists {
+            allSysLists(orderBy: NAME_ASC) {
+                nodes {
+                    id:nodeId
+                    label:name
+                    attributes:sysAttributesByListId {
+                        children:nodes {
+                            id
+                            label:name
+                        }
+                    }
+                }
+            }
+        }`,
+
+        // Data for linked list & attributes drodpdown in value form
+        // Response labels must be formatted according to Treeselect requirements
+        queryGetLinkedListValues: `query getAllValues {
+            all<GraphQlListName> {
+                nodes {
+                    id
+                    label:<graphQlAttributeName>
+                }
+            }
+        }`,
+
         // Lists queries and mutations
-        lists: Array,
         queryGetAllLists: `query getAllLists{
             allSysLists(orderBy: NAME_ASC) {
                 nodes {
                     id
                     name
                     description
-                    sysAttributesByListId {
-                        nodes {
-                            id
-                            name
-                        }
-                    }
                 }
             }
         }`,
@@ -53,18 +73,18 @@ export const store = new Vuex.Store({
                         description
                         flagMandatory
                         flagUnique
-                        linkedListId
-                        sysListByLinkedListId {
-                            name
-                            tableName
-                        }
+                        dataTypeId
+                        sysDataTypeByDataTypeId { name }
                         linkedListAttributeId
                         sysAttributeByLinkedListAttributeId {
                             name
                             columnName
+                            listId
+                            sysListByListId {
+                                name
+                                tableName
+                            }
                         }
-                        dataTypeId
-                        sysDataTypeByDataTypeId { name }
                         columnName
                     }
                 }
@@ -103,12 +123,14 @@ export const store = new Vuex.Store({
                 description
                 flagMandatory
                 flagUnique
-                linkedListId
-                sysListByLinkedListId { name }
-                linkedListAttributeId
-                sysAttributeByLinkedListAttributeId { name }
                 dataTypeId
                 sysDataTypeByDataTypeId { name }
+                linkedListAttributeId
+                sysAttributeByLinkedListAttributeId {
+                    name
+                    listId
+                    sysListByListId { name }
+                }
                 defaultValue
             }
         }`,
@@ -149,7 +171,7 @@ export const store = new Vuex.Store({
             }
         }`,
 
-        // Generic query used as template to fetch all values from a list
+        // Generic query used as template to fetch one value from a list
         queryGetValue: `query getValue($id: Int!) {
             <graphQlListName>ById(id: $id) {
                 id

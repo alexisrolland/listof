@@ -19,7 +19,6 @@ CREATE TABLE base.sys_attribute (
   , user_group_id INTEGER DEFAULT 0 REFERENCES base.sys_user_group(id)
   , list_id INTEGER NOT NULL REFERENCES base.sys_list(id)
   , data_type_id INTEGER NOT NULL REFERENCES base.sys_data_type(id)
-  , linked_list_id INTEGER NULL REFERENCES base.sys_list(id)
   , linked_list_attribute_id INTEGER NULL REFERENCES base.sys_attribute(id)
   , UNIQUE (name, list_id)
 );
@@ -62,12 +61,13 @@ BEGIN
     v_alter_table = format('ALTER TABLE public.%I ', v_table_name);
     
     /*Test if attribute should be a foreign key of another list*/
-    IF (NEW.linked_list_id IS NOT NULL) THEN
+    IF (NEW.linked_list_attribute_id IS NOT NULL) THEN
         /*Get linked table name*/
-        SELECT table_name 
+        SELECT b.table_name 
         INTO v_linked_table_name
-        FROM base.sys_list
-        WHERE id=NEW.linked_list_id;
+        FROM base.sys_attribute a
+        INNER JOIN base.sys_list b on a.list_id=b.id
+        WHERE a.id=NEW.linked_list_attribute_id;
 
         /*Create foreign key column*/
         v_alter_statement = v_alter_table || format('ADD COLUMN %I INTEGER;', NEW.column_name);
@@ -159,12 +159,13 @@ BEGIN
     v_alter_table = format('ALTER TABLE public.%I ', v_table_name);
     
     /*Test if attribute is a foreign key of another list*/
-    IF (OLD.linked_list_id IS NOT NULL) THEN
+    IF (OLD.linked_list_attribute_id IS NOT NULL) THEN
         /*Get linked table name*/
-        SELECT table_name 
+        SELECT b.table_name 
         INTO v_linked_table_name
-        FROM base.sys_list
-        WHERE id=OLD.linked_list_id;
+        FROM base.sys_attribute a
+        INNER JOIN base.sys_list b on a.list_id=b.id
+        WHERE a.id=NEW.linked_list_attribute_id;
 
         /*Delete foreign key constraint*/
         v_alter_statement = v_alter_table || format('DROP CONSTRAINT %I_%I_fkey;', v_table_name, OLD.column_name);

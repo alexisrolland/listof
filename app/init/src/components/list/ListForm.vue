@@ -2,44 +2,75 @@
     <div>
         <h1 class="mt-5">Edit list</h1>
 
+        <!-- List Form -->
         <div class="form-group required">
             <label for="listName" class="col-form-label">
                 Name:
             </label>
-            <input
+            <input class="form-control col-sm"
                 id="listName"
                 type="text"
                 required="required"
-                class="form-control col-sm"
-                placeholder="List name"
+                placeholder="Type list name"
                 v-model="list.name" />
         </div>
-
         <div class="form-group required">
             <label for="listDescription" class="col-form-label">
                 Description:
             </label>
-            <textarea
+            <textarea class="form-control col-sm"
                 id="listDescription"
                 required="true"
-                class="form-control col-sm"
-                placeholder="List description"
+                placeholder="Type list description"
                 rows="3"
                 v-model="list.description" />
         </div>
 
-        <list-form-button-menu v-bind:list="list"></list-form-button-menu>
-        <list-attribute-table v-if="listId" v-bind:attributes="attributes"></list-attribute-table>
+        <!-- Button Menu -->
+        <div>
+            <list-button-save
+                v-bind:list="list">
+            </list-button-save>
+
+            <list-button-add-attribute
+                v-if="list.id"
+                v-bind:listId="list.id">
+            </list-button-add-attribute>
+
+            <list-button-edit-value
+                v-if="list.id"
+                v-bind:listId="list.id">
+            </list-button-edit-value>
+
+            <list-button-close>
+            </list-button-close>
+
+            <list-button-delete
+                v-if="list.id"
+                v-bind:listId="list.id">
+            </list-button-delete>
+        </div>
+
+        <!-- List Attributes -->
+        <list-attribute-table v-if="list.id" v-bind:list="list"></list-attribute-table>
     </div>
 </template>
 
 <script>
-import ListFormButtonMenu from './ListFormButtonMenu.vue';
+import ListButtonSave from './ListButtonSave.vue';
+import ListButtonAddAttribute from './ListButtonAddAttribute.vue';
+import ListButtonEditValue from './ListButtonEditValue.vue';
+import ListButtonClose from './ListButtonClose.vue';
+import ListButtonDelete from './ListButtonDelete.vue';
 import ListAttributeTable from './ListAttributeTable.vue';
 
 export default {
     components: {
-        'list-form-button-menu': ListFormButtonMenu,
+        'list-button-save': ListButtonSave,
+        'list-button-add-attribute': ListButtonAddAttribute,
+        'list-button-edit-value': ListButtonEditValue,
+        'list-button-close': ListButtonClose,
+        'list-button-delete': ListButtonDelete,
         'list-attribute-table': ListAttributeTable
     },
     data: function () {
@@ -49,23 +80,17 @@ export default {
     },
     computed: {
         listId() {
-            var listId = parseInt(this.$route.params.listId);
-            if (isNaN(listId)) { return null; }
-            else { return listId; }
-        },
-        attributes() {
-            if (this.list.sysAttributesByListId) {
-                return this.list.sysAttributesByListId.nodes;
-            }
+            return this.$route.params.listId;
         }
     },
     created: function () {
-        // Get list Id from URL parameters, verify if it's valid integer
-        // If list Id is not NaN then get corresponding list
-        if (this.listId) {
-            var payload = {
+        // If listId != new then get data for existing list
+        if (this.listId != 'new') {
+            let payload = {
                 'query': this.$store.state.queryGetList,
-                'variables': { 'id': this.listId }
+                'variables': {
+                    'id': this.listId
+                }
             };
             this.$http.post(this.$store.state.graphqlUrl, payload).then (
                 function(response){
