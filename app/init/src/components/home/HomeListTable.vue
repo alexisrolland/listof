@@ -38,23 +38,8 @@
 
 <script>
 export default {
-    data: function () {
-        return {
-            'lists': []
-        }
-    },
-    created: function () {
-        let payload = { 'query': this.$store.state.queryGetAllLists };
-        this.$http.post(this.$store.state.graphqlUrl, payload).then (
-            function(response){
-                if(response.data.errors){
-                    this.$store.state.errorObject.flag = true;
-                    this.$store.state.errorObject.message = response.data.errors[0].message;
-                } else {
-                    this.lists = response.data.data.allSysLists.nodes;
-                }
-            }
-        );
+    props: {
+        lists: Array
     }
 }
 </script>

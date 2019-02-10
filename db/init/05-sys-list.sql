@@ -21,6 +21,11 @@ COMMENT ON TABLE base.sys_list IS
 
 
 
+/*Create function to search lists*/
+
+
+
+
 /*Create function to generate a table name from a list name*/
 CREATE OR REPLACE FUNCTION base.generate_table_name()
 RETURNS TRIGGER AS $$
