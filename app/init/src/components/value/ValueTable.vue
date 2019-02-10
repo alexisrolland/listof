@@ -16,7 +16,15 @@
             <tbody>
                 <tr v-for="value in values" v-bind:key="value.id">
                     <td v-for="attribute in attributes" v-bind:key="attribute.id">
-                        {{ value[attribute.graphQlAttributeName] }}
+                        <!-- If attribute is linked to a list, fetch parent list value -->
+                        <span v-if="attribute.linkedListAttributeId">
+                            <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedListAttributeId.listId + '/values/' + value[attribute.graphQlAttributeName]">
+                                {{ value[attribute.graphQlAttributePath][attribute.graphQlLinkedAttributeName] }}
+                            </router-link>
+                        </span>
+                        <span v-else>
+                            {{ value[attribute.graphQlAttributeName] }}
+                        </span>
                     </td>
                     <td>
                         <router-link class="badge badge-secondary" v-bind:to="'values/' + value.id">
@@ -50,16 +58,33 @@ export default {
 
         // GraphQL attributes name
         let attributes = this.list.sysAttributesByListId.nodes;
-        let attributeName = '';
+        let graphQLAttributeName = '';
         for (let i = 0; i < attributes.length; i++) {
             attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true); // Example colum_name > columnName
-            attributeName = attributes[i]['graphQlAttributeName'] + ' ' + attributeName;
+            graphQLAttributeName = graphQLAttributeName + ' ' + attributes[i]['graphQlAttributeName'];
+
+            // If attribute is linked to another list attribute, adjust query to fetch linked attribute value
+            if (attributes[i].linkedListAttributeId) {
+                // Build GraphQL attribute path for the linked attribute
+                let attributePath = attributes[i]['sysAttributeByLinkedListAttributeId']['sysListByListId']['tableName'];
+                attributePath = inflection.singularize(attributePath);
+                attributePath = inflection.camelize(attributePath, true);
+                attributePath = attributePath + "By" + inflection.camelize(attributes[i].columnName);
+                attributes[i]['graphQlAttributePath'] = attributePath;
+                
+                // Build GraphQL attribute name for the linked attribute
+                let attributeName = inflection.camelize(attributes[i]['sysAttributeByLinkedListAttributeId']['columnName'], true);
+                attributes[i]['graphQlLinkedAttributeName'] = attributeName;
+
+                // Add attribute path and name to the query
+                graphQLAttributeName = graphQLAttributeName + ' ' + attributePath + "{" + attributeName + "}";
+            }
         }
         this.attributes = attributes;
 
         // Build GraphQL query
         let graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, graphQlListName);
-        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
+        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQLAttributeName);
 
         // Execute GraphQL query to get values
         let payload = { 'query': graphQlQuery };
