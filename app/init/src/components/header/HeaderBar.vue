@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar bg-light text-dark justify-content-between">
+    <nav class="navbar text-light justify-content-between">
         <span class="navbar-brand">
             <router-link to="/">
                 ListOf...
@@ -24,3 +24,7 @@ export default {
     }
 }
 </script>
+
+<style>
+.navbar { background-color: #2C3034; }
+</style>

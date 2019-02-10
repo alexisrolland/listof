@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="mt-5">{{ list.name }}</h1>
+        <h2 class="mt-5">{{ list.name }}</h2>
         <p>{{ list.description }}</p>
 
         <!-- Button Menu -->

@@ -28,11 +28,7 @@ CREATE TABLE base.sys_user (
     id SERIAL PRIMARY KEY
   , email TEXT NOT NULL UNIQUE
   , password TEXT
-  , oauth_type TEXT NOT NULL
-  , access_token TEXT NOT NULL
-  , refresh_token TEXT
-  , expiry_date TIMESTAMP NOT NULL
-  , flag_admin BOOLEAN DEFAULT FALSE
+  , role TEXT NOT NULL
   , flag_active BOOLEAN DEFAULT TRUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -54,8 +50,8 @@ base.update_updated_date();
 
 /*Create default user*/
 /*Must be created before other triggers to avoid conflicts in pg_roles table*/
-INSERT INTO base.sys_user (id, email, oauth_type, access_token, expiry_date, flag_admin) VALUES
-(0, 'postgres', 'not_used', 'not_used', '2999-12-31', true);
+INSERT INTO base.sys_user (id, email, role) VALUES
+(0, 'postgres', 'admin');
 
 
 
@@ -85,11 +81,7 @@ BEGIN
     EXECUTE 'CREATE USER user_' || NEW.id;
 
     -- Grant permission
-    IF NEW.flag_admin THEN
-      EXECUTE 'GRANT admin TO user_' || NEW.id;
-    ELSE
-      EXECUTE 'GRANT standard TO user_' || NEW.id;
-    END IF;
+    EXECUTE 'GRANT ' || NEW.role || ' TO user_' || NEW.id;
 
     -- Assign default user group
     INSERT INTO base.sys_user_group_user (user_id) VALUES (NEW.id);
@@ -110,14 +102,9 @@ base.create_user();
 CREATE OR REPLACE FUNCTION base.update_user_permission()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF OLD.flag_admin <> NEW.flag_admin THEN
-      IF NEW.flag_admin THEN
-        EXECUTE 'GRANT admin TO user_' || NEW.id;
-        EXECUTE 'REVOKE standard FROM user_' || NEW.id;
-      ELSE
-        EXECUTE 'GRANT standard TO user_' || NEW.id;
-        EXECUTE 'REVOKE admin FROM user_' || NEW.id;
-      END IF;
+    -- Update permission
+    IF OLD.role <> NEW.role THEN
+        EXECUTE 'GRANT ' || NEW.role || ' TO user_' || NEW.id;
     END IF;
     RETURN NEW;
 END;

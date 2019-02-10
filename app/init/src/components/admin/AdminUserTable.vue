@@ -1,24 +1,15 @@
 <template>
     <div>
-        <h2 class="mt-5">Attributes</h2>
+        <h2 class="mt-5">Users</h2>
 
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>
                 <tr>
                     <th scope="col">
-                        Name
+                        E-mail
                     </th>
                     <th scope="col">
-                        Mandatory
-                    </th>
-                    <th scope="col">
-                        Unique
-                    </th>
-                    <th scope="col">
-                        Linked List
-                    </th>
-                    <th scope="col">
-                        Data Type
+                        Role
                     </th>
                     <th scope="col">
                         Actions
@@ -62,7 +53,7 @@
 <script>
 export default {
     props: {
-        list: {}
+        users: []
     }
 }
 </script>

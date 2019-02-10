@@ -10,7 +10,8 @@ import EditList from './components/EditList.vue';
 import EditListAttribute from './components/EditListAttribute.vue';
 import ViewListValue from './components/ViewListValue.vue';
 import EditListValue from './components/EditListValue.vue';
-import Admin from './components/Admin.vue';
+import AdminUser from './components/AdminUser.vue';
+import AdminUserGroup from './components/AdminUserGroup.vue';
 
 // Tell Vue to use libraries
 Vue.use(VueResource);
@@ -23,7 +24,8 @@ const routes = [
     { name: 'edit-list-attribute', path: '/lists/:listId/attributes/:attributeId', component: EditListAttribute },
     { name: 'view-list-value', path: '/lists/:listId/values', component: ViewListValue },
     { name: 'edit-list-value', path: '/lists/:listId/values/:valueId', component: EditListValue },
-    { name: 'admin', path: '/admin', component: Admin },
+    { name: 'admin-user', path: '/admin/users', component: AdminUser },
+    { name: 'admin-user-group', path: '/admin/usergroups', component: AdminUserGroup }
 ];
 
 // Configure router
