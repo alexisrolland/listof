@@ -8,7 +8,7 @@
             v-model="selectedValue"
             v-bind:options="options"
             v-bind:multiple="false"
-            v-bind:disable-branch-nodes="false"/>
+            v-bind:disable-branch-nodes="true"/>
     </div>
 </template>
 

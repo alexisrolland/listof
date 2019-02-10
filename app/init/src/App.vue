@@ -3,8 +3,10 @@
         <header-bar></header-bar>
         <error-message></error-message>
 
-        <div id="main" class="row justify-content-center">
-            <router-view :key="$route.fullPath"></router-view>
+        <div class="container-fluid">
+            <div id="main" class="row justify-content-center">
+                <router-view :key="$route.fullPath"></router-view>
+            </div>
         </div>
     </div>
 </template>

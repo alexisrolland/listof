@@ -22,7 +22,16 @@ COMMENT ON TABLE base.sys_list IS
 
 
 /*Create function to search lists*/
+CREATE OR REPLACE FUNCTION base.search_list(keyword TEXT)
+RETURNS SETOF base.sys_list AS $$
+    SELECT a.*
+    FROM base.sys_list a
+    WHERE a.name ILIKE ('%' || keyword || '%') OR a.description ILIKE ('%' || keyword || '%')
+    ORDER BY a.name ASC
+$$ language sql;
 
+COMMENT ON FUNCTION base.search_list IS
+'Function used to search lists based on keywords contained in their name and description.';
 
 
 

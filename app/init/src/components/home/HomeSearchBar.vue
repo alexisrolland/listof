@@ -43,7 +43,7 @@ export default {
         search() {
             // Search list based on keywords
             // If keyword is empty, use GraphQL native query to benefit from pagination
-            if (keyword == "") {
+            if (this.keyword == "") {
                 this.getAllLists();
             } else {
                 let payload = {
