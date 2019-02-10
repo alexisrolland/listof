@@ -36,10 +36,10 @@
                     <td>
                         {{ attribute.flagUnique }}
                     </td>
-                    <td v-if="attribute.linkedListAttributeId">
-                        <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedListAttributeId.listId">
-                            {{ attribute.sysAttributeByLinkedListAttributeId.sysListByListId.name }} 
-                            ({{ attribute.sysAttributeByLinkedListAttributeId.name }})
+                    <td v-if="attribute.linkedAttributeId">
+                        <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedAttributeId.listId">
+                            {{ attribute.sysAttributeByLinkedAttributeId.sysListByListId.name }} 
+                            ({{ attribute.sysAttributeByLinkedAttributeId.name }})
                         </router-link>
                     </td>
                     <td v-else></td>

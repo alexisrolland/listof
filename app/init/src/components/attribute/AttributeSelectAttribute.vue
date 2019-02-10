@@ -1,7 +1,7 @@
 <!-- Vue SFC -->
 <template>
     <div class="form-group">
-        <label for="linkedListAttribute" class="col-form-label">
+        <label for="linkedAttribute" class="col-form-label">
             Link With List:
         </label>
         <treeselect placeholder="Select list attribute"
@@ -34,7 +34,7 @@ export default {
             this.selectedValue = arg;
         },
         selectedValue(arg) {
-            this.$emit("changeLinkedListAttribute", arg);
+            this.$emit("changeLinkedAttribute", arg);
         }
     },
     created: function () {

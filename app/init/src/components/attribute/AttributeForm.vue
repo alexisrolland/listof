@@ -56,8 +56,8 @@
 
         <!-- Linked List -->
         <attribute-select-attribute
-            v-model="attribute.linkedListAttributeId"
-            v-on:changeLinkedListAttribute="getLinkedListAttribute">
+            v-model="attribute.linkedAttributeId"
+            v-on:changeLinkedAttribute="getLinkedAttribute">
         </attribute-select-attribute>
 
         <!-- Attribute Data Type -->
@@ -118,7 +118,7 @@ export default {
         return {
             'attribute': {
                 'dataTypeId': null,
-                'linkedListAttributeId': null
+                'linkedAttributeId': null
             }
         }
     },
@@ -130,7 +130,7 @@ export default {
             return this.$route.params.attributeId;
         },
         showDataType() {
-            if(this.attribute.linkedListAttributeId == null){ return true; }
+            if(this.attribute.linkedAttributeId == null){ return true; }
             else { return false;}
         }
     },
@@ -139,12 +139,12 @@ export default {
             // Get data type from child component
             this.attribute['dataTypeId'] = value;
         },
-        getLinkedListAttribute(value) {
+        getLinkedAttribute(value) {
             // Get linked list from child component
             if (value != null) {
-                this.attribute['linkedListAttributeId'] = value;
+                this.attribute['linkedAttributeId'] = value;
             } else {
-                this.attribute['linkedListAttributeId'] = null;
+                this.attribute['linkedAttributeId'] = null;
             }
         }
     },

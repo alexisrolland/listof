@@ -7,7 +7,7 @@
 
         <!-- Select input, used for attributes which are linked to another list -->
         <treeselect
-            v-bind:placeholder="'Select value from ' + attribute.sysAttributeByLinkedListAttributeId.sysListByListId.name"
+            v-bind:placeholder="'Select value from ' + attribute.sysAttributeByLinkedAttributeId.sysListByListId.name"
             v-model="selectedValue"
             v-bind:options="options"
             v-bind:multiple="false" />
@@ -54,11 +54,11 @@ export default {
         let inflection = require('inflection');
 
         // GraphQL list name
-        let graphQlListName = inflection.pluralize(this.attribute.sysAttributeByLinkedListAttributeId.sysListByListId.tableName); // Example table_name > table_names
+        let graphQlListName = inflection.pluralize(this.attribute.sysAttributeByLinkedAttributeId.sysListByListId.tableName); // Example table_name > table_names
         graphQlListName = inflection.camelize(graphQlListName); // Example table_names > TableNames
 
         // GraphQL attributes name
-        let graphQlAttributeName = inflection.camelize(this.attribute.sysAttributeByLinkedListAttributeId.columnName, true); // Example colum_name > columnName
+        let graphQlAttributeName = inflection.camelize(this.attribute.sysAttributeByLinkedAttributeId.columnName, true); // Example colum_name > columnName
 
         // Build GraphQL query
         let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(/<GraphQlListName>/g, graphQlListName);

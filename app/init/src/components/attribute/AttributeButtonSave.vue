@@ -14,7 +14,7 @@ export default {
         saveAttribute() {
             // Method to create or update an attribute
             // Default dataTypeId to integer if attribute is a linked list
-            if (this.attribute.linkedListAttributeId) { this.attribute.dataTypeId = 6 }
+            if (this.attribute.linkedAttributeId) { this.attribute.dataTypeId = 6 }
 
             // If attribute.id exists, update existing attribute
             if (this.attribute.id) {
@@ -27,8 +27,7 @@ export default {
                             'description': this.attribute.description,
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
-                            'linkedListId': this.attribute.linkedListId,
-                            'linkedListAttributeId': this.attribute.linkedListAttributeId,
+                            'linkedAttributeId': this.attribute.linkedAttributeId,
                             'dataTypeId': this.attribute.dataTypeId,
                             'defaultValue': this.attribute.defaultValue,
                             'listId': this.listId
@@ -54,8 +53,7 @@ export default {
                             'description': this.attribute.description,
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
-                            'linkedListId': this.attribute.linkedListId,
-                            'linkedListAttributeId': this.attribute.linkedListAttributeId,
+                            'linkedAttributeId': this.attribute.linkedAttributeId,
                             'dataTypeId': this.attribute.dataTypeId,
                             'defaultValue': this.attribute.defaultValue,
                             'listId': this.listId

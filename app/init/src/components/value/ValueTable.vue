@@ -17,8 +17,8 @@
                 <tr v-for="value in values" v-bind:key="value.id">
                     <td v-for="attribute in attributes" v-bind:key="attribute.id">
                         <!-- If attribute is linked to a list, fetch parent list value -->
-                        <span v-if="attribute.linkedListAttributeId">
-                            <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedListAttributeId.listId + '/values/' + value[attribute.graphQlAttributeName]">
+                        <span v-if="attribute.linkedAttributeId">
+                            <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedAttributeId.listId + '/values/' + value[attribute.graphQlAttributeName]">
                                 {{ value[attribute.graphQlAttributePath][attribute.graphQlLinkedAttributeName] }}
                             </router-link>
                         </span>
@@ -64,16 +64,16 @@ export default {
             graphQLAttributeName = graphQLAttributeName + ' ' + attributes[i]['graphQlAttributeName'];
 
             // If attribute is linked to another list attribute, adjust query to fetch linked attribute value
-            if (attributes[i].linkedListAttributeId) {
+            if (attributes[i].linkedAttributeId) {
                 // Build GraphQL attribute path for the linked attribute
-                let attributePath = attributes[i]['sysAttributeByLinkedListAttributeId']['sysListByListId']['tableName'];
+                let attributePath = attributes[i]['sysAttributeByLinkedAttributeId']['sysListByListId']['tableName'];
                 attributePath = inflection.singularize(attributePath);
                 attributePath = inflection.camelize(attributePath, true);
                 attributePath = attributePath + "By" + inflection.camelize(attributes[i].columnName);
                 attributes[i]['graphQlAttributePath'] = attributePath;
                 
                 // Build GraphQL attribute name for the linked attribute
-                let attributeName = inflection.camelize(attributes[i]['sysAttributeByLinkedListAttributeId']['columnName'], true);
+                let attributeName = inflection.camelize(attributes[i]['sysAttributeByLinkedAttributeId']['columnName'], true);
                 attributes[i]['graphQlLinkedAttributeName'] = attributeName;
 
                 // Add attribute path and name to the query

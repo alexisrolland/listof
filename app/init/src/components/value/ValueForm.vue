@@ -44,7 +44,7 @@
 
                     <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
                     <value-input-integer
-                        v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedListAttributeId"
+                        v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
                         v-bind:attribute="attribute"
                         v-model="value[attribute.graphQlAttributeName]"
                         v-on:changeAttributeValue="getAttributeValue">
@@ -68,7 +68,7 @@
 
                     <!-- Select input, used for attributes which are linked to another list -->
                     <value-select-dropdown
-                        v-if="[6].includes(attribute.dataTypeId) && attribute.linkedListAttributeId"
+                        v-if="[6].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
                         v-bind:attribute="attribute"
                         v-model="value[attribute.graphQlAttributeName]"
                         v-on:changeAttributeValue="getAttributeValue">

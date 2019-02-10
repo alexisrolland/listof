@@ -11,6 +11,17 @@ export const store = new Vuex.Store({
             message: ''
         },
 
+        // Search lists
+        mutationSearchList: `mutation searchList($keyword: String) {
+            searchList(input: {keyword: $keyword}) {
+                sysLists {
+                    id
+                    name
+                    description
+                }
+            }
+        }`,
+
         // Data types queries
         queryGetAllDataTypes: `query getAllDataTypes {
             allSysDataTypes(orderBy: NAME_ASC) {
@@ -75,8 +86,8 @@ export const store = new Vuex.Store({
                         flagUnique
                         dataTypeId
                         sysDataTypeByDataTypeId { name }
-                        linkedListAttributeId
-                        sysAttributeByLinkedListAttributeId {
+                        linkedAttributeId
+                        sysAttributeByLinkedAttributeId {
                             name
                             columnName
                             listId
@@ -125,8 +136,8 @@ export const store = new Vuex.Store({
                 flagUnique
                 dataTypeId
                 sysDataTypeByDataTypeId { name }
-                linkedListAttributeId
-                sysAttributeByLinkedListAttributeId {
+                linkedAttributeId
+                sysAttributeByLinkedAttributeId {
                     name
                     listId
                     sysListByListId { name }
