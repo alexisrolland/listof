@@ -14,6 +14,16 @@ export const queryGetUserGroup = `query getUserGroup($id: Int!) {
     }
 }`;
 
+// Response labels must be formatted according to Treeselect requirements
+export const queryGetUserUserGroups = `query getAllUserGroups {
+    allSysUserGroups(orderBy: NAME_ASC) {
+        nodes {
+            id
+            label:name
+        }
+    }
+}`;
+
 export const mutationCreateUserGroup = `mutation createUserGroup($sysUserGroup: SysUserGroupInput!) {
     createSysUserGroup(input: {sysUserGroup: $sysUserGroup}) {
         sysUserGroup {
@@ -24,14 +34,6 @@ export const mutationCreateUserGroup = `mutation createUserGroup($sysUserGroup: 
 
 export const mutationUpdateUserGroup = `mutation updateUserGroup($id: Int!, $sysUserGroupPatch: SysUserGroupPatch!) {
     updateSysUserGroupById(input: {id: $id, sysUserGroupPatch: $sysUserGroupPatch }) {
-        sysUserGroup {
-            id
-        }
-    }
-}`;
-
-export const mutationDeleteUSer = `mutation deleteUserGroup($id: Int!) {
-    deleteSysUserGroupById(input: {id: $id}){
         sysUserGroup {
             id
         }

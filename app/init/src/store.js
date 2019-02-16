@@ -48,15 +48,16 @@ export const store = new Vuex.Store({
         queryGetUser: UserPayload.queryGetUser,
         mutationCreateUser: UserPayload.mutationCreateUser,
         mutationUpdateUser: UserPayload.mutationUpdateUser,
-        mutationDeleteUSer: UserPayload.mutationDeleteUSer,
         mutationSearchUser: UserPayload.mutationSearchUser,
+        mutationCreateUserGroupUser: UserPayload.mutationCreateUserGroupUser,
+        mutationDeleteUserGroupUser: UserPayload.mutationDeleteUserGroupUser,
 
         // User groups queries and mutations
         queryGetAllUserGroups: UserGroupPayload.queryGetAllUserGroups,
         queryGetUserGroup: UserGroupPayload.queryGetUserGroup,
+        queryGetUserUserGroups: UserGroupPayload.queryGetUserUserGroups,  // Data for user groups drodpdown in user form
         mutationCreateUserGroup: UserGroupPayload.mutationCreateUserGroup,
         mutationUpdateUserGroup: UserGroupPayload.mutationUpdateUserGroup,
-        mutationDeleteUSerGroup: UserGroupPayload.mutationDeleteUSerGroup,
         mutationSearchUserGroup: UserGroupPayload.mutationSearchUserGroup
     }
 });

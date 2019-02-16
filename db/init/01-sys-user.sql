@@ -118,6 +118,10 @@ RETURNS TRIGGER AS $$
 BEGIN
     -- Update permission
     IF OLD.role <> NEW.role THEN
+        -- Revoke permission
+        EXECUTE 'REVOKE ' || OLD.role || ' FROM user_' || OLD.id;
+
+        -- Grant permission
         EXECUTE 'GRANT ' || NEW.role || ' TO user_' || NEW.id;
     END IF;
     RETURN NEW;

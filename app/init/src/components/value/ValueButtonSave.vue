@@ -22,13 +22,23 @@ export default {
                 let graphQlMutation = this.$store.state.mutationUpdateValue.replace(/<GraphQlListName>/g, graphQlListNameUpperCase);
                 graphQlMutation = graphQlMutation.replace(/<graphQlListName>/g, this.graphQlListName);
 
+                // Set undefined properties to null to ensure GraphQL keep them in the payload
+                for (let property in this.value) {
+                    if (this.value.hasOwnProperty(property) && !this.value[property]) {
+                        this.value[property] = null;
+                        console.log(this.value[property]);
+                    }
+                }
+
                 // Build mutation payload
                 let variables = { 'id': this.value.id };
                 variables[this.graphQlListName + 'Patch'] = this.value;
+
                 let payload = {
                     'query': graphQlMutation,
                     'variables': variables
                 };
+
                 this.$http.post(this.$store.state.graphqlUrl, payload).then (
                     function(response){
                         if(response.data.errors){

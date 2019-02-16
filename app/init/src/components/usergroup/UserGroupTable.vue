@@ -16,11 +16,13 @@
                     <td>
                         {{ userGroup.name }}
                     </td>
-                    <td>
+                    <!-- Allow edit user only if user is not postgres -->
+                    <td v-if="userGroup.id!=0">
                         <router-link class="badge badge-secondary" v-bind:to="'/admin/usergroups/' + userGroup.id">
                             Edit User Group
                         </router-link>
                     </td>
+                    <td v-else></td>
                 </tr>
             </tbody>
         </table>

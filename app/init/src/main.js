@@ -29,7 +29,7 @@ const routes = [
     { name: 'view-user', path: '/admin/users', component: ViewUser },
     { name: 'edit-user', path: '/admin/users/:userId', component: EditUser },
     { name: 'view-user-group', path: '/admin/usergroups', component: ViewUserGroup },
-    { name: 'edit-user-group', path: '/admin/usergroups/:userGroupId', component: EditUserGroup }
+    { name: 'edit-user-group', path: '/admin/usergroups/:userGroupId', component: EditUserGroup },
 ];
 
 // Configure router

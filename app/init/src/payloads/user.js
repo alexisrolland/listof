@@ -15,6 +15,13 @@ export const queryGetUser = `query getUser($id: Int!) {
         email
         role
         flagActive
+        sysUserGroupUsersByUserId {
+            nodes {
+                id
+                userGroupId
+                sysUserGroupByUserGroupId { name }
+            }
+        }
     }
 }`;
 
@@ -34,14 +41,6 @@ export const mutationUpdateUser = `mutation updateUser($id: Int!, $sysUserPatch:
     }
 }`;
 
-export const mutationDeleteUSer = `mutation deleteUser($id: Int!) {
-    deleteSysUserById(input: {id: $id}){
-        sysUser {
-            id
-        }
-    }
-}`;
-
 export const mutationSearchUser = `mutation searchUser($keyword: String) {
     searchUser(input: {keyword: $keyword}) {
         sysUsers {
@@ -49,6 +48,22 @@ export const mutationSearchUser = `mutation searchUser($keyword: String) {
             email
             role
             flagActive
+        }
+    }
+}`;
+
+export const mutationCreateUserGroupUser = `mutation createUserGroupUser($sysUserGroupUser: SysUserGroupUserInput!) {
+    createSysUserGroupUser(input: {sysUserGroupUser: $sysUserGroupUser}) {
+        sysUserGroupUser {
+            id
+        }
+    }
+}`;
+
+export const mutationDeleteUserGroupUser = `mutation deleteUserGroupUser($id: Int!) {
+    deleteSysUserGroupUserById(input: {id: $id}){
+        sysUserGroupUser {
+            id
         }
     }
 }`;

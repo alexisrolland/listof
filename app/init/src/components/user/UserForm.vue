@@ -50,10 +50,20 @@
             </label>
         </div>
 
+        <div class="form-group required">
+            <user-user-group
+                v-bind:value="userGroups"
+                v-on:changeUserGroups="getUserGroups">
+            </user-user-group>
+        </div>
+
         <!-- Button Menu -->
         <div>
             <user-button-save
-                v-bind:user="user">
+                v-bind:user="user"
+                v-bind:userGroups="userGroups"
+                v-bind:previousUserGroups="previousUserGroups"
+                v-on:changeUserGroups="updatePreviousUserGroups">
             </user-button-save>
 
             <user-button-close>
@@ -65,22 +75,37 @@
 <script>
 import UserButtonSave from './UserButtonSave.vue';
 import UserButtonClose from './UserButtonClose.vue';
+import UserUserGroup from './UserUserGroup.vue';
 
 export default {
     components: {
         'user-button-save': UserButtonSave,
-        'user-button-close': UserButtonClose
+        'user-button-close': UserButtonClose,
+        'user-user-group': UserUserGroup
     },
     data: function () {
         return {
-            'user': {
-                'flagActive': true
-            },
+            'user': { 'flagActive': true },
+            'userGroups': [],
+            'previousUserGroups': []
         }
     },
     computed: {
         userId() {
             return this.$route.params.userId;
+        }
+    },
+    methods: {
+        getUserGroups(value) {
+            // Get user groups from child component
+            if (value != null) {
+                this.userGroups = value;
+            } else {
+                this.userGroups = null;
+            }
+        },
+        updatePreviousUserGroups(value) {
+            this.previousUserGroups = value;
         }
     },
     created: function () {
@@ -99,6 +124,13 @@ export default {
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
                         this.user = response.data.data.sysUserById;
+                        
+                        // Build user group list
+                        let userGroups = this.user.sysUserGroupUsersByUserId.nodes;
+                        for (let i = 0; i < userGroups.length; i++) {
+                            this.previousUserGroups.push(userGroups[i]['userGroupId']);
+                        }
+                        this.userGroups = this.previousUserGroups;
                     }
                 }
             );

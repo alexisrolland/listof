@@ -8,7 +8,7 @@ CREATE TABLE base.sys_user_group_user (
     id SERIAL PRIMARY KEY
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
-  , user_group_id INTEGER DEFAULT 0 REFERENCES base.sys_user_group(id)
+  , user_group_id INTEGER NOT NULL DEFAULT 0 REFERENCES base.sys_user_group(id)
   , user_id INTEGER NOT NULL REFERENCES base.sys_user(id)
   , CONSTRAINT user_group_user_uniqueness UNIQUE (user_group_id, user_id)
 );
@@ -27,7 +27,7 @@ BEGIN
 END;
 $$ language plpgsql;
 
-COMMENT ON FUNCTION base.create_user_group IS
+COMMENT ON FUNCTION base.grant_user_group IS
 'Function used to automatically grant a user group to a user.';
 
 CREATE TRIGGER user_group_user_grant_user_group AFTER INSERT

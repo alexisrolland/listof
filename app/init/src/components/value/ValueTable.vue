@@ -18,8 +18,9 @@
                     <td v-for="attribute in attributes" v-bind:key="attribute.id">
                         <!-- If attribute is linked to a list, fetch parent list value -->
                         <span v-if="attribute.linkedAttributeId">
-                            <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedAttributeId.listId + '/values/' + value[attribute.graphQlAttributeName]">
-                                {{ value[attribute.graphQlAttributePath][attribute.graphQlLinkedAttributeName] }}
+                            <router-link v-if="value[attribute.graphQlAttributeName]"
+                                v-bind:to="'/lists/' + attribute.sysAttributeByLinkedAttributeId.listId + '/values/' + value[attribute.graphQlAttributeName]">
+                                    {{ value[attribute.graphQlAttributePath][attribute.graphQlLinkedAttributeName] }}
                             </router-link>
                         </span>
                         <span v-else>

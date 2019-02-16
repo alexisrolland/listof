@@ -1,12 +1,12 @@
 <template>
     <div class="form-group">
-        <label for="linkedAttribute" class="col-form-label">
-            Link With List:
+        <label for="userGroup" class="col-form-label">
+            User Groups:
         </label>
-        <treeselect placeholder="Select list attribute"
+        <treeselect placeholder="Select user group"
             v-model="selectedValue"
             v-bind:options="options"
-            v-bind:multiple="false"
+            v-bind:multiple="true"
             v-bind:disable-branch-nodes="true"/>
     </div>
 </template>
@@ -20,7 +20,7 @@ export default {
         'treeselect': Treeselect
     },
     props: {
-        value: Number
+        value: Array
     },
     data() {
         return {
@@ -33,18 +33,18 @@ export default {
             this.selectedValue = arg;
         },
         selectedValue(arg) {
-            this.$emit("changeLinkedAttribute", arg);
+            this.$emit("changeUserGroups", arg);
         }
     },
     created: function () {
-        let payload = { 'query': this.$store.state.queryGetLinkedLists };
+        let payload = { 'query': this.$store.state.queryGetUserUserGroups };
         this.$http.post(this.$store.state.graphqlUrl, payload).then (
             function(response){
                 if(response.data.errors){
                     this.$store.state.errorObject.flag = true;
                     this.$store.state.errorObject.message = response.data.errors[0].message;
                 } else {
-                    this.options = response.data.data.allSysLists.nodes;
+                    this.options = response.data.data.allSysUserGroups.nodes;
                 }
             }
         );

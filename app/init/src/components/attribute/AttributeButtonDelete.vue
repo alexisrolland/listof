@@ -24,7 +24,7 @@ export default {
                     if(response.data.errors){
                         this.$store.state.errorObject.flag = true;
                         this.$store.state.errorObject.message = response.data.errors[0].message;
-                    } else{
+                    } else {
                         this.$router.push({
                             name: 'edit-list',
                             params: {
