@@ -1,23 +1,16 @@
 <template>
-    <button type="button" class="btn btn-secondary" v-on:click="viewValue">
-        View Values
-    </button>
+    <!-- Use router-link rather than v-on:click to allow user to open page in new window -->
+    <router-link v-bind:to="listId + '/values'">
+        <button type="button" class="btn btn-secondary">
+            View Values
+        </button>
+    </router-link>
 </template>
 
 <script>
 export default {
     props: {
         listId: Number
-    },
-    methods: {
-        viewValue() {
-            this.$router.push({
-                name: 'view-list-value',
-                params: {
-                    listId: this.listId
-                }
-            });
-        }
-   }
+    }
 }
 </script>

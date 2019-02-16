@@ -37,7 +37,21 @@ CREATE TABLE base.sys_user (
 );
 
 COMMENT ON TABLE base.sys_user IS
-'Users information and their authentication methods.';
+'Users information.';
+
+
+
+/*Create function to search users*/
+CREATE OR REPLACE FUNCTION base.search_user(keyword TEXT)
+RETURNS SETOF base.sys_user AS $$
+    SELECT a.*
+    FROM base.sys_user a
+    WHERE a.email ILIKE ('%' || keyword || '%')
+    ORDER BY a.email ASC
+$$ language sql;
+
+COMMENT ON FUNCTION base.search_user IS
+'Function used to search users based on keywords contained in their email.';
 
 
 

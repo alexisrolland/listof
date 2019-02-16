@@ -5,13 +5,15 @@ import App from './App.vue';
 import { store } from './store';
 
 // Custom components
-import Home from './components/Home.vue';
+import ViewList from './components/ViewList.vue';
 import EditList from './components/EditList.vue';
 import EditListAttribute from './components/EditListAttribute.vue';
 import ViewListValue from './components/ViewListValue.vue';
 import EditListValue from './components/EditListValue.vue';
-import AdminUser from './components/AdminUser.vue';
-import AdminUserGroup from './components/AdminUserGroup.vue';
+import ViewUser from './components/ViewUser.vue';
+import EditUser from './components/EditUser.vue';
+import ViewUserGroup from './components/ViewUserGroup.vue';
+import EditUserGroup from './components/EditUserGroup.vue';
 
 // Tell Vue to use libraries
 Vue.use(VueResource);
@@ -19,13 +21,15 @@ Vue.use(VueRouter);
 
 // Declare application URLs
 const routes = [
-    { name: 'home', path: '/', component: Home },
+    { name: 'home', path: '/', component: ViewList },
     { name: 'edit-list', path: '/lists/:listId', component: EditList },
     { name: 'edit-list-attribute', path: '/lists/:listId/attributes/:attributeId', component: EditListAttribute },
     { name: 'view-list-value', path: '/lists/:listId/values', component: ViewListValue },
     { name: 'edit-list-value', path: '/lists/:listId/values/:valueId', component: EditListValue },
-    { name: 'admin-user', path: '/admin/users', component: AdminUser },
-    { name: 'admin-user-group', path: '/admin/usergroups', component: AdminUserGroup }
+    { name: 'view-user', path: '/admin/users', component: ViewUser },
+    { name: 'edit-user', path: '/admin/users/:userId', component: EditUser },
+    { name: 'view-user-group', path: '/admin/usergroups', component: ViewUserGroup },
+    { name: 'edit-user-group', path: '/admin/usergroups/:userGroupId', component: EditUserGroup }
 ];
 
 // Configure router

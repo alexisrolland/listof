@@ -18,6 +18,20 @@ COMMENT ON TABLE base.sys_user_group IS
 
 
 
+/*Create function to search user groups*/
+CREATE OR REPLACE FUNCTION base.search_user_group(keyword TEXT)
+RETURNS SETOF base.sys_user_group AS $$
+    SELECT a.*
+    FROM base.sys_user_group a
+    WHERE a.name ILIKE ('%' || keyword || '%')
+    ORDER BY a.name ASC
+$$ language sql;
+
+COMMENT ON FUNCTION base.search_user_group IS
+'Function used to search user groups based on keywords contained in their name.';
+
+
+
 /*Triggers on delete*/
 CREATE TRIGGER user_group_delete_user_group_user BEFORE DELETE
 ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE

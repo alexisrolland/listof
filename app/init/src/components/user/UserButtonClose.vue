@@ -1,15 +1,15 @@
 <template>
-    <button type="button" class="btn btn-secondary" v-on:click="gotoUser">
-        Users
+    <button type="button" class="btn btn-outline-secondary" v-on:click="close">
+        Close
     </button>
 </template>
 
 <script>
 export default {
    methods: {
-        gotoUser() {
+        close() {
             this.$router.push({
-                name: 'admin-user'
+                name: 'view-user'
             });
         }
    }

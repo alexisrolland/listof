@@ -7,19 +7,19 @@
         </span>
 
         <form class="form-inline">
-            <header-button-create></header-button-create>
+            <list-button-create></list-button-create>
             <header-button-admin></header-button-admin>
         </form>
     </nav>
 </template>
 
 <script>
-import HeaderButtonCreate from './HeaderButtonCreate.vue';
+import ListButtonCreate from '../list/ListButtonCreate.vue';
 import HeaderButtonAdmin from './HeaderButtonAdmin.vue';
 
 export default {
     components: {
-        'header-button-create': HeaderButtonCreate,
+        'list-button-create': ListButtonCreate,
         'header-button-admin': HeaderButtonAdmin
     }
 }
