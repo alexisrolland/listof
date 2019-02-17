@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as Session from './payloads/session'
 import * as DataTypePayload from './payloads/datatype'
 import * as ListPayload from './payloads/list'
 import * as AttributePayload from './payloads/attribute'
@@ -16,6 +17,9 @@ export const store = new Vuex.Store({
             flag: false,
             message: ''
         },
+
+        // Authenticate user
+        mutationAuthenticateUser: Session.mutationAuthenticateUser,
 
         // Data types queries
         queryGetAllDataTypes: DataTypePayload.queryGetAllDataTypes,

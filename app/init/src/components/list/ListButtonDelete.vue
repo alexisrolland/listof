@@ -25,7 +25,7 @@ export default {
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
                         this.$router.push({
-                            name: 'home'
+                            name: 'view-list'
                         });
                     }
                 }
