@@ -11,7 +11,7 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     state: {
-        graphqlUrl: 'https://localhost/listof/api/v1/graphql',
+        graphqlUrl: '/listof/api/v1/graphql',
         errorObject: {
             flag: false,
             message: ''
