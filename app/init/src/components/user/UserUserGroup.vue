@@ -1,39 +1,59 @@
 <template>
-    <div class="form-group">
-        <label for="userGroup" class="col-form-label">
-            User Groups:
-        </label>
-        <treeselect placeholder="Select user group"
-            v-model="selectedValue"
-            v-bind:options="options"
-            v-bind:multiple="true"
-            v-bind:disable-branch-nodes="true"/>
+    <div>
+        <h2 class="mt-5">User Groups</h2>
+
+        <div class="form-group">
+            <div class="w-50 float-left mr-2 mb-4">
+                <treeselect
+                    placeholder="Select user groups"
+                    v-model="userGroups"
+                    v-bind:options="options"
+                    v-bind:multiple="true"
+                    v-bind:disable-branch-nodes="true"/>
+            </div>
+            <user-button-add-user-group
+                class="float-left"
+                v-bind:user="user"
+                v-bind:userGroups="userGroups"
+                v-on:addUserGroupUser="addUserGroupUser">
+            </user-button-add-user-group>
+        </div>
+        
+        <user-user-group-table
+            v-if="user.sysUserGroupUsersByUserId"
+            v-bind:user="user"
+            v-on:removeUserGroupUser="removeUserGroupUser">
+        </user-user-group-table>
     </div>
 </template>
 
 <script>
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import UserButtonAddUserGroup from './UserButtonAddUserGroup.vue';
+import UserUserGroupTable from './UserUserGroupTable.vue';
 
 export default {
     components: {
-        'treeselect': Treeselect
+        'treeselect': Treeselect,
+        'user-button-add-user-group': UserButtonAddUserGroup,
+        'user-user-group-table': UserUserGroupTable
     },
     props: {
-        value: Array
+        user: Object
     },
     data() {
         return {
-            'selectedValue': this.value,
+            'userGroups': [],
             'options': []
         }
     },
-    watch: {
-        value(arg) {
-            this.selectedValue = arg;
+    methods: {
+        addUserGroupUser(userGroupUser) {
+            this.$emit("addUserGroupUser", userGroupUser);
         },
-        selectedValue(arg) {
-            this.$emit("changeUserGroups", arg);
+        removeUserGroupUser(id) {
+            this.$emit("removeUserGroupUser", id);
         }
     },
     created: function () {

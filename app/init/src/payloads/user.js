@@ -56,6 +56,8 @@ export const mutationCreateUserGroupUser = `mutation createUserGroupUser($sysUse
     createSysUserGroupUser(input: {sysUserGroupUser: $sysUserGroupUser}) {
         sysUserGroupUser {
             id
+            userGroupId
+            sysUserGroupByUserGroupId { name }
         }
     }
 }`;

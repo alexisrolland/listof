@@ -50,24 +50,19 @@
             </label>
         </div>
 
-        <div class="form-group required">
-            <user-user-group
-                v-bind:value="userGroups"
-                v-on:changeUserGroups="getUserGroups">
-            </user-user-group>
-        </div>
-
         <!-- Button Menu -->
         <div>
-            <user-button-save
-                v-bind:user="user"
-                v-bind:userGroups="userGroups"
-                v-bind:previousUserGroups="previousUserGroups"
-                v-on:changeUserGroups="updatePreviousUserGroups">
-            </user-button-save>
+            <user-button-save v-bind:user="user"></user-button-save>
+            <user-button-close></user-button-close>
+        </div>
 
-            <user-button-close>
-            </user-button-close>
+        <div class="form-group required">
+            <user-user-group
+                v-if="user.id"
+                v-bind:user="user"
+                v-on:addUserGroupUser="addUserGroupUser"
+                v-on:removeUserGroupUser="removeUserGroupUser">
+            </user-user-group>
         </div>
     </div>
 </template>
@@ -85,9 +80,7 @@ export default {
     },
     data: function () {
         return {
-            'user': { 'flagActive': true },
-            'userGroups': [],
-            'previousUserGroups': []
+            'user': { 'flagActive': true }
         }
     },
     computed: {
@@ -96,16 +89,16 @@ export default {
         }
     },
     methods: {
-        getUserGroups(value) {
-            // Get user groups from child component
-            if (value != null) {
-                this.userGroups = value;
-            } else {
-                this.userGroups = null;
-            }
+        addUserGroupUser(userGroupUser) {
+            this.user.sysUserGroupUsersByUserId.nodes.push(userGroupUser);
         },
-        updatePreviousUserGroups(value) {
-            this.previousUserGroups = value;
+        removeUserGroupUser(id) {
+            let relationships = this.user.sysUserGroupUsersByUserId.nodes;
+            for (let i = 0; i < relationships.length; i++) {
+                if(relationships[i]['id'] == id) {
+                    this.user.sysUserGroupUsersByUserId.nodes.splice(i, 1);
+                }
+            }
         }
     },
     created: function () {
@@ -124,13 +117,6 @@ export default {
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
                         this.user = response.data.data.sysUserById;
-                        
-                        // Build user group list
-                        let userGroups = this.user.sysUserGroupUsersByUserId.nodes;
-                        for (let i = 0; i < userGroups.length; i++) {
-                            this.previousUserGroups.push(userGroups[i]['userGroupId']);
-                        }
-                        this.userGroups = this.previousUserGroups;
                     }
                 }
             );
