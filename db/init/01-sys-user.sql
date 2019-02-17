@@ -28,7 +28,7 @@ CREATE TABLE base.sys_user (
     id SERIAL PRIMARY KEY
   , email TEXT NOT NULL UNIQUE
   , password TEXT
-  , role TEXT NOT NULL
+  , role TEXT NOT NULL DEFAULT 'standard'
   , flag_active BOOLEAN DEFAULT TRUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
