@@ -8,6 +8,32 @@ CREATE SCHEMA base;
 
 
 
+/*Install pgcrypto exstension to hash user passwords*/
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+
+
+/*Create function to get Id of the current user based on his database user role*/
+/*This is used to update the created_by_id and updated_by_id columns*/
+CREATE OR REPLACE FUNCTION base.get_current_user_id()
+RETURNS INTEGER AS $$
+DECLARE
+    user_id INTEGER;
+BEGIN
+    IF CURRENT_USER LIKE 'user_%' THEN
+      SELECT SUBSTRING(CURRENT_USER, 6) INTO user_id;
+    ELSE
+      SELECT 0 INTO user_id;
+    END IF;
+    RETURN user_id;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.get_current_user_id IS
+'Function used to get Id of the current user based on his database user role.';
+
+
+
 /*Create function to update updated_date column*/
 CREATE OR REPLACE FUNCTION base.update_updated_date()
 RETURNS TRIGGER AS $$

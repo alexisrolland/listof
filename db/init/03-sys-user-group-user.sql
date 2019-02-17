@@ -30,10 +30,6 @@ $$ language plpgsql;
 COMMENT ON FUNCTION base.grant_user_group IS
 'Function used to automatically grant a user group to a user.';
 
-CREATE TRIGGER user_group_user_grant_user_group AFTER INSERT
-ON base.sys_user_group_user FOR EACH ROW EXECUTE PROCEDURE
-base.grant_user_group();
-
 
 
 /*Create function to revoke user group role to user*/
@@ -48,6 +44,16 @@ $$ language plpgsql;
 COMMENT ON FUNCTION base.revoke_user_group IS
 'Function used to automatically revoke a user group from a user.';
 
+
+
+/*Triggers on insert*/
+CREATE TRIGGER user_group_user_grant_user_group AFTER INSERT
+ON base.sys_user_group_user FOR EACH ROW EXECUTE PROCEDURE
+base.grant_user_group();
+
+
+
+/*Triggers on delete*/
 CREATE TRIGGER user_group_user_revoke_user_group BEFORE DELETE
 ON base.sys_user_group_user FOR EACH ROW EXECUTE PROCEDURE
 base.revoke_user_group();

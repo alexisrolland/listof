@@ -32,24 +32,6 @@ COMMENT ON FUNCTION base.search_user_group IS
 
 
 
-/*Triggers on delete*/
-CREATE TRIGGER user_group_delete_user_group_user BEFORE DELETE
-ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
-base.delete_children('user_group_user', 'user_group_id');
-
-
-
-/*Triggers on update*/
-CREATE TRIGGER user_group_update_updated_date BEFORE UPDATE
-ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
-base.update_updated_date();
-
-CREATE TRIGGER user_group_update_updated_by_id BEFORE UPDATE
-ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
-base.update_updated_by_id();
-
-
-
 /*Create function to create database user group in pg_roles table when user group is created in user_group table*/
 CREATE OR REPLACE FUNCTION base.create_user_group()
 RETURNS TRIGGER AS $$
@@ -61,10 +43,6 @@ $$ language plpgsql;
 
 COMMENT ON FUNCTION base.create_user_group IS
 'Function used to automatically create database user group in pg_roles table when user group is created in user_group table.';
-
-CREATE TRIGGER user_group_create_user_group AFTER INSERT
-ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
-base.create_user_group();
 
 
 
@@ -80,9 +58,34 @@ $$ language plpgsql;
 COMMENT ON FUNCTION base.delete_user_group IS
 'Function used to automatically delete database user group in pg_roles table when user group is deleted in user_group table.';
 
+
+
+/*Triggers on insert*/
+CREATE TRIGGER user_group_create_user_group AFTER INSERT
+ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
+base.create_user_group();
+
+
+
+/*Triggers on update*/
+CREATE TRIGGER user_group_update_updated_date BEFORE UPDATE
+ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
+base.update_updated_date();
+
+CREATE TRIGGER user_group_update_updated_by_id BEFORE UPDATE
+ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
+base.update_updated_by_id();
+
+
+
+/*Triggers on delete*/
 CREATE TRIGGER user_group_delete_user_group AFTER DELETE
 ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
 base.delete_user_group();
+
+CREATE TRIGGER user_group_delete_user_group_user BEFORE DELETE
+ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
+base.delete_children('user_group_user', 'user_group_id');
 
 
 
