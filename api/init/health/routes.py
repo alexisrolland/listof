@@ -2,13 +2,14 @@ import os
 from flask import jsonify
 from flask_restplus import Resource, Namespace
 
-# pylint: disable=unused-variable
+
 def register_health(namespace: Namespace):
     """Method used to register the health check namespace and endpoint."""
 
     @namespace.route('/health')
     @namespace.doc()
     class Health(Resource):
+
         def get(self):
             """
             Get API health status
@@ -16,6 +17,6 @@ def register_health(namespace: Namespace):
             """
             is_debug = os.environ.get('FLASK_DEBUG')
             mode = 'debug' if is_debug else 'production'
-            message = {'message': f'ListOf API running in {mode} mode'}
+            message = {'message': f'ListOf API is running in {mode} mode'}
 
             return jsonify(message)

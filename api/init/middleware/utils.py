@@ -1,10 +1,10 @@
 import requests
 from graphql.parser import GraphQLParser
-from proxy.exceptions import RequestException
+from middleware.exceptions import RequestException
 
 
 def validate_graphql_request(payload: str):
-    """Method to parse http request payload verify it is a valid GraphQL query or mutation and return a GraphQL document."""
+    """Method to parse http request payload to verify if it is a valid GraphQL query or mutation and return a GraphQL document."""
 
     try:
         return GraphQLParser().parse(payload)
@@ -12,11 +12,16 @@ def validate_graphql_request(payload: str):
         raise RequestException(400, 'Invalid GraphQL payload.')
 
 
-def execute_graphql_request(payload: dict):
+def execute_graphql_request(payload: dict, *graphql_headers: tuple):
     """Method to execute http request on the GraphQL API."""
 
-    url = 'http://graphql:5433/graphql'  # Should be moved to config file
+    # Build headers
     headers = {'Content-Type': 'application/json'}
+    if graphql_headers != ():
+        print(graphql_headers)
+        headers['Authorization'] = graphql_headers[0]['Authorization']
+
+    url = 'http://graphql:5433/graphql'
     response = requests.post(url, headers=headers, json=payload)
     status = response.status_code
     data = response.json()

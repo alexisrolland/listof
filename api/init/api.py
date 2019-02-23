@@ -5,7 +5,7 @@ from flask import Blueprint, Flask, url_for
 from flask_cors import CORS
 from flask_restplus import Api
 from health.routes import register_health
-from proxy.routes import register_graphql
+from middleware.routes import register_graphql
 from security.routes import register_security
 
 log = logging.getLogger(__name__)
@@ -18,9 +18,6 @@ logging.basicConfig(
 # Create flask app and enable cross origin resource sharing
 app = Flask(__name__)
 CORS(app)
-
-# Get a cryptographically secure random sequence of bytes to be used as the app's secret_key
-app.secret_key = os.urandom(24)
 
 # This is required to fix swagger UI not loading issue due to https
 @property
@@ -51,6 +48,6 @@ health = api.namespace('Health', path='/v1')
 security = api.namespace('Security', path='/v1')
 
 # Register all API resources
-register_health(health)
 register_graphql(graphql, api)
+register_health(health)
 register_security(security, api)
