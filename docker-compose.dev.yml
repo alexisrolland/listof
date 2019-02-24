@@ -14,14 +14,6 @@ services:
     ports:
       - 5433:5433
 
-  api:
-    volumes:
-      - ./api/init:/srv/api/
-    expose:
-      - 5434
-    environment:
-      FLASK_DEBUG: 1
-
   app:
     volumes:
       - ./app/init/:/srv/app

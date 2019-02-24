@@ -34,31 +34,6 @@ services:
       "--cors",
       "--watch"]
 
-  api:
-    container_name: listof-api
-    restart: always
-    image: listof-api
-    build:
-      context: ./api
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    env_file:
-        - ./.env
-    environment:
-      FLASK_APP: api.py
-      FLASK_RUN_PORT: 5434
-      OAUTHLIB_INSECURE_TRANSPORT: 1
-      TOKEN_ISSUER: ${HOST_NAME}
-      AFTER_LOGIN_REDIRECT: ${HOST_NAME}
-    depends_on:
-      - graphql
-    networks:
-      - default
-    command: ["flask", "run", "--host=0.0.0.0"]
-    secrets:
-      - public_key
-      - private_key
-
   app:
     container_name: listof-app
     restart: always
