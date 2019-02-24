@@ -44,9 +44,10 @@ Data types, Users, User groups
 */
 CREATE ROLE admin;
 GRANT advanced TO admin;
+GRANT admin TO user_0;
 
 /*base schema*/
-GRANT INSERT, UPDATE, DELETE, ON base.sys_user TO admin;
-GRANT INSERT, UPDATE, DELETE, ON base.sys_user_group TO admin;
-GRANT INSERT, UPDATE, DELETE, ON base.sys_user_group_user TO admin;
-GRANT INSERT, UPDATE, DELETE, ON base.sys_data_type TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_user TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_user_group TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_user_group_user TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_data_type TO admin;

@@ -47,6 +47,11 @@ $$ language plpgsql;
 COMMENT ON FUNCTION base.hash_password IS
 'Function used to hash password when creating a user.';
 
+/*Triggers must be created before inserting default user below to ensure password is hashed*/
+CREATE TRIGGER user_hash_password BEFORE INSERT
+ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
+base.hash_password();
+
 
 
 /*Create composite type to generate JWT*/
@@ -87,10 +92,9 @@ COMMENT ON FUNCTION base.authenticate_user IS
 
 /*Create default user*/
 /*User is required to be able to create the default user group later*/
-/*Must be created before other triggers to avoid conflicts in pg_roles table*/
-INSERT INTO base.sys_user (id, email, role) VALUES
-(0, 'postgres', 'admin');
-
+/*Must be created before other triggers to avoid conflicts*/
+INSERT INTO base.sys_user (id, email, password, role) VALUES (0, 'admin', 'admin', 'admin');
+CREATE ROLE user_0;
 
 
 /*Create function to update updated_by_id column*/
@@ -150,10 +154,6 @@ COMMENT ON FUNCTION base.update_user_permission IS
 
 
 /*Triggers on insert*/
-CREATE TRIGGER user_hash_password BEFORE INSERT
-ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
-base.hash_password();
-
 CREATE TRIGGER user_create_user AFTER INSERT
 ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
 base.create_user();

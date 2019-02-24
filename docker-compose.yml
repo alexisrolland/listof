@@ -48,7 +48,7 @@ services:
       - graphql
     networks:
       - default
-    command: ["npm", "run", "build"]
+    command: ["npm", "run", "dev"]
 
   nginx:
     container_name: listof-nginx

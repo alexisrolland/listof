@@ -12,7 +12,7 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     state: {
-        graphqlUrl: 'http://localhost:5433/graphql', //'/listof/api/v1/graphql',
+        graphqlUrl: '/graphql',
         errorObject: {
             flag: false,
             message: ''
