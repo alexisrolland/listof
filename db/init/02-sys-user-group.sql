@@ -91,3 +91,4 @@ base.delete_children('user_group_user', 'user_group_id');
 
 /*Create default user group*/
 INSERT INTO base.sys_user_group (id, name) VALUES (0, 'Public');
+GRANT user_group_0 TO user_0;
