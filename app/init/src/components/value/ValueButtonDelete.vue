@@ -26,7 +26,8 @@ export default {
                 'query': this.mutationDeleteValue,
                 'variables': { 'id': this.valueId }
             };
-            this.$http.post(this.$store.state.graphqlUrl, payload).then (
+            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
                         this.$store.state.errorObject.flag = true;

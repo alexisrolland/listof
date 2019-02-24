@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <header-bar></header-bar>
+        <header-bar v-bind:isAuthenticated="isAuthenticated"></header-bar>
         <error-message></error-message>
 
         <div class="container-fluid">
@@ -20,11 +20,23 @@ export default {
     components: {
         'header-bar': HeaderBar,
         'error-message': ErrorMessage
+    },
+    computed: {
+        isAuthenticated() {
+            if (this.$session.exists()) {
+                this.$store.state.isAuthenticated = true;
+            }
+            else {
+                this.$store.state.isAuthenticated = false;
+            }
+            return this.$store.state.isAuthenticated
+        }
     }
 }
 </script>
 
 <style>
+/*Style for required fields*/
 .form-group.required .col-form-label:after { content:"*"; color:OrangeRed; }
 .form-control::-webkit-input-placeholder { color: #bfbfbf; }  /* WebKit, Blink, Edge */
 .form-control:-moz-placeholder { color: #bfbfbf; }  /* Mozilla Firefox 4 to 18 */

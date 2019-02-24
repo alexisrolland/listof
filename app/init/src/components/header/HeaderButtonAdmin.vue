@@ -1,6 +1,6 @@
 <template>
     <div class="dropdown">
-        <button class="btn btn-outline-secondary dropdown-toggle ml-1"
+        <button class="btn btn-secondary dropdown-toggle ml-1"
             id="admin"
             type="button"
             data-toggle="dropdown"

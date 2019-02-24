@@ -7,8 +7,10 @@
         </span>
 
         <form class="form-inline">
-            <list-button-create></list-button-create>
-            <header-button-admin></header-button-admin>
+            <list-button-create v-if="isAuthenticated"></list-button-create>
+            <header-button-admin v-if="isAuthenticated"></header-button-admin>
+            <header-button-login v-if="!isAuthenticated"></header-button-login>
+            <header-button-logout v-if="isAuthenticated"></header-button-logout>
         </form>
     </nav>
 </template>
@@ -16,11 +18,18 @@
 <script>
 import ListButtonCreate from '../list/ListButtonCreate.vue';
 import HeaderButtonAdmin from './HeaderButtonAdmin.vue';
+import HeaderButtonLogin from './HeaderButtonLogin.vue';
+import HeaderButtonLogout from './HeaderButtonLogout.vue';
 
 export default {
     components: {
         'list-button-create': ListButtonCreate,
-        'header-button-admin': HeaderButtonAdmin
+        'header-button-admin': HeaderButtonAdmin,
+        'header-button-login': HeaderButtonLogin,
+        'header-button-logout': HeaderButtonLogout
+    },
+    props: {
+        isAuthenticated: Boolean
     }
 }
 </script>

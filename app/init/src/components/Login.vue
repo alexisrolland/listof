@@ -35,8 +35,7 @@
 export default {
     data: function () {
         return {
-            'credentials': {},
-            'user': {}
+            'credentials': {}
         }
     },
     methods: {
@@ -54,14 +53,16 @@ export default {
                         this.$store.state.errorObject.flag = true;
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
-                        this.user = response.data.data.authenticateUser.sysUser;
-                        if (this.user) {
+                        let token = response.data.data.authenticateUser.sysToken
+                        if (token) {
+                            this.$session.set('jwt', token);
+                            this.$store.state.isAuthenticated = true;
                             this.$router.push({
                                 name: 'home'
                             });
                         } else {
                             this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = 'Login failed.';
+                            this.$store.state.errorObject.message = 'Authentication failed. Login or password incorrect or user account has been inactivated.';
                         }
                     }
                 }

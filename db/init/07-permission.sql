@@ -3,52 +3,51 @@
 
 
 
-/*Create standard user role*/
+/*
+Create standard user role
+The standard role is the default role for all users who wish to manage values of a list.
+It grants permissions to read, write and delete records on the tables created for each list.
+*/
 CREATE ROLE standard;
+
+/*base schema*/
 GRANT USAGE ON SCHEMA base TO standard;
-GRANT SELECT ON base.sys_user TO standard;
-GRANT SELECT ON base.sys_user_group TO standard;
-GRANT SELECT ON base.sys_user_group_user TO standard;
-GRANT SELECT ON base.sys_data_type TO standard;
-GRANT SELECT ON base.sys_list TO standard;
-GRANT SELECT ON base.sys_attribute TO standard;
+GRANT SELECT ON ALL TABLES IN SCHEMA base TO standard;
+
+/*public schema*/
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO standard;
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON ALL TABLES IN SCHEMA public TO standard;
 
 
 
-/*Create standard user role*/
+/*
+Create advanced user role
+The advanced role is the role used for all users who wish to create and manage lists definition and structure.
+In addition to the permissions of the standard role, it grants permissions to create, update and delete lists as well as their attributes.
+*/
 CREATE ROLE advanced;
 GRANT standard TO advanced;
-GRANT UPDATE, INSERT, DELETE ON base.sys_list TO advanced;
-GRANT UPDATE, INSERT, DELETE ON base.sys_attribute TO advanced;
+
+/*base schema*/
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA base TO advanced;
+GRANT REFERENCES ON ALL TABLES IN SCHEMA base TO advanced;
+GRANT INSERT, UPDATE, DELETE ON base.sys_list TO advanced;
+GRANT INSERT, UPDATE, DELETE ON base.sys_attribute TO advanced;
 
 
 
-/*Create admin user role*/
+/*
+Create admin user role
+The admin role is used to manage application users and configuration.
+It grants the same permissions as the advanced role, plus the permissions to read, write and delete the following objects:
+Data types, Users, User groups
+*/
 CREATE ROLE admin;
 GRANT advanced TO admin;
-GRANT UPDATE, INSERT, DELETE ON base.sys_user TO admin;
-GRANT UPDATE, INSERT, DELETE ON base.sys_user_group TO admin;
-GRANT UPDATE, INSERT, DELETE ON base.sys_user_group_user TO admin;
-GRANT UPDATE, INSERT, DELETE ON base.sys_data_type TO admin;
+GRANT admin TO user_0;
 
-
-
-/*Create row level security for lists*/
-ALTER TABLE base.sys_list ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY user_group_list_standard on base.sys_list
-TO standard USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));
-
-CREATE POLICY user_group_list_advanced on base.sys_list
-TO advanced USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));
-
-
-
-/*Create row level security for attribute*/
-ALTER TABLE base.sys_attribute ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY user_group_attribute_standard on base.sys_attribute
-TO standard USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));
-
-CREATE POLICY user_group_attribute_advanced on base.sys_attribute
-TO advanced USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));
+/*base schema*/
+GRANT INSERT, UPDATE, DELETE ON base.sys_user TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_user_group TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_user_group_user TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_data_type TO admin;

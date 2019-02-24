@@ -110,7 +110,8 @@ export default {
                     'id': this.userId
                 }
             };
-            this.$http.post(this.$store.state.graphqlUrl, payload).then (
+            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
                         this.$store.state.errorObject.flag = true;
