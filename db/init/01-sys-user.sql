@@ -49,14 +49,36 @@ COMMENT ON FUNCTION base.hash_password IS
 
 
 
+/*Create composite type to generate JWT*/
+CREATE TYPE base.sys_token AS (
+    email TEXT,
+    role TEXT,
+    aud TEXT  --audience
+);
+
 /*Create function to authenticate users*/
 CREATE OR REPLACE FUNCTION base.authenticate_user(user_email TEXT, user_password TEXT)
-RETURNS base.sys_user AS $$
+RETURNS base.sys_token AS $$
+DECLARE
+    user_account base.sys_user;
+BEGIN
     SELECT a.*
+    INTO user_account
     FROM base.sys_user a
     WHERE a.email = user_email
-    AND a.password = crypt(user_password, a.password)
-$$ language sql;
+    AND flag_active = true;
+
+    IF user_account.password = crypt(user_password, user_account.password) THEN
+    RETURN (
+        user_account.email,  --email
+        'user_' || user_account.id,  --role
+        'postgraphile'  --audience
+    )::base.sys_token;
+    ELSE
+        RETURN NULL;
+    END IF;
+END;
+$$ language plpgsql strict security definer;
 
 COMMENT ON FUNCTION base.authenticate_user IS
 'Function used to authenticate users.';

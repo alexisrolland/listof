@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueResource  from 'vue-resource';
 import VueRouter from 'vue-router';
+import VueSession from 'vue-session';
 import App from './App.vue';
 import { store } from './store';
 
@@ -19,6 +20,7 @@ import ViewUserGroup from './components/ViewUserGroup.vue';
 // Tell Vue to use libraries
 Vue.use(VueResource);
 Vue.use(VueRouter);
+Vue.use(VueSession);
 
 // Declare application URLs
 const routes = [

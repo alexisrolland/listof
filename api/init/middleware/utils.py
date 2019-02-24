@@ -18,8 +18,7 @@ def execute_graphql_request(payload: dict, *graphql_headers: tuple):
     # Build headers
     headers = {'Content-Type': 'application/json'}
     if graphql_headers != ():
-        print(graphql_headers)
-        headers['Authorization'] = graphql_headers[0]['Authorization']
+        headers['authorization'] = graphql_headers[0]['authorization']
 
     url = 'http://graphql:5433/graphql'
     response = requests.post(url, headers=headers, json=payload)

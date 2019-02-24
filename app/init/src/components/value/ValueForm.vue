@@ -153,7 +153,8 @@ export default {
             'query': this.$store.state.queryGetList,
             'variables': { 'id': this.listId }
         };
-        this.$http.post(this.$store.state.graphqlUrl, payloadList).then (
+        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        this.$http.post(this.$store.state.graphqlUrl, payloadList, {headers}).then (
             function(response){
                 if(response.data.errors){
                     this.$store.state.errorObject.flag = true;
@@ -192,7 +193,8 @@ export default {
                             'query': graphQlQuery,
                             'variables': { 'id': this.valueId }
                         };
-                        this.$http.post(this.$store.state.graphqlUrl, payloadValue).then (
+                        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                        this.$http.post(this.$store.state.graphqlUrl, payloadValue, {headers}).then (
                             function(response){
                                 if(response.data.errors){
                                     this.$store.state.errorObject.flag = true;

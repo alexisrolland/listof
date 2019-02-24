@@ -12,7 +12,7 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     state: {
-        graphqlUrl: '/listof/api/v1/graphql',
+        graphqlUrl: 'http://localhost:5433/graphql', //'/listof/api/v1/graphql',
         errorObject: {
             flag: false,
             message: ''
@@ -20,6 +20,7 @@ export const store = new Vuex.Store({
 
         // Authenticate user
         mutationAuthenticateUser: Session.mutationAuthenticateUser,
+        isAuthenticated: false,
 
         // Data types queries
         queryGetAllDataTypes: DataTypePayload.queryGetAllDataTypes,

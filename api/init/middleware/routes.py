@@ -10,7 +10,7 @@ def register_graphql(namespace: Namespace, api: Api):
 
     # Create expected headers and payload
     headers = api.parser()
-    headers.add_argument('Authorization', type=str, location='headers', help='Valid token.')
+    headers.add_argument('authorization', type=str, location='headers', help='Valid token.')
     payload = api.model('Payload', {'query': fields.String(
         required=True,
         description='GraphQL query or mutation',
@@ -27,24 +27,17 @@ def register_graphql(namespace: Namespace, api: Api):
             Use this endpoint to send http request to the GraphQL API.
             """
             try:
-                # Verify is token is valid
-                token = headers.parse_args().Authorization
-                if is_token_valid(token):
+                # Create expected headers and payload for PostGraphile
+                token = headers.parse_args().authorization
+                graphql_headers = {'authorization': f'Bearer {token}'}
+                payload = request.json
 
-                    # Create expected headers and payload for PostGraphile
-                    graphql_headers = {'Authorization': f'Bearer {token}'}
-                    payload = request.json
+                # Execute request on GraphQL API
+                status, data = execute_graphql_request(payload, graphql_headers)
+                if status != 200:
+                    raise RequestException(status, data)
 
-                    # Execute request on GraphQL API
-                    status, data = execute_graphql_request(payload, graphql_headers)
-                    if status != 200:
-                        raise RequestException(status, data)
-
-                    return make_response(jsonify(data), status)
-                
-                # If token is invalid, fail request
-                else:
-                    raise RequestException(403, 'Request failed! Invalid token.')
+                return make_response(jsonify(data), status)
 
             except RequestException as exception:
                 return exception.to_response()

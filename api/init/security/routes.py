@@ -10,8 +10,8 @@ def register_security(namespace: Namespace, api: Api):
 
     # Create expected headers and payload
     headers = api.parser()
-    headers.add_argument('login', type=str, location='headers', help='User login')
-    headers.add_argument('password', type=str, location='headers', help='User password')
+    headers.add_argument('Login', type=str, location='headers', help='User login')
+    headers.add_argument('Password', type=str, location='headers', help='User password')
 
     @namespace.route('/token')
     @namespace.doc()
@@ -27,10 +27,10 @@ def register_security(namespace: Namespace, api: Api):
             # Build payload for GraphQL http request
             args = headers.parse_args()
             payload = {
-                'query': 'mutation authenticateUser($userEmail: String, $userPassword: String) { authenticateUser(input: { userEmail: $userEmail userPassword: $userPassword }) { sysUser { id email role flagActive }}}',
+                'query': 'mutation authenticateUser($userEmail: String!, $userPassword: String!) { authenticateUser(input: { userEmail: $userEmail userPassword: $userPassword }) { sysToken }}',
                 'variables': {
-                    'userEmail': args.login,
-                    'userPassword': args.password
+                    'userEmail': args.Login,
+                    'userPassword': args.Password
                 }
             }
 
@@ -41,19 +41,19 @@ def register_security(namespace: Namespace, api: Api):
                     raise RequestException(status, data)
 
                 # If response is empty, credentials are incorrect
-                if data['data']['authenticateUser']['sysUser'] is None:
-                    raise RequestException(403, 'Login failed! User login or password incorrect.')
+                if data['data']['authenticateUser']['sysToken'] is None:
+                    raise RequestException(403, 'Login failed! Login or password incorrect or the user account has been inactivated.')
 
                 # If flagActive is false, user is inactive
-                elif data['data']['authenticateUser']['sysUser']['flagActive'] is False:
-                    raise RequestException(403, 'Login failed! User has been inactivated.')
+                # elif data['data']['authenticateUser']['sysUser']['flagActive'] is False:
+                    # raise RequestException(403, 'Login failed! User has been inactivated.')
 
                 # Else login successfull
-                else:
-                    user = data['data']['authenticateUser']['sysUser']
-                    token = {'token': get_token(user)}
+                # else:
+                    # user = data['data']['authenticateUser']['sysUser']
+                    # token = {'token': get_token(user)}
 
-                return make_response(jsonify(token), status)
+                return make_response(jsonify(data), status)
 
             except RequestException as exception:
                 return exception.to_response()

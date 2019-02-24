@@ -34,7 +34,7 @@ export const mutationCreateUser = `mutation createUser($sysUser: SysUserInput!) 
 }`;
 
 export const mutationUpdateUser = `mutation updateUser($id: Int!, $sysUserPatch: SysUserPatch!) {
-    updateSysUserById(input: {id: $id, sysUserPatch: $sysUserPatch }) {
+    updateSysUserById(input: {id: $id, sysUserPatch: $sysUserPatch}) {
         sysUser {
             id
         }
