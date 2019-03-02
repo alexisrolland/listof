@@ -64,6 +64,9 @@ BEGIN
         );',
         NEW.table_name
     );
+
+    -- Set ownership to advanced user to allow all advanced users to manage table structure
+    EXECUTE format('ALTER TABLE public.%I OWNER TO advanced;', NEW.table_name);
     RETURN NEW;
 END;
 $$ language plpgsql;

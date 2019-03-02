@@ -23,7 +23,7 @@ export default {
 
             // Build mutation payload
             let payload = {
-                'query': this.mutationDeleteValue,
+                'query': graphQlMutation,
                 'variables': { 'id': this.valueId }
             };
             let headers = {};

@@ -26,7 +26,6 @@ export default {
                 for (let property in this.value) {
                     if (this.value.hasOwnProperty(property) && !this.value[property]) {
                         this.value[property] = null;
-                        console.log(this.value[property]);
                     }
                 }
 
