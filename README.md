@@ -7,7 +7,7 @@ All data warehousing projects face similar challenges to standardize data coming
 - Expose your lists of values via a web API (GraphQL) or in a database (PostgreSQL).
 
 # Demo
-See the demo on Youtube: [ListOf v0.1 Demo](https://www.youtube.com/watch?v=yXRrzHEJEIo&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM)
+See the demo on Youtube: [ListOf Playlist](https://www.youtube.com/watch?v=yXRrzHEJEIo&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM)
 [![Watch the demo](https://github.com/alexisrolland/listof/blob/master/doc/demo.gif)](https://www.youtube.com/watch?v=yXRrzHEJEIo&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM)
 
 # Getting Started
