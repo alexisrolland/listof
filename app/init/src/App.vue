@@ -38,7 +38,7 @@ export default {
         }
     },
     created() {
-        this.currentUser()  // Get user session on page refresh
+        this.currentUser;  // Get user session on page refresh
     }
 }
 </script>

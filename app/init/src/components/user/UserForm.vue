@@ -17,7 +17,7 @@
                             placeholder="Type user e-mail"
                             v-model="user.email" />
                     </div>
-                    <div v-if="userId=='new'" class="form-group required">
+                    <div v-if="showPasswordField" class="form-group required">
                         <label for="userPassword" class="col-form-label">
                             Password:
                         </label>
@@ -55,8 +55,17 @@
 
                     <!-- Button Menu -->
                     <div>
-                        <user-button-save v-bind:user="user"></user-button-save>
-                        <user-button-close></user-button-close>
+                        <user-button-save
+                            v-bind:user="user"
+                            v-bind:showPasswordField="showPasswordField">
+                        </user-button-save>
+                        
+                        <user-button-reset-password
+                            v-on:resetPassword="resetPassword">
+                        </user-button-reset-password>
+                        
+                        <user-button-close>
+                        </user-button-close>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -84,18 +93,21 @@
 
 <script>
 import UserButtonSave from './UserButtonSave.vue';
+import UserButtonResetPassword from './UserButtonResetPassword.vue';
 import UserButtonClose from './UserButtonClose.vue';
 import UserUserGroup from './UserUserGroup.vue';
 
 export default {
     components: {
         'user-button-save': UserButtonSave,
+        'user-button-reset-password': UserButtonResetPassword,
         'user-button-close': UserButtonClose,
         'user-user-group': UserUserGroup
     },
     data: function () {
         return {
-            'user': { 'flagActive': true }
+            'user': { 'flagActive': true },
+            'showPasswordField': false
         }
     },
     computed: {
@@ -114,6 +126,9 @@ export default {
                     this.user.sysUserGroupUsersByUserId.nodes.splice(i, 1);
                 }
             }
+        },
+        resetPassword(value) {
+            this.showPasswordField = value;
         }
     },
     created: function () {
@@ -139,6 +154,9 @@ export default {
                     }
                 }
             );
+        }
+        else {
+            this.showPasswordField = true;
         };
     }
 }

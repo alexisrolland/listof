@@ -7,7 +7,8 @@
 <script>
 export default {
     props: {
-        user: Object
+        user: Object,
+        showPasswordField: Boolean
     },
     methods: {
         saveUser() {
@@ -25,6 +26,16 @@ export default {
                         }
                     }
                 };
+
+                // Update password only if value is supplied by admin user
+                if(this.showPasswordField && !this.user.password) {
+                    this.$store.state.errorObject.flag = true;
+                    this.$store.state.errorObject.message = 'Please provide a password.';
+                }
+                else if(this.showPasswordField && this.user.password) {
+                    payload.variables.sysUserPatch['password'] = this.user.password;
+                }
+
                 let headers = {};
                 if (this.$session.exists()) {
                     headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };

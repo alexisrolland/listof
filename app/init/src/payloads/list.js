@@ -1,10 +1,11 @@
-export const queryGetAllLists = `query getAllLists{
-    allSysLists(orderBy: NAME_ASC) {
+export const queryGetAllLists = `query getAllLists($first: Int $offset: Int){
+    allSysLists(first: $first offset: $offset orderBy: NAME_ASC) {
         nodes {
             id
             name
             description
         }
+        totalCount
     }
 }`;
 

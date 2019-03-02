@@ -10,25 +10,47 @@
 
         <!-- User table -->
         <user-table v-bind:users="users"></user-table>
+
+        <!-- User pagination -->
+        <user-pagination
+            v-bind:totalCount="nbUsers"
+            v-bind:currentPage="currentPage"
+            v-on:goToPage="getAllUsers"
+        ></user-pagination>
     </div>
 </template>
 
 <script>
 import UserTable from './UserTable.vue';
+import Pagination from '../utils/Pagination.vue';
 
 export default {
     components: {
-        'user-table': UserTable
+        'user-table': UserTable,
+        'user-pagination': Pagination
     },
     data: function () {
         return {
             'keyword': null,
-            'users': []
+            'users': [],
+            'nbUsers': null,
+            'currentPage': {
+                'pageNum': 1,
+                'offset': 0,
+                'nbItems': 10,
+                'isActive': true
+            }
         }
     },
     methods: {
-        getAllUsers() {
-            let payload = { 'query': this.$store.state.queryGetAllUsers };
+        getAllUsers(page) {
+            let payload = {
+                'query': this.$store.state.queryGetAllUsers,
+                'variables': {
+                    'first': page.nbItems,
+                    'offset': page.offset
+                }
+            };
             let headers = {};
             if (this.$session.exists()) {
                 headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
@@ -40,6 +62,15 @@ export default {
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
                         this.users = response.data.data.allSysUsers.nodes;
+                        this.nbUsers = response.data.data.allSysUsers.totalCount;
+
+                        // Set current page
+                        this.currentPage = {
+                            'pageNum': page.pageNum,
+                            'offset': page.offset,
+                            'nbItems': page.nbItems,
+                            'isActive': page.isActive
+                        }
                     }
                 }
             );
@@ -48,7 +79,7 @@ export default {
             // Search users based on keywords
             // If keyword is empty, use GraphQL native query to benefit from pagination
             if (this.keyword == "") {
-                this.getAllUsers();
+                this.getAllUsers(this.currentPage);
             } else {
                 let payload = {
                     'query': this.$store.state.mutationSearchUser,
@@ -67,6 +98,15 @@ export default {
                             this.$store.state.errorObject.message = response.data.errors[0].message;
                         } else {
                             this.users = response.data.data.searchUser.sysUsers;
+                            this.nbUsers = this.users.length;
+
+                            // Set current page to first page
+                            this.currentPage = {
+                                'pageNum': 1,
+                                'offset': 0,
+                                'nbItems': 10,
+                                'isActive': true
+                            }
                         }
                     }
                 );
@@ -74,7 +114,7 @@ export default {
         }
     },
     created: function () {
-        this.getAllUsers();
+        this.getAllUsers(this.currentPage);
     }
 }
 </script>

@@ -25,7 +25,7 @@
 export default {
     props: {
         attribute: Object,
-        value: String
+        value: Number
     },
     data: function () {
         return {
