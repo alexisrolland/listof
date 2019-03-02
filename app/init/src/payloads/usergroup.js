@@ -1,9 +1,10 @@
-export const queryGetAllUserGroups = `query getAllUserGroups{
-    allSysUserGroups(orderBy: NAME_ASC) {
+export const queryGetAllUserGroups = `query getAllUserGroups($first: Int $offset: Int){
+    allSysUserGroups(first: $first offset: $offset orderBy: NAME_ASC) {
         nodes {
             id
             name
         }
+        totalCount
     }
 }`;
 

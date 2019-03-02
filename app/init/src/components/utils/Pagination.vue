@@ -1,5 +1,5 @@
 <template>
-    <nav class="bg-dark text-light" aria-label="Lists pages">
+    <nav class="bg-dark text-light" aria-label="Pages">
         <ul class="pagination">
             <li v-for="page in pages"  v-bind:key="page.pageNum" class="page-item">
                 <a class="page-link text-light"
@@ -15,8 +15,8 @@
 <script>
 export default {
     props: {
-        nbLists: Number,
-        currentPage: Number
+        totalCount: Number,
+        currentPage: Object
     },
     data: function () {
         return {
@@ -25,7 +25,7 @@ export default {
     },
     computed: {
         pages(){
-            let nbPages = Math.round(this.nbLists/this.nbItems);
+            let nbPages = Math.ceil(this.totalCount/this.nbItems);
             let pages = [];
             for (let i=0; i < nbPages; i++) {
                 let page = {
@@ -52,6 +52,6 @@ export default {
 <style>
 /*Style for pagination*/
 .page-link, .page-link:hover { border-color: #343A40; }
-.active { background-color: #212529; }
-.active:hover { background-color: #212529; }
+.active { background-color: #2C3034; }
+.active:hover { background-color: #2C3034; }
 </style>

@@ -1,11 +1,12 @@
-export const queryGetAllUsers = `query getAllUsers{
-    allSysUsers(orderBy: EMAIL_ASC) {
+export const queryGetAllUsers = `query getAllUsers($first: Int $offset: Int){
+    allSysUsers(first: $first offset: $offset orderBy: EMAIL_ASC) {
         nodes {
             id
             email
             role
             flagActive
         }
+        totalCount
     }
 }`;
 
