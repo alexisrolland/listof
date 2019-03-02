@@ -22,6 +22,10 @@ export const queryGetUser = `query getUser($id: Int!) {
                 sysUserGroupByUserGroupId { name }
             }
         }
+        createdDate
+        updatedDate
+        sysUserByCreatedById { email }
+        sysUserByUpdatedById { email }
     }
 }`;
 

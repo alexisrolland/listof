@@ -1,5 +1,5 @@
 <template>
-    <div class="dropdown">
+    <div v-if="show" class="dropdown">
         <button class="btn btn-secondary dropdown-toggle ml-1"
             id="admin"
             type="button"
@@ -19,4 +19,13 @@
     </div>
 </template>
 
-
+<script>
+export default {
+    computed: {
+        show(){
+            let roles = ['admin']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
+    }
+}
+</script>

@@ -7,10 +7,10 @@
         </span>
 
         <form class="form-inline">
-            <list-button-create v-if="isAuthenticated"></list-button-create>
-            <header-button-admin v-if="isAuthenticated"></header-button-admin>
-            <header-button-login v-if="!isAuthenticated"></header-button-login>
-            <header-button-logout v-if="isAuthenticated"></header-button-logout>
+            <list-button-create></list-button-create>
+            <header-button-admin></header-button-admin>
+            <header-button-login></header-button-login>
+            <header-button-logout></header-button-logout>
         </form>
     </nav>
 </template>
@@ -27,9 +27,6 @@ export default {
         'header-button-admin': HeaderButtonAdmin,
         'header-button-login': HeaderButtonLogin,
         'header-button-logout': HeaderButtonLogout
-    },
-    props: {
-        isAuthenticated: Boolean
     }
 }
 </script>

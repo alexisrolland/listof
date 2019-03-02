@@ -28,7 +28,7 @@ services:
       "--connection", "${DATABASE_URL}",
       "--port", "5433",
       "--schema", "base,public",
-      "--default-role", "standard",
+      "--default-role", "anonymous",
       "--jwt-secret", "${SECRET_KEY}",
       "--jwt-token-identifier", "base.sys_token",
       "--cors",

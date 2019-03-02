@@ -1,5 +1,5 @@
 <template>
-    <button type="button" class="btn btn-success" v-on:click="saveUser">
+    <button v-if="show" type="button" class="btn btn-success" v-on:click="saveUser">
         Save
     </button>
 </template>
@@ -25,7 +25,10 @@ export default {
                         }
                     }
                 };
-                let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                let headers = {};
+                if (this.$session.exists()) {
+                    headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                };
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
@@ -48,7 +51,10 @@ export default {
                         }
                     }
                 };
-                let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                let headers = {};
+                if (this.$session.exists()) {
+                    headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                };
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
@@ -67,6 +73,12 @@ export default {
                     }
                 );
             }
+        }
+    },
+    computed: {
+        show(){
+            let roles = ['admin']
+            return roles.includes(this.$store.state.currentUser.role)
         }
     }
 }

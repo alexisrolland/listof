@@ -14,6 +14,10 @@ export const queryGetAttribute = `query getAttribute($id: Int!) {
             sysListByListId { name }
         }
         defaultValue
+        createdDate
+        updatedDate
+        sysUserByCreatedById { email }
+        sysUserByUpdatedById { email }
     }
 }`;
 

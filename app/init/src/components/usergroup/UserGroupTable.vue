@@ -16,13 +16,11 @@
                     <td>
                         {{ userGroup.name }}
                     </td>
-                    <!-- Allow edit user only if user is not postgres -->
-                    <td v-if="userGroup.id!=0">
-                        <router-link class="badge badge-secondary" v-bind:to="'/admin/usergroups/' + userGroup.id">
+                    <td>
+                        <router-link v-if="showEditUserGroup" class="badge badge-secondary" v-bind:to="'/admin/usergroups/' + userGroup.id">
                             Edit User Group
                         </router-link>
                     </td>
-                    <td v-else></td>
                 </tr>
             </tbody>
         </table>
@@ -35,6 +33,12 @@
 export default {
     props: {
         userGroups: Array
+    },
+    computed: {
+        showEditUserGroup(){
+            let roles = ['admin']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
     }
 }
 </script>

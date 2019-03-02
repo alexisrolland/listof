@@ -8,6 +8,10 @@
             <value-button-add-value
                 v-bind:listId="list.id">
             </value-button-add-value>
+
+            <value-button-edit-list
+                v-bind:listId="list.id">
+            </value-button-edit-list>
         </div>
 
         <!-- List of Values -->
@@ -17,11 +21,13 @@
 
 <script>
 import ValueButtonAddValue from './ValueButtonAddValue.vue';
+import ValueButtonEditList from './ValueButtonEditList.vue';
 import ValueTable from './ValueTable.vue';
 
 export default {
     components: {
         'value-button-add-value': ValueButtonAddValue,
+        'value-button-edit-list': ValueButtonEditList,
         'value-table': ValueTable
     },
     data: function () {
@@ -40,7 +46,10 @@ export default {
             'query': this.$store.state.queryGetList,
             'variables': { 'id': this.listId }
         };
-        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        let headers = {};
+        if (this.$session.exists()) {
+            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        };
         this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
             function(response){
                 if(response.data.errors){

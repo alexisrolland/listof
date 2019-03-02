@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <header-bar v-bind:isAuthenticated="isAuthenticated"></header-bar>
+        <header-bar></header-bar>
         <error-message></error-message>
 
         <div class="container-fluid">
@@ -22,15 +22,23 @@ export default {
         'error-message': ErrorMessage
     },
     computed: {
-        isAuthenticated() {
+        currentUser(){
+            // Set current user in store to manage UI display based on permissions
             if (this.$session.exists()) {
-                this.$store.state.isAuthenticated = true;
+                this.$store.state.currentUser.isAuthenticated = true;
+                this.$store.state.currentUser.role = this.$session.get('role');
+                this.$store.state.currentUser.userGroups = this.$session.get('userGroups');
+                this.$store.state.currentUser.selectedUserGroup = this.$session.get('selectedUserGroup');
             }
             else {
                 this.$store.state.isAuthenticated = false;
+                this.$store.state.currentUserRole = 'anonymous';
             }
-            return this.$store.state.isAuthenticated
+            return this.$store.state.currentUser;
         }
+    },
+    created() {
+        this.currentUser()  // Get user session on page refresh
     }
 }
 </script>

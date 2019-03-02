@@ -2,68 +2,83 @@
     <div>
         <h1 class="mt-5">Edit User</h1>
 
-        <!-- User Form -->
-        <div class="form-group required">
-            <label for="userEmail" class="col-form-label">
-                E-mail:
-            </label>
-            <input class="form-control col-sm"
-                id="userEmail"
-                type="email"
-                required="required"
-                placeholder="Type user e-mail"
-                v-model="user.email" />
-        </div>
-        <div v-if="userId=='new'" class="form-group required">
-            <label for="userPassword" class="col-form-label">
-                Password:
-            </label>
-            <input class="form-control col-sm"
-                id="userPassword"
-                type="password"
-                required="true"
-                placeholder="Type user password"
-                v-model="user.password" />
-        </div>
-        <div class="form-group required">
-            <label for="userRole" class="col-form-label">
-                Role:
-            </label>
-            <select class="form-control"
-                id="userRole"
-                required="true"
-                v-model="user.role">
-                    <option disabled value="">Select user role</option>
-                    <option value="standard">standard</option>
-                    <option value="advanced">advanced</option>
-                    <option value="admin">admin</option>
-            </select>
-        </div>
-        <div class="custom-control custom-switch mr-4 mt-1 mb-2">
-            <input class="custom-control-input"
-                id="active"
-                type="checkbox"
-                value=""
-                v-model="user.flagActive"/>
-            <label for="active" class="custom-control-label">
-                Active
-            </label>
-        </div>
+        <form>
+            <div class="form-row">
+                <div class="col-md-8">
+                    <!-- User Form -->
+                    <div class="form-group required">
+                        <label for="userEmail" class="col-form-label">
+                            E-mail:
+                        </label>
+                        <input class="form-control col-sm"
+                            id="userEmail"
+                            type="email"
+                            required="required"
+                            placeholder="Type user e-mail"
+                            v-model="user.email" />
+                    </div>
+                    <div v-if="userId=='new'" class="form-group required">
+                        <label for="userPassword" class="col-form-label">
+                            Password:
+                        </label>
+                        <input class="form-control col-sm"
+                            id="userPassword"
+                            type="password"
+                            required="true"
+                            placeholder="Type user password"
+                            v-model="user.password" />
+                    </div>
+                    <div class="form-group required">
+                        <label for="userRole" class="col-form-label">
+                            Role:
+                        </label>
+                        <select class="form-control"
+                            id="userRole"
+                            required="true"
+                            v-model="user.role">
+                                <option disabled value="">Select user role</option>
+                                <option value="standard">standard</option>
+                                <option value="advanced">advanced</option>
+                                <option value="admin">admin</option>
+                        </select>
+                    </div>
+                    <div class="custom-control custom-switch mr-4 mt-1 mb-2">
+                        <input class="custom-control-input"
+                            id="active"
+                            type="checkbox"
+                            value=""
+                            v-model="user.flagActive"/>
+                        <label for="active" class="custom-control-label">
+                            Active
+                        </label>
+                    </div>
 
-        <!-- Button Menu -->
-        <div>
-            <user-button-save v-bind:user="user"></user-button-save>
-            <user-button-close></user-button-close>
-        </div>
-
-        <div class="form-group required">
-            <user-user-group
-                v-if="user.id"
-                v-bind:user="user"
-                v-on:addUserGroupUser="addUserGroupUser"
-                v-on:removeUserGroupUser="removeUserGroupUser">
-            </user-user-group>
-        </div>
+                    <!-- Button Menu -->
+                    <div>
+                        <user-button-save v-bind:user="user"></user-button-save>
+                        <user-button-close></user-button-close>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <p v-if="user.id" class="text-secondary small p-2 mt-4">
+                        Created date: {{user.createdDate}} <br>
+                        Created by: {{user.sysUserByCreatedById.email}} <br>
+                        Updated date: {{user.updatedDate}} <br>
+                        Updated by: {{user.sysUserByUpdatedById.email}}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- User Groups -->
+            <div class="form-group required">
+                <user-user-group
+                    v-if="user.id"
+                    v-bind:user="user"
+                    v-on:addUserGroupUser="addUserGroupUser"
+                    v-on:removeUserGroupUser="removeUserGroupUser">
+                </user-user-group>
+            </div>
+        </form>
     </div>
 </template>
 
@@ -110,7 +125,10 @@ export default {
                     'id': this.userId
                 }
             };
-            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){

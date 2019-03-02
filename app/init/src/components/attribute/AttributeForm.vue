@@ -2,100 +2,116 @@
     <div>
         <h1 class="mt-5">Edit Attribute</h1>
 
-        <!-- Attribute Name -->
-        <div class="form-group required">
-            <label for="name" class="col-form-label">
-                Name:
-            </label>
-            <input class="form-control col-sm"
-                id="name"
-                type="text"
-                required="true"
-                placeholder="Type attribute name"
-                v-model="attribute.name" />
-        </div>
+        <form>
+            <div class="form-row">
+                <div class="col-md-8">
+                    <!-- Attribute Name -->
+                    <div class="form-group required">
+                        <label for="name" class="col-form-label">
+                            Name:
+                        </label>
+                        <input class="form-control col-sm"
+                            id="name"
+                            type="text"
+                            required="true"
+                            placeholder="Type attribute name"
+                            v-model="attribute.name" />
+                    </div>
 
-        <!-- Attribute Description -->
-        <div class="form-group">
-            <label for="description" class="col-form-label">
-                Description:
-            </label>
-            <textarea
-                id="description"
-                class="form-control col-sm"
-                placeholder="Type attribute description"
-                rows="3"
-                v-model="attribute.description" />
-        </div>
+                    <!-- Attribute Description -->
+                    <div class="form-group">
+                        <label for="description" class="col-form-label">
+                            Description:
+                        </label>
+                        <textarea
+                            id="description"
+                            class="form-control col-sm"
+                            placeholder="Type attribute description"
+                            rows="3"
+                            v-model="attribute.description" />
+                    </div>
 
-        <div class="form-check form-check-inline">
-            <!-- Flag Attribute Mandatory -->
-            <div class="custom-control custom-switch mr-4 mt-1 mb-2">
-                <input class="custom-control-input"
-                    id="mandatory"
-                    type="checkbox"
-                    value=""
-                    v-model="attribute.flagMandatory"/>
-                <label for="mandatory" class="custom-control-label">
-                    Mandatory
-                </label>
+                    <div class="form-check form-check-inline">
+                        <!-- Flag Attribute Mandatory -->
+                        <div class="custom-control custom-switch mr-4 mt-1 mb-2">
+                            <input class="custom-control-input"
+                                id="mandatory"
+                                type="checkbox"
+                                value=""
+                                v-model="attribute.flagMandatory"/>
+                            <label for="mandatory" class="custom-control-label">
+                                Mandatory
+                            </label>
+                        </div>
+
+                        <!-- Flag Attribute Unique -->
+                        <div class="custom-control custom-switch mr-4 mt-1 mb-2">
+                            <input class="custom-control-input"
+                                id="unique"
+                                type="checkbox"
+                                value=""
+                                v-model="attribute.flagUnique"/>
+                            <label for="unique" class="custom-control-label">
+                                Unique
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Linked List -->
+                    <attribute-select-attribute
+                        v-model="attribute.linkedAttributeId"
+                        v-on:changeLinkedAttribute="getLinkedAttribute">
+                    </attribute-select-attribute>
+
+                    <!-- Attribute Data Type -->
+                    <attribute-select-data-type
+                        v-if="showDataType"
+                        v-model="attribute.dataTypeId"
+                        v-on:changeDataType="getDataType">
+                    </attribute-select-data-type>
+
+                    <!-- Attribute Default Value -->
+                    <!-- Deactivate this feature until it's implemented
+                    <div class="form-group" v-if="showDataType">
+                        <label for="defaultValue" class="col-form-label">
+                            Default Value:
+                        </label>
+                        <input class="form-control col-sm"
+                            id="defaultValue"
+                            type="text"
+                            placeholder="Attribute default value"
+                            v-model="attribute.defaultValue" />
+                    </div>
+                    -->
+                
+                    <!-- Button Menu -->
+                    <div>
+                        <attribute-button-save
+                            v-bind:listId="listId"
+                            v-bind:attribute="attribute">
+                        </attribute-button-save>
+
+                        <attribute-button-close
+                            v-bind:listId="listId">
+                        </attribute-button-close>
+
+                        <attribute-button-delete
+                            v-bind:listId="listId"
+                            v-if="attribute.id"
+                            v-bind:attributeId="attribute.id">
+                        </attribute-button-delete>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <p v-if="attribute.id" class="text-secondary small p-2 mt-4">
+                        Created date: {{attribute.createdDate}} <br>
+                        Created by: {{attribute.sysUserByCreatedById.email}} <br>
+                        Updated date: {{attribute.updatedDate}} <br>
+                        Updated by: {{attribute.sysUserByUpdatedById.email}}
+                    </p>
+                </div>
             </div>
-
-            <!-- Flag Attribute Unique -->
-            <div class="custom-control custom-switch mr-4 mt-1 mb-2">
-                <input class="custom-control-input"
-                    id="unique"
-                    type="checkbox"
-                    value=""
-                    v-model="attribute.flagUnique"/>
-                <label for="unique" class="custom-control-label">
-                    Unique
-                </label>
-            </div>
-        </div>
-
-        <!-- Linked List -->
-        <attribute-select-attribute
-            v-model="attribute.linkedAttributeId"
-            v-on:changeLinkedAttribute="getLinkedAttribute">
-        </attribute-select-attribute>
-
-        <!-- Attribute Data Type -->
-        <attribute-select-data-type
-            v-if="showDataType"
-            v-model="attribute.dataTypeId"
-            v-on:changeDataType="getDataType">
-        </attribute-select-data-type>
-
-        <!-- Attribute Default Value -->
-        <div class="form-group" v-if="showDataType">
-            <label for="defaultValue" class="col-form-label">
-                Default Value:
-            </label>
-            <input class="form-control col-sm"
-                id="defaultValue"
-                type="text"
-                placeholder="Attribute default value"
-                v-model="attribute.defaultValue" />
-        </div>
-
-        <!-- Button Menu -->
-        <div>
-            <attribute-button-save
-                v-bind:listId="listId"
-                v-bind:attribute="attribute">
-            </attribute-button-save>
-
-            <attribute-button-close
-                v-bind:listId="listId">
-            </attribute-button-close>
-
-            <attribute-button-delete
-                v-bind:listId="listId"
-                v-if="attribute.id"
-                v-bind:attributeId="attribute.id">
-            </attribute-button-delete>
-        </div>
+        </form>
     </div>
 </template>
 
@@ -157,7 +173,10 @@ export default {
                     'id': this.attributeId
                 }
             };
-            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){

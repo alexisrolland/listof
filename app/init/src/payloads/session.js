@@ -3,3 +3,17 @@ export const mutationAuthenticateUser = `mutation authenticateUser($userEmail: S
         sysToken
     }
 }`;
+
+export const queryGetCurrentUser = `query getCurrentUser($email: String!) {
+    sysUserByEmail(email: $email) {
+        role
+        sysUserGroupUsersByUserId{
+            nodes {
+                sysUserGroupByUserGroupId {
+                    id
+                    name
+                }
+            }
+        }
+    }
+}`;

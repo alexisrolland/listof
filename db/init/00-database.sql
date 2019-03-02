@@ -23,7 +23,7 @@ BEGIN
     IF CURRENT_USER LIKE 'user_%' THEN
       SELECT SUBSTRING(CURRENT_USER, 6) INTO user_id;
     ELSE
-      SELECT 0 INTO user_id;
+      SELECT 1 INTO user_id;
     END IF;
     RETURN user_id;
 END;

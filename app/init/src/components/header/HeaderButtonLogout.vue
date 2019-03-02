@@ -1,5 +1,5 @@
 <template>
-    <button class="btn btn-outline-secondary ml-1" v-on:click="logout">
+    <button v-if="show" class="btn btn-outline-secondary ml-1" v-on:click="logout">
         Logout
     </button>
 </template>
@@ -9,10 +9,15 @@ export default {
     methods: {
         logout() {
             this.$session.destroy();
-            this.$store.state.isAuthenticated = false;
+            this.$store.state.currentUser.isAuthenticated = false;
             this.$router.push({
                 name: 'home'
             });
+        }
+    },
+    computed: {
+        show(){
+            return this.$store.state.currentUser.isAuthenticated
         }
     }
 }

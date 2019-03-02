@@ -8,93 +8,107 @@
             <value-button-add-value v-bind:listId="list.id"></value-button-add-value>
         </div>
 
-        <!-- Value Form -->
         <h1 class="mt-5">Edit Value</h1>
-        <div v-if="list.attributes">
+        <form>
+            <div class="form-row">
+                <div class="col-md-8">
 
-            <!-- Loop for each attribute of the list -->
-            <div class="form-group"
-                v-for="attribute in list.attributes"
-                v-bind:key="attribute.id"
-                v-bind:class="{ required: attribute.flagMandatory }">
+                    <!-- Value Form -->
+                    <div v-if="list.attributes">
+                        <!-- Loop for each attribute of the list -->
+                        <div class="form-group"
+                            v-for="attribute in list.attributes"
+                            v-bind:key="attribute.id"
+                            v-bind:class="{ required: attribute.flagMandatory }">
 
-                    <!-- Checkbox input, used for data types boolean (id: 2) -->
-                    <value-input-checkbox
-                        v-if="[2].includes(attribute.dataTypeId)"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-input-checkbox>
+                                <!-- Checkbox input, used for data types boolean (id: 2) -->
+                                <value-input-checkbox
+                                    v-if="[2].includes(attribute.dataTypeId)"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-checkbox>
 
-                    <!-- Date input, used for data types date (id: 4) -->
-                    <value-input-date
-                        v-if="[4].includes(attribute.dataTypeId)"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-input-date>
+                                <!-- Date input, used for data types date (id: 4) -->
+                                <value-input-date
+                                    v-if="[4].includes(attribute.dataTypeId)"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-date>
 
-                    <!-- Timestamp input, used for data types timestamp (id: 10) -->
-                    <value-input-timestamp
-                        v-if="[10].includes(attribute.dataTypeId)"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-input-timestamp>
+                                <!-- Timestamp input, used for data types timestamp (id: 10) -->
+                                <value-input-timestamp
+                                    v-if="[10].includes(attribute.dataTypeId)"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-timestamp>
 
-                    <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
-                    <value-input-integer
-                        v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-input-integer>
+                                <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
+                                <value-input-integer
+                                    v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-integer>
 
-                    <!-- Text input, used for non integer data types decimal (id: 5), real (id: 7) -->
-                    <value-input-real
-                        v-if="[5, 7].includes(attribute.dataTypeId)"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-input-real>
+                                <!-- Text input, used for non integer data types decimal (id: 5), real (id: 7) -->
+                                <value-input-real
+                                    v-if="[5, 7].includes(attribute.dataTypeId)"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-real>
 
-                    <!-- Text input, used for all other data types char (id: 3), text (id: 9), varchar (id: 11) -->
-                    <value-input-text
-                        v-if="[3, 9, 11].includes(attribute.dataTypeId)"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-input-text>
+                                <!-- Text input, used for all other data types char (id: 3), text (id: 9), varchar (id: 11) -->
+                                <value-input-text
+                                    v-if="[3, 9, 11].includes(attribute.dataTypeId)"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-text>
 
-                    <!-- Select input, used for attributes which are linked to another list -->
-                    <value-select-dropdown
-                        v-if="[6].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
-                        v-bind:attribute="attribute"
-                        v-model="value[attribute.graphQlAttributeName]"
-                        v-on:changeAttributeValue="getAttributeValue">
-                    </value-select-dropdown>
+                                <!-- Select input, used for attributes which are linked to another list -->
+                                <value-select-dropdown
+                                    v-if="[6].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-select-dropdown>
+                        </div>
+                    </div>
+
+                    <!-- Button Menu -->
+                    <div>
+                        <value-button-save
+                            v-bind:graphQlListName="list.graphQlListName"
+                            v-bind:value="value">
+                        </value-button-save>
+                        
+                        <value-button-close
+                            v-bind:listId="list.id">
+                        </value-button-close>
+                        
+                        <value-button-delete
+                            v-if="value.id"
+                            v-bind:graphQlListName="list.graphQlListName"
+                            v-bind:valueId="value.id"
+                            v-bind:listId="list.id"
+                            >
+                        </value-button-delete>
+                    </div>
             </div>
-        </div>
-
-        <!-- Button Menu -->
-        <div>
-            <value-button-save
-                v-bind:graphQlListName="list.graphQlListName"
-                v-bind:value="value">
-            </value-button-save>
-            
-            <value-button-close
-                v-bind:listId="list.id">
-            </value-button-close>
-            
-            <value-button-delete
-                v-if="value.id"
-                v-bind:graphQlListName="list.graphQlListName"
-                v-bind:valueId="value.id"
-                v-bind:listId="list.id"
-                >
-            </value-button-delete>
-        </div>
+                <div class="col-md-4">
+                    <p v-if="value.id" class="text-secondary small p-2 mt-4">
+                        Created date: {{value.createdDate}} <br>
+                        Created by: {{value.sysUserByCreatedById.email}} <br>
+                        Updated date: {{value.updatedDate}} <br>
+                        Updated by: {{value.sysUserByUpdatedById.email}}
+                    </p>
+                </div>
+            </div>
+        </form>
     </div>
 </template>
 
@@ -153,7 +167,10 @@ export default {
             'query': this.$store.state.queryGetList,
             'variables': { 'id': this.listId }
         };
-        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        let headers = {};
+        if (this.$session.exists()) {
+            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        };
         this.$http.post(this.$store.state.graphqlUrl, payloadList, {headers}).then (
             function(response){
                 if(response.data.errors){
@@ -193,7 +210,10 @@ export default {
                             'query': graphQlQuery,
                             'variables': { 'id': this.valueId }
                         };
-                        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                        let headers = {};
+                        if (this.$session.exists()) {
+                            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                        };
                         this.$http.post(this.$store.state.graphqlUrl, payloadValue, {headers}).then (
                             function(response){
                                 if(response.data.errors){

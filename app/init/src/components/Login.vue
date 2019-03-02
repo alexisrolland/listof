@@ -40,6 +40,7 @@ export default {
     },
     methods: {
         authenticateUser() {
+            // Method to authenticate a user and get a token
             let payload = {
                 'query': this.$store.state.mutationAuthenticateUser,
                 'variables': { 
@@ -55,18 +56,56 @@ export default {
                     } else {
                         let token = response.data.data.authenticateUser.sysToken
                         if (token) {
+                            // Set session token
                             this.$session.set('jwt', token);
-                            this.$store.state.isAuthenticated = true;
+                            this.$store.state.currentUser.isAuthenticated = true;
                             this.$router.push({
                                 name: 'home'
                             });
+                            this.getCurrentUser();
                         } else {
                             this.$store.state.errorObject.flag = true;
                             this.$store.state.errorObject.message = 'Authentication failed. Login or password incorrect or user account has been inactivated.';
                         }
                     }
                 }
-            );
+            )
+        },
+        getCurrentUser() {
+            // Method to get authenticated user information
+            let payload = {
+                'query': this.$store.state.queryGetCurrentUser,
+                'variables': { 'email': this.credentials.email }
+            };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                function(response){
+                    if(response.data.errors){
+                        this.$store.state.errorObject.flag = true;
+                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                    } else {
+                        // Set current user role
+                        this.$session.set('role', response.data.data.sysUserByEmail.role);
+                        this.$store.state.currentUser.role = response.data.data.sysUserByEmail.role;
+
+                        // Prepare list of current user groups
+                        let rawUserGroups = response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
+                        let currentUserGroups = [];
+                        for (let i = 0; i < rawUserGroups.length; i++) {
+                            currentUserGroups.push(rawUserGroups[i]['sysUserGroupByUserGroupId'])
+                        }
+
+                        // Set current user groups
+                        this.$session.set('userGroups', currentUserGroups);
+                        this.$store.state.currentUser.userGroups = currentUserGroups;
+                        this.$session.set('selectedUserGroup', currentUserGroups[0]);
+                        this.$store.state.currentUser.selectedUserGroup = currentUserGroups[0];
+                    }
+                }
+            )
         }
     }
 }

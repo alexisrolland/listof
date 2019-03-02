@@ -13,7 +13,7 @@ CREATE TABLE base.sys_list (
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
   , updated_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
-  , user_group_id INTEGER DEFAULT 0 REFERENCES base.sys_user_group(id)
+  , user_group_id INTEGER DEFAULT 1 REFERENCES base.sys_user_group(id)
 );
 
 COMMENT ON TABLE base.sys_list IS
@@ -60,10 +60,13 @@ BEGIN
             , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
             , updated_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
-            , user_group_id INTEGER DEFAULT 0 REFERENCES base.sys_user_group(id)
+            , user_group_id INTEGER DEFAULT 1 REFERENCES base.sys_user_group(id)
         );',
         NEW.table_name
     );
+
+    -- Set ownership to advanced user to allow all advanced users to manage table structure
+    EXECUTE format('ALTER TABLE public.%I OWNER TO advanced;', NEW.table_name);
     RETURN NEW;
 END;
 $$ language plpgsql;

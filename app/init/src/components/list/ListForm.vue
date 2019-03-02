@@ -2,54 +2,68 @@
     <div>
         <h1 class="mt-5">Edit list</h1>
 
-        <!-- List Form -->
-        <div class="form-group required">
-            <label for="listName" class="col-form-label">
-                Name:
-            </label>
-            <input class="form-control col-sm"
-                id="listName"
-                type="text"
-                required="required"
-                placeholder="Type list name"
-                v-model="list.name" />
-        </div>
-        <div class="form-group required">
-            <label for="listDescription" class="col-form-label">
-                Description:
-            </label>
-            <textarea class="form-control col-sm"
-                id="listDescription"
-                required="true"
-                placeholder="Type list description"
-                rows="3"
-                v-model="list.description" />
-        </div>
+        <form>
+            <div class="form-row">
+                <div class="col-md-8">
+                    <!-- List Form -->
+                    <div class="form-group required">
+                        <label for="listName" class="col-form-label">
+                            Name:
+                        </label>
+                        <input class="form-control col-sm"
+                            id="listName"
+                            type="text"
+                            required="required"
+                            placeholder="Type list name"
+                            v-model="list.name" />
+                    </div>
+                    <div class="form-group required">
+                        <label for="listDescription" class="col-form-label">
+                            Description:
+                        </label>
+                        <textarea class="form-control col-sm"
+                            id="listDescription"
+                            required="true"
+                            placeholder="Type list description"
+                            rows="3"
+                            v-model="list.description" />
+                    </div>
 
-        <!-- Button Menu -->
-        <div>
-            <list-button-save
-                v-bind:list="list">
-            </list-button-save>
+                    <!-- Button Menu -->
+                    <div>
+                        <list-button-save
+                            v-bind:list="list">
+                        </list-button-save>
 
-            <list-button-add-attribute
-                v-if="list.id"
-                v-bind:listId="list.id">
-            </list-button-add-attribute>
+                        <list-button-add-attribute
+                            v-if="list.id"
+                            v-bind:listId="list.id">
+                        </list-button-add-attribute>
 
-            <list-button-edit-value
-                v-if="list.id"
-                v-bind:listId="list.id">
-            </list-button-edit-value>
+                        <list-button-edit-value
+                            v-if="list.id"
+                            v-bind:listId="list.id">
+                        </list-button-edit-value>
 
-            <list-button-close>
-            </list-button-close>
+                        <list-button-close>
+                        </list-button-close>
 
-            <list-button-delete
-                v-if="list.id"
-                v-bind:listId="list.id">
-            </list-button-delete>
-        </div>
+                        <list-button-delete
+                            v-if="list.id"
+                            v-bind:listId="list.id">
+                        </list-button-delete>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <p v-if="list.id" class="text-secondary small p-2 mt-4">
+                        Created date: {{list.createdDate}} <br>
+                        Created by: {{list.sysUserByCreatedById.email}} <br>
+                        Updated date: {{list.updatedDate}} <br>
+                        Updated by: {{list.sysUserByUpdatedById.email}}
+                    </p>
+                </div>
+            </div>
+        </form>
 
         <!-- List Attributes -->
         <list-attribute-table v-if="list.id" v-bind:list="list"></list-attribute-table>
@@ -92,7 +106,10 @@ export default {
                     'id': this.listId
                 }
             };
-            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){

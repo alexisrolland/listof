@@ -16,6 +16,8 @@ export const queryGetValue = `query getValue($id: Int!) {
         id
         createdDate
         updatedDate
+        sysUserByCreatedById { email }
+        sysUserByUpdatedById { email }
         <graphQlAttributeName>
     }
 }`;

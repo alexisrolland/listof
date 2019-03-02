@@ -21,6 +21,12 @@ COMMENT ON TABLE base.sys_user IS
 
 
 
+/*Add circular reference to user table*/
+ALTER TABLE base.sys_user ADD CONSTRAINT sys_user_created_by_id_fkey FOREIGN KEY (created_by_id) REFERENCES base.sys_user(id);
+ALTER TABLE base.sys_user ADD CONSTRAINT sys_user_updated_by_id_fkey FOREIGN KEY (updated_by_id) REFERENCES base.sys_user(id);
+
+
+
 /*Create function to search users*/
 CREATE OR REPLACE FUNCTION base.search_user(keyword TEXT)
 RETURNS SETOF base.sys_user AS $$
@@ -93,8 +99,8 @@ COMMENT ON FUNCTION base.authenticate_user IS
 /*Create default user*/
 /*User is required to be able to create the default user group later*/
 /*Must be created before other triggers to avoid conflicts*/
-INSERT INTO base.sys_user (id, email, password, role) VALUES (0, 'admin', 'admin', 'admin');
-CREATE ROLE user_0 WITH CREATEROLE;
+INSERT INTO base.sys_user (email, password, role) VALUES ('admin', 'admin', 'admin');
+CREATE ROLE user_1 WITH CREATEROLE;
 
 
 /*Create function to update updated_by_id column*/

@@ -1,5 +1,5 @@
 <template>
-    <button type="button" class="btn btn-danger float-right" v-on:click="deleteList">
+    <button v-if="show" type="button" class="btn btn-danger float-right" v-on:click="deleteList">
         Delete
     </button>
 </template>
@@ -18,7 +18,10 @@ export default {
                     'id': this.listId
                 }
             };
-            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
@@ -31,6 +34,12 @@ export default {
                     }
                 }
             );
+        }
+    },
+    computed: {
+        show(){
+            let roles = ['admin', 'advanced']
+            return roles.includes(this.$store.state.currentUser.role)
         }
     }
 }

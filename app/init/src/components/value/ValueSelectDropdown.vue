@@ -65,7 +65,10 @@ export default {
         graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQlAttributeName);
 
         let payload = { 'query': graphQlQuery };
-        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        let headers = {};
+        if (this.$session.exists()) {
+            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        };
         this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
             function(response){
                 if(response.data.errors){

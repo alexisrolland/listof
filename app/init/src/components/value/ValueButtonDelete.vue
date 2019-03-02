@@ -1,5 +1,5 @@
 <template>
-    <button type="button" class="btn btn-danger float-right" v-on:click="deleteValue">
+    <button v-if="show" type="button" class="btn btn-danger float-right" v-on:click="deleteValue">
         Delete
     </button>
 </template>
@@ -23,10 +23,13 @@ export default {
 
             // Build mutation payload
             let payload = {
-                'query': this.mutationDeleteValue,
+                'query': graphQlMutation,
                 'variables': { 'id': this.valueId }
             };
-            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
@@ -42,6 +45,12 @@ export default {
                     }
                 }
             );
+        }
+    },
+    computed: {
+        show(){
+            let roles = ['admin', 'advanced', 'standard']
+            return roles.includes(this.$store.state.currentUser.role)
         }
     }
 }

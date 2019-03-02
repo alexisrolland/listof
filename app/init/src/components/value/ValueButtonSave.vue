@@ -1,5 +1,5 @@
 <template>
-    <button type="button" class="btn btn-success" v-on:click="saveValue">
+    <button v-if="show" type="button" class="btn btn-success" v-on:click="saveValue">
         Save
     </button>
 </template>
@@ -26,7 +26,6 @@ export default {
                 for (let property in this.value) {
                     if (this.value.hasOwnProperty(property) && !this.value[property]) {
                         this.value[property] = null;
-                        console.log(this.value[property]);
                     }
                 }
 
@@ -38,7 +37,10 @@ export default {
                     'query': graphQlMutation,
                     'variables': variables
                 };
-                let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                let headers = {};
+                if (this.$session.exists()) {
+                    headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                };
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
@@ -60,7 +62,10 @@ export default {
                     'query': graphQlMutation,
                     'variables': variables
                 };
-                let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                let headers = {};
+                if (this.$session.exists()) {
+                    headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                };
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
@@ -80,6 +85,12 @@ export default {
                 );
             }
         },
+    },
+    computed: {
+        show(){
+            let roles = ['admin', 'advanced', 'standard']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
     }
 }
 </script>
