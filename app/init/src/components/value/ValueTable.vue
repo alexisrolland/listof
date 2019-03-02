@@ -35,18 +35,39 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Values pagination -->
+        <value-pagination
+            v-bind:totalCount="nbValues"
+            v-bind:currentPage="currentPage"
+            v-on:goToPage="getAllValues"
+        ></value-pagination>
     </div>
 </template>
 
 <script>
+import Pagination from '../utils/Pagination.vue';
+
 export default {
+    components: {
+        'value-pagination': Pagination
+    },
     props: {
         list: Object,
     },
     data: function () {
         return {
-            attributes: [],
-            values: []
+            'graphQlQuery': null,
+            'graphQlListName': null,
+            'attributes': [],
+            'values': [],
+            'nbValues': null,
+            'currentPage': {
+                'pageNum': 1,
+                'offset': 0,
+                'nbItems': 10,
+                'isActive': true
+            }
         }
     },
     created: function () {
@@ -54,8 +75,8 @@ export default {
         let inflection = require('inflection');
 
         // GraphQL list name
-        let graphQlListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
-        graphQlListName = inflection.camelize(graphQlListName); // Example table_names > TableNames
+        this.graphQlListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
+        this.graphQlListName = inflection.camelize(this.graphQlListName); // Example table_names > TableNames
 
         // GraphQL attributes name
         let attributes = this.list.sysAttributesByListId.nodes;
@@ -84,25 +105,44 @@ export default {
         this.attributes = attributes;
 
         // Build GraphQL query
-        let graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, graphQlListName);
-        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQLAttributeName);
-
-        // Execute GraphQL query to get values
-        let payload = { 'query': graphQlQuery };
-        let headers = {};
-        if (this.$session.exists()) {
-            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
-        };
-        this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
-            function(response){
-                if(response.data.errors){
-                    this.$store.state.errorObject.flag = true;
-                    this.$store.state.errorObject.message = response.data.errors[0].message;
-                } else {
-                    this.values = response.data.data['all' + graphQlListName].nodes;
+        this.graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, this.graphQlListName);
+        this.graphQlQuery = this.graphQlQuery.replace(/<graphQlAttributeName>/g, graphQLAttributeName);
+        this.getAllValues(this.currentPage);
+    },
+    methods: {
+        getAllValues(page) {
+            // Execute GraphQL query to get values
+            let payload = {
+                'query': this.graphQlQuery,
+                'variables': {
+                    'first': page.nbItems,
+                    'offset': page.offset
                 }
-            }
-        );
+            };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                function(response){
+                    if(response.data.errors){
+                        this.$store.state.errorObject.flag = true;
+                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                    } else {
+                        this.values = response.data.data['all' + this.graphQlListName].nodes;
+                        this.nbValues = response.data.data['all' + this.graphQlListName].totalCount;
+
+                        // Set current page
+                        this.currentPage = {
+                            'pageNum': page.pageNum,
+                            'offset': page.offset,
+                            'nbItems': page.nbItems,
+                            'isActive': page.isActive
+                        }
+                    }
+                }
+            );
+        }
     },
     computed: {
         showEditValue(){

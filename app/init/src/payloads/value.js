@@ -1,12 +1,13 @@
 // Generic query used as template to fetch all values from a list
-export const queryGetAllValues = `query getAllValues {
-    all<GraphQlListName> {
+export const queryGetAllValues = `query getAllValues($first: Int $offset: Int){
+    all<GraphQlListName>(first: $first offset: $offset) {
         nodes {
             id
             createdDate
             updatedDate
             <graphQlAttributeName>
         }
+        totalCount
     }
 }`;
 
