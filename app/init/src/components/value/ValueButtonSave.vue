@@ -31,12 +31,17 @@ export default {
 
                 // Build mutation payload
                 let variables = { 'id': this.value.id };
-                variables[this.graphQlListName + 'Patch'] = this.value;
-
+                let patch = this.value;
+                delete patch['createdDate'];
+                delete patch['sysUserByCreatedById'];
+                delete patch['updatedDate'];
+                delete patch['sysUserByUpdatedById'];
+                variables[this.graphQlListName + 'Patch'] = patch;
                 let payload = {
                     'query': graphQlMutation,
                     'variables': variables
                 };
+
                 let headers = {};
                 if (this.$session.exists()) {
                     headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };

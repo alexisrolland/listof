@@ -80,11 +80,11 @@ BEGIN
     AND flag_active = true;
 
     IF user_account.password = crypt(user_password, user_account.password) THEN
-    RETURN (
-        user_account.email,  --email
-        'user_' || user_account.id,  --role
-        'postgraphile'  --audience
-    )::base.sys_token;
+        RETURN (
+            user_account.email,  --email
+            'user_' || user_account.id,  --role
+            'postgraphile'  --audience
+        )::base.sys_token;
     ELSE
         RETURN NULL;
     END IF;
@@ -167,6 +167,10 @@ base.create_user();
 
 
 /*Triggers on update*/
+CREATE TRIGGER user_update_password BEFORE UPDATE
+ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
+base.hash_password();
+
 CREATE TRIGGER user_update_updated_date BEFORE UPDATE
 ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
 base.update_updated_date();
