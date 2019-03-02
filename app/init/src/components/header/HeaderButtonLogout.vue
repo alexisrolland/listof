@@ -9,7 +9,7 @@ export default {
     methods: {
         logout() {
             this.$session.destroy();
-            this.$store.state.isAuthenticated = false;
+            this.$store.state.currentUser.isAuthenticated = false;
             this.$router.push({
                 name: 'home'
             });

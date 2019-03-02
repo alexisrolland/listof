@@ -36,6 +36,9 @@ export default {
             }
             return this.$store.state.currentUser;
         }
+    },
+    created() {
+        this.currentUser()  // Get user session on page refresh
     }
 }
 </script>
