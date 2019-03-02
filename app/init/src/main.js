@@ -20,7 +20,7 @@ import ViewUserGroup from './components/ViewUserGroup.vue';
 // Tell Vue to use libraries
 Vue.use(VueResource);
 Vue.use(VueRouter);
-Vue.use(VueSession);
+Vue.use(VueSession, {persist: true});
 
 // Declare application URLs
 const routes = [

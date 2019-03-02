@@ -11,6 +11,7 @@ CREATE TABLE base.sys_attribute (
   , column_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
   , flag_mandatory BOOLEAN DEFAULT FALSE
+  , length INTEGER
   , default_value TEXT
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP

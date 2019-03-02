@@ -21,6 +21,12 @@ COMMENT ON TABLE base.sys_user IS
 
 
 
+/*Add circular reference to user table*/
+ALTER TABLE base.sys_user ADD CONSTRAINT sys_user_created_by_id_fkey FOREIGN KEY (created_by_id) REFERENCES base.sys_user(id);
+ALTER TABLE base.sys_user ADD CONSTRAINT sys_user_updated_by_id_fkey FOREIGN KEY (updated_by_id) REFERENCES base.sys_user(id);
+
+
+
 /*Create function to search users*/
 CREATE OR REPLACE FUNCTION base.search_user(keyword TEXT)
 RETURNS SETOF base.sys_user AS $$

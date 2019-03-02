@@ -36,6 +36,10 @@ export const queryGetList = `query getList($id: Int!) {
                 columnName
             }
         }
+        createdDate
+        updatedDate
+        sysUserByCreatedById { email }
+        sysUserByUpdatedById { email }
     }
 }`;
 

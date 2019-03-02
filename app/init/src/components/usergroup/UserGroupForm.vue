@@ -2,28 +2,42 @@
     <div>
         <h1 class="mt-5">Edit User Group</h1>
 
-        <!-- User Form -->
-        <div class="form-group required">
-            <label for="userGroupName" class="col-form-label">
-                Name:
-            </label>
-            <input class="form-control col-sm"
-                id="userGroupName"
-                type="text"
-                required="required"
-                placeholder="Type user group name"
-                v-model="userGroup.name" />
-        </div>
+        <form>
+            <div class="form-row">
+                <div class="col-md-8">
+                    <!-- User Form -->
+                    <div class="form-group required">
+                        <label for="userGroupName" class="col-form-label">
+                            Name:
+                        </label>
+                        <input class="form-control col-sm"
+                            id="userGroupName"
+                            type="text"
+                            required="required"
+                            placeholder="Type user group name"
+                            v-model="userGroup.name" />
+                    </div>
 
-        <!-- Button Menu -->
-        <div>
-            <user-group-button-save
-                v-bind:userGroup="userGroup">
-            </user-group-button-save>
+                    <!-- Button Menu -->
+                    <div>
+                        <user-group-button-save
+                            v-bind:userGroup="userGroup">
+                        </user-group-button-save>
 
-            <user-group-button-close>
-            </user-group-button-close>
-        </div>
+                        <user-group-button-close>
+                        </user-group-button-close>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <p v-if="userGroup.id" class="text-secondary small p-2 mt-4">
+                        Created date: {{userGroup.createdDate}} <br>
+                        Created by: {{userGroup.sysUserByCreatedById.email}} <br>
+                        Updated date: {{userGroup.updatedDate}} <br>
+                        Updated by: {{userGroup.sysUserByUpdatedById.email}}
+                    </p>
+                </div>
+            </div>
+        </form>
     </div>
 </template>
 
