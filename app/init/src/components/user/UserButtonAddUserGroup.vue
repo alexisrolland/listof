@@ -1,5 +1,5 @@
 <template>
-    <button type="button" class="btn btn-success" v-on:click="addUserGroup">
+    <button v-if="show" type="button" class="btn btn-success" v-on:click="addUserGroup">
         Add User to Groups
     </button>
 </template>
@@ -33,7 +33,10 @@ export default {
                                 }
                             }
                     };
-                    let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                    let headers = {};
+                    if (this.$session.exists()) {
+                        headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                    };
                     this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                         function(response){
                             if(response.data.errors){
@@ -47,6 +50,12 @@ export default {
                     );
                 }
             }
+        }
+    },
+    computed: {
+        show(){
+            let roles = ['admin']
+            return roles.includes(this.$store.state.currentUser.role)
         }
     }
 }

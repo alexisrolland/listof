@@ -28,7 +28,7 @@
                         </span>
                     </td>
                     <td>
-                        <router-link class="badge badge-secondary" v-bind:to="'values/' + value.id">
+                        <router-link v-if="showEditValue" class="badge badge-secondary" v-bind:to="'values/' + value.id">
                             Edit Value
                         </router-link>
                     </td>
@@ -89,7 +89,10 @@ export default {
 
         // Execute GraphQL query to get values
         let payload = { 'query': graphQlQuery };
-        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        let headers = {};
+        if (this.$session.exists()) {
+            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        };
         this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
             function(response){
                 if(response.data.errors){
@@ -100,6 +103,12 @@ export default {
                 }
             }
         );
+    },
+    computed: {
+        showEditValue(){
+            let roles = ['admin', 'advanced', 'standard']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
     }
 }
 </script>

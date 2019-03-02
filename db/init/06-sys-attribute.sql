@@ -16,7 +16,7 @@ CREATE TABLE base.sys_attribute (
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
   , updated_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
-  , user_group_id INTEGER DEFAULT 0 REFERENCES base.sys_user_group(id)
+  , user_group_id INTEGER DEFAULT 1 REFERENCES base.sys_user_group(id)
   , list_id INTEGER NOT NULL REFERENCES base.sys_list(id)
   , data_type_id INTEGER NOT NULL REFERENCES base.sys_data_type(id)
   , linked_attribute_id INTEGER NULL REFERENCES base.sys_attribute(id)

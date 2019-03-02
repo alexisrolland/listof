@@ -47,7 +47,7 @@
                         {{ attribute.sysDataTypeByDataTypeId.name }}
                     </td>
                     <td>
-                        <router-link class="badge badge-secondary" v-bind:to="list.id + '/attributes/' + attribute.id">
+                        <router-link v-if="showEditAttribute" class="badge badge-secondary" v-bind:to="list.id + '/attributes/' + attribute.id">
                             Edit Attribute
                         </router-link>
                     </td>
@@ -63,6 +63,12 @@
 export default {
     props: {
         list: {}
+    },
+    computed: {
+        showEditAttribute(){
+            let roles = ['admin', 'advanced']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
     }
 }
 </script>

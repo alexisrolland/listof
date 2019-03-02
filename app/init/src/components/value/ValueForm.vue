@@ -153,7 +153,10 @@ export default {
             'query': this.$store.state.queryGetList,
             'variables': { 'id': this.listId }
         };
-        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        let headers = {};
+        if (this.$session.exists()) {
+            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+        };
         this.$http.post(this.$store.state.graphqlUrl, payloadList, {headers}).then (
             function(response){
                 if(response.data.errors){
@@ -193,7 +196,10 @@ export default {
                             'query': graphQlQuery,
                             'variables': { 'id': this.valueId }
                         };
-                        let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                        let headers = {};
+                        if (this.$session.exists()) {
+                            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                        };
                         this.$http.post(this.$store.state.graphqlUrl, payloadValue, {headers}).then (
                             function(response){
                                 if(response.data.errors){

@@ -93,8 +93,8 @@ COMMENT ON FUNCTION base.authenticate_user IS
 /*Create default user*/
 /*User is required to be able to create the default user group later*/
 /*Must be created before other triggers to avoid conflicts*/
-INSERT INTO base.sys_user (id, email, password, role) VALUES (0, 'admin', 'admin', 'admin');
-CREATE ROLE user_0 WITH CREATEROLE;
+INSERT INTO base.sys_user (email, password, role) VALUES ('admin', 'admin', 'admin');
+CREATE ROLE user_1 WITH CREATEROLE;
 
 
 /*Create function to update updated_by_id column*/

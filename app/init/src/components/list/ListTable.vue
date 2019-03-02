@@ -24,10 +24,10 @@
                     {{ list.description }}
                 </td>
                 <td>
-                    <router-link class="badge badge-secondary" v-bind:to="'lists/' + list.id + '/values'">
+                    <router-link v-if="showEditValues" class="badge badge-secondary" v-bind:to="'lists/' + list.id + '/values'">
                         Edit Values
                     </router-link>
-                    <router-link  class="badge badge-secondary" v-bind:to="'lists/' + list.id">
+                    <router-link v-if="showEditList" class="badge badge-secondary" v-bind:to="'lists/' + list.id">
                         Edit List
                     </router-link>
                 </td>
@@ -40,6 +40,16 @@
 export default {
     props: {
         lists: Array
+    },
+    computed: {
+        showEditValues(){
+            let roles = ['admin', 'advanced', 'standard']
+            return roles.includes(this.$store.state.currentUser.role)
+        },
+        showEditList(){
+            let roles = ['admin', 'advanced']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
     }
 }
 </script>

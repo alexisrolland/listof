@@ -16,13 +16,11 @@
                     <td>
                         {{ userGroup.sysUserGroupByUserGroupId.name }}
                     </td>
-                    <!-- Allow remove user group only if user group is not Public -->
-                    <td v-if="userGroup.userGroupId!=0">
-                        <span class="badge badge-secondary" v-on:click="removeUserGroup(userGroup.id)">
+                    <td>
+                        <span v-if="showRemoveUserGroup" class="badge badge-secondary" v-on:click="removeUserGroup(userGroup.id)">
                             Remove
                         </span>
                     </td>
-                    <td v-else></td>
                 </tr>
             </tbody>
         </table>
@@ -43,7 +41,10 @@ export default {
                 'query': this.$store.state.mutationDeleteUserGroupUser,
                 'variables': { 'id': id }
             };
-            let headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
@@ -54,6 +55,12 @@ export default {
                     }
                 }
             );
+        }
+    },
+    computed: {
+        showRemoveUserGroup(){
+            let roles = ['admin']
+            return roles.includes(this.$store.state.currentUser.role)
         }
     }
 }

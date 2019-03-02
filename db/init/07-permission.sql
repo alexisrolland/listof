@@ -4,6 +4,22 @@
 
 
 /*
+Create anonymous user role
+The anonymous role is the default role used to query the database for non authenticated users.
+It grants permissions to read lists and their values which belong to the Public group only.
+*/
+CREATE ROLE anonymous;
+
+/*base schema*/
+GRANT USAGE ON SCHEMA base TO anonymous;
+GRANT SELECT ON ALL TABLES IN SCHEMA base TO anonymous;
+
+/*public schema*/
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO anonymous;
+
+
+
+/*
 Create standard user role
 The standard role is the default role for all users who wish to manage values of a list.
 It grants permissions to read, write and delete records on the tables created for each list.
@@ -44,7 +60,7 @@ Data types, Users, User groups
 */
 CREATE ROLE admin;
 GRANT advanced TO admin;
-GRANT admin TO user_0;
+GRANT admin TO user_1;
 
 /*base schema*/
 GRANT INSERT, UPDATE, DELETE ON base.sys_user TO admin;

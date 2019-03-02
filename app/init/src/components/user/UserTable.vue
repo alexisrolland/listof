@@ -28,13 +28,11 @@
                     <td>
                         {{ user.flagActive }}
                     </td>
-                    <!-- Allow edit user only if user is not postgres -->
-                    <td v-if="user.id!=0">
-                        <router-link class="badge badge-secondary" v-bind:to="'/admin/users/' + user.id">
+                    <td>
+                        <router-link v-if="showEditUser" class="badge badge-secondary" v-bind:to="'/admin/users/' + user.id">
                             Edit User
                         </router-link>
                     </td>
-                    <td v-else></td>
                 </tr>
             </tbody>
         </table>
@@ -47,6 +45,12 @@
 export default {
     props: {
         users: Array
+    },
+    computed: {
+        showEditUser(){
+            let roles = ['admin']
+            return roles.includes(this.$store.state.currentUser.role)
+        }
     }
 }
 </script>
