@@ -6,6 +6,7 @@ export const mutationAuthenticateUser = `mutation authenticateUser($userEmail: S
 
 export const queryGetCurrentUser = `query getCurrentUser($email: String!) {
     sysUserByEmail(email: $email) {
+        email
         role
         sysUserGroupUsersByUserId{
             nodes {

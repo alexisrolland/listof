@@ -22,10 +22,11 @@ export const store = new Vuex.Store({
         mutationAuthenticateUser: Session.mutationAuthenticateUser,
         queryGetCurrentUser: Session.queryGetCurrentUser,
         currentUser : {
-            isAuthenticated: false,  // Used to customize UI display
-            role: 'anonymous',  // Used to customize UI display
-            userGroups: [],  // Used to manage user groups dropdown list in header
+            email: '',
+            role: 'anonymous',      // Used to customize UI display
+            userGroups: [],         // Used to manage user groups dropdown list in header
             selectedUserGroup: {},  // Select user group from dropdown list in header
+            isAuthenticated: false  // Used to customize UI display
         },
 
         // Data types queries

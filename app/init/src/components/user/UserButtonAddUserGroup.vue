@@ -50,6 +50,41 @@ export default {
                     );
                 }
             }
+
+            // If modified user is the current user, refresh current user groups
+            if (this.$session.get('email') == this.user.email) {
+                this.refreshCurrentUserGroups();
+            }
+        },
+        refreshCurrentUserGroups() {
+            // Method to refresh current user's user groups
+            let payload = {
+                'query': this.$store.state.queryGetCurrentUser,
+                'variables': { 'email': this.$session.get('email') }
+            };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                function(response){
+                    if(response.data.errors){
+                        this.$store.state.errorObject.flag = true;
+                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                    } else {
+                        // Prepare list of current user groups
+                        let rawUserGroups = response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
+                        let currentUserGroups = [];
+                        for (let i = 0; i < rawUserGroups.length; i++) {
+                            currentUserGroups.push(rawUserGroups[i]['sysUserGroupByUserGroupId'])
+                        }
+
+                        // Reset current user groups
+                        this.$session.set('userGroups', currentUserGroups);
+                        this.$store.state.currentUser.userGroups = currentUserGroups;
+                    }
+                }
+            )
         }
     },
     computed: {
