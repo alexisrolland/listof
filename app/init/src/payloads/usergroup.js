@@ -19,6 +19,7 @@ export const queryGetUserGroup = `query getUserGroup($id: Int!) {
     }
 }`;
 
+// Query to get the list of user groups for the dropdown list in user form
 // Response labels must be formatted according to Treeselect requirements
 export const queryGetUserUserGroups = `query getAllUserGroups {
     allSysUserGroups(orderBy: NAME_ASC) {

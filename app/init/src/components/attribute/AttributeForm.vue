@@ -103,12 +103,13 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <p v-if="attribute.id" class="text-secondary small p-2 mt-4">
-                        Created date: {{attribute.createdDate}} <br>
-                        Created by: {{attribute.sysUserByCreatedById.email}} <br>
-                        Updated date: {{attribute.updatedDate}} <br>
-                        Updated by: {{attribute.sysUserByUpdatedById.email}}
-                    </p>
+                    <attribute-meta-data
+                        v-if="attribute.id"
+                        v-bind:createdDate="attribute.createdDate"
+                        v-bind:createdBy="attribute.sysUserByCreatedById.email"
+                        v-bind:updatedDate="attribute.updatedDate"
+                        v-bind:updatedBy="attribute.sysUserByUpdatedById.email"
+                    ></attribute-meta-data>
                 </div>
             </div>
         </form>
@@ -121,6 +122,7 @@ import AttributeSelectDataType from './AttributeSelectDataType.vue';
 import AttributeButtonSave from './AttributeButtonSave.vue';
 import AttributeButtonClose from './AttributeButtonClose.vue';
 import AttributeButtonDelete from './AttributeButtonDelete.vue';
+import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
     components: {
@@ -128,7 +130,8 @@ export default {
         'attribute-select-data-type': AttributeSelectDataType,
         'attribute-button-save': AttributeButtonSave,
         'attribute-button-close': AttributeButtonClose,
-        'attribute-button-delete': AttributeButtonDelete
+        'attribute-button-delete': AttributeButtonDelete,
+        'attribute-meta-data': MetaDataCard
     },
     data: function () {
         return {

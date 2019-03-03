@@ -100,12 +100,13 @@
                     </div>
             </div>
                 <div class="col-md-4">
-                    <p v-if="value.id" class="text-secondary small p-2 mt-4">
-                        Created date: {{value.createdDate}} <br>
-                        Created by: {{value.sysUserByCreatedById.email}} <br>
-                        Updated date: {{value.updatedDate}} <br>
-                        Updated by: {{value.sysUserByUpdatedById.email}}
-                    </p>
+                    <value-meta-data
+                        v-if="value.id"
+                        v-bind:createdDate="value.createdDate"
+                        v-bind:createdBy="value.sysUserByCreatedById.email"
+                        v-bind:updatedDate="value.updatedDate"
+                        v-bind:updatedBy="value.sysUserByUpdatedById.email"
+                    ></value-meta-data>
                 </div>
             </div>
         </form>
@@ -125,6 +126,7 @@ import ValueButtonAddValue from './ValueButtonAddValue.vue';
 import ValueButtonSave from './ValueButtonSave.vue';
 import ValueButtonClose from './ValueButtonClose.vue';
 import ValueButtonDelete from './ValueButtonDelete.vue';
+import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
     components: {
@@ -139,7 +141,8 @@ export default {
         'value-button-add-value': ValueButtonAddValue,
         'value-button-save': ValueButtonSave,
         'value-button-close': ValueButtonClose,
-        'value-button-delete': ValueButtonDelete
+        'value-button-delete': ValueButtonDelete,
+        'value-meta-data': MetaDataCard
     },
     data: function () {
         return {

@@ -55,12 +55,13 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <p v-if="list.id" class="text-secondary small p-2 mt-4">
-                        Created date: {{list.createdDate}} <br>
-                        Created by: {{list.sysUserByCreatedById.email}} <br>
-                        Updated date: {{list.updatedDate}} <br>
-                        Updated by: {{list.sysUserByUpdatedById.email}}
-                    </p>
+                    <list-meta-data
+                        v-if="list.id"
+                        v-bind:createdDate="list.createdDate"
+                        v-bind:createdBy="list.sysUserByCreatedById.email"
+                        v-bind:updatedDate="list.updatedDate"
+                        v-bind:updatedBy="list.sysUserByUpdatedById.email"
+                    ></list-meta-data>
                 </div>
             </div>
         </form>
@@ -77,6 +78,7 @@ import ListButtonEditValue from './ListButtonEditValue.vue';
 import ListButtonClose from './ListButtonClose.vue';
 import ListButtonDelete from './ListButtonDelete.vue';
 import ListAttributeTable from './ListAttributeTable.vue';
+import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
     components: {
@@ -85,7 +87,8 @@ export default {
         'list-button-edit-value': ListButtonEditValue,
         'list-button-close': ListButtonClose,
         'list-button-delete': ListButtonDelete,
-        'list-attribute-table': ListAttributeTable
+        'list-attribute-table': ListAttributeTable,
+        'list-meta-data': MetaDataCard
     },
     data: function () {
         return {

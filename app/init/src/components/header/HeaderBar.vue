@@ -7,7 +7,7 @@
         </span>
 
         <form class="form-inline">
-            <list-button-create></list-button-create>
+            <header-select-user-group></header-select-user-group>
             <header-button-admin></header-button-admin>
             <header-button-login></header-button-login>
             <header-button-logout></header-button-logout>
@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import ListButtonCreate from '../list/ListButtonCreate.vue';
+import HeaderSelectUserGroup from './HeaderSelectUserGroup.vue';
 import HeaderButtonAdmin from './HeaderButtonAdmin.vue';
 import HeaderButtonLogin from './HeaderButtonLogin.vue';
 import HeaderButtonLogout from './HeaderButtonLogout.vue';
 
 export default {
     components: {
-        'list-button-create': ListButtonCreate,
+        'header-select-user-group': HeaderSelectUserGroup,
         'header-button-admin': HeaderButtonAdmin,
         'header-button-login': HeaderButtonLogin,
         'header-button-logout': HeaderButtonLogout

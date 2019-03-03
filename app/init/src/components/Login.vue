@@ -87,6 +87,10 @@ export default {
                         this.$store.state.errorObject.flag = true;
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
+                        // Set current user
+                        this.$session.set('email', response.data.data.sysUserByEmail.email);
+                        this.$store.state.currentUser.email = response.data.data.sysUserByEmail.email;
+
                         // Set current user role
                         this.$session.set('role', response.data.data.sysUserByEmail.role);
                         this.$store.state.currentUser.role = response.data.data.sysUserByEmail.role;
@@ -101,6 +105,8 @@ export default {
                         // Set current user groups
                         this.$session.set('userGroups', currentUserGroups);
                         this.$store.state.currentUser.userGroups = currentUserGroups;
+
+                        // Select first user group as context
                         this.$session.set('selectedUserGroup', currentUserGroups[0]);
                         this.$store.state.currentUser.selectedUserGroup = currentUserGroups[0];
                     }

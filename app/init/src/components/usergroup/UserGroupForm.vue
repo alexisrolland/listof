@@ -29,12 +29,13 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <p v-if="userGroup.id" class="text-secondary small p-2 mt-4">
-                        Created date: {{userGroup.createdDate}} <br>
-                        Created by: {{userGroup.sysUserByCreatedById.email}} <br>
-                        Updated date: {{userGroup.updatedDate}} <br>
-                        Updated by: {{userGroup.sysUserByUpdatedById.email}}
-                    </p>
+                    <user-group-meta-data
+                        v-if="userGroup.id"
+                        v-bind:createdDate="userGroup.createdDate"
+                        v-bind:createdBy="userGroup.sysUserByCreatedById.email"
+                        v-bind:updatedDate="userGroup.updatedDate"
+                        v-bind:updatedBy="userGroup.sysUserByUpdatedById.email"
+                    ></user-group-meta-data>
                 </div>
             </div>
         </form>
@@ -44,9 +45,11 @@
 <script>
 import UserGroupButtonSave from './UserGroupButtonSave.vue';
 import UserGroupButtonClose from './UserGroupButtonClose.vue';
+import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
     components: {
+        'user-group-meta-data': MetaDataCard,
         'user-group-button-save': UserGroupButtonSave,
         'user-group-button-close': UserGroupButtonClose
     },

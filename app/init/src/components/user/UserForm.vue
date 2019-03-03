@@ -69,12 +69,13 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <p v-if="user.id" class="text-secondary small p-2 mt-4">
-                        Created date: {{user.createdDate}} <br>
-                        Created by: {{user.sysUserByCreatedById.email}} <br>
-                        Updated date: {{user.updatedDate}} <br>
-                        Updated by: {{user.sysUserByUpdatedById.email}}
-                    </p>
+                    <user-meta-data
+                        v-if="user.id"
+                        v-bind:createdDate="user.createdDate"
+                        v-bind:createdBy="user.sysUserByCreatedById.email"
+                        v-bind:updatedDate="user.updatedDate"
+                        v-bind:updatedBy="user.sysUserByUpdatedById.email"
+                    ></user-meta-data>
                 </div>
             </div>
             
@@ -96,12 +97,14 @@ import UserButtonSave from './UserButtonSave.vue';
 import UserButtonResetPassword from './UserButtonResetPassword.vue';
 import UserButtonClose from './UserButtonClose.vue';
 import UserUserGroup from './UserUserGroup.vue';
+import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
     components: {
         'user-button-save': UserButtonSave,
         'user-button-reset-password': UserButtonResetPassword,
         'user-button-close': UserButtonClose,
+        'user-meta-data': MetaDataCard,
         'user-user-group': UserUserGroup
     },
     data: function () {
