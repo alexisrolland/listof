@@ -31,14 +31,14 @@ export default {
                 this.$store.state.currentUser.selectedUserGroup = this.$session.get('selectedUserGroup');
             }
             else {
-                this.$store.state.isAuthenticated = false;
-                this.$store.state.currentUserRole = 'anonymous';
+                this.$store.state.currentUser.isAuthenticated = false;
+                this.$store.state.currentUser.role = 'anonymous';
             }
             return this.$store.state.currentUser;
         }
     },
     created() {
-        this.currentUser;  // Get user session on page refresh
+        this.currentUser;  // Trigger get user session on page refresh
     }
 }
 </script>

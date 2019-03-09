@@ -58,11 +58,10 @@ export default {
                         if (token) {
                             // Set session token
                             this.$session.set('jwt', token);
-                            this.$store.state.currentUser.isAuthenticated = true;
+                            this.getCurrentUser();
                             this.$router.push({
                                 name: 'home'
                             });
-                            this.getCurrentUser();
                         } else {
                             this.$store.state.errorObject.flag = true;
                             this.$store.state.errorObject.message = 'Authentication failed. Login or password incorrect or user account has been inactivated.';
@@ -87,14 +86,6 @@ export default {
                         this.$store.state.errorObject.flag = true;
                         this.$store.state.errorObject.message = response.data.errors[0].message;
                     } else {
-                        // Set current user
-                        this.$session.set('email', response.data.data.sysUserByEmail.email);
-                        this.$store.state.currentUser.email = response.data.data.sysUserByEmail.email;
-
-                        // Set current user role
-                        this.$session.set('role', response.data.data.sysUserByEmail.role);
-                        this.$store.state.currentUser.role = response.data.data.sysUserByEmail.role;
-
                         // Prepare list of current user groups
                         let rawUserGroups = response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
                         let currentUserGroups = [];
@@ -102,13 +93,21 @@ export default {
                             currentUserGroups.push(rawUserGroups[i]['sysUserGroupByUserGroupId'])
                         }
 
-                        // Set current user groups
+                        // Set current user, role, user groups in session object
+                        this.$session.set('email', response.data.data.sysUserByEmail.email);
+                        this.$session.set('role', response.data.data.sysUserByEmail.role);
                         this.$session.set('userGroups', currentUserGroups);
-                        this.$store.state.currentUser.userGroups = currentUserGroups;
-
-                        // Select first user group as context
                         this.$session.set('selectedUserGroup', currentUserGroups[0]);
-                        this.$store.state.currentUser.selectedUserGroup = currentUserGroups[0];
+
+                        // Set current user, role, user groups in store
+                        let currentUser = {
+                            'isAuthenticated': true,
+                            'email': response.data.data.sysUserByEmail.email,
+                            'role': response.data.data.sysUserByEmail.role,
+                            'userGroups': currentUserGroups,
+                            'selectedUserGroup': currentUserGroups[0]
+                        };
+                        this.$store.state.currentUser = currentUser;
                     }
                 }
             )
