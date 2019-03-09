@@ -186,10 +186,50 @@ COMMENT ON FUNCTION base.delete_list_column IS
 
 
 
+/*Create function to get the user group Id of a list*/
+/*This is used to default the user_group_id column in sys_attribute table*/
+CREATE OR REPLACE FUNCTION base.get_list_user_group_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    SELECT user_group_id
+    INTO NEW.user_group_id
+    FROM base.sys_list
+    WHERE id=NEW.list_id;
+
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.get_list_user_group_id IS
+'Function used to get the user group Id of a list.';
+
+
+
+/*Create function to update the user group Id of all attributes of a list*/
+CREATE OR REPLACE FUNCTION base.update_attribute_user_group_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE base.sys_attribute
+    SET user_group_id=NEW.user_group_id
+    WHERE list_id=NEW.id;
+
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.update_attribute_user_group_id IS
+'Function used to update the user group Id of all attributes of a list.';
+
+
+
 /*Triggers on insert*/
 CREATE TRIGGER attribute_generate_column_name BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.generate_column_name();
+
+CREATE TRIGGER attribute_set_user_group_id BEFORE INSERT
+ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
+base.get_list_user_group_id();
 
 CREATE TRIGGER attribute_create_list_column AFTER INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
@@ -218,5 +258,10 @@ ON base.sys_attribute FOR EACH ROW WHEN (OLD.name IS DISTINCT FROM NEW.name)
 EXECUTE PROCEDURE base.generate_column_name();
 
 CREATE TRIGGER attribute_rename_list_column AFTER UPDATE
-ON base.sys_attribute FOR EACH ROW WHEN (OLD.column_name IS DISTINCT FROM NEW.column_name) 
+ON base.sys_attribute FOR EACH ROW WHEN (OLD.column_name IS DISTINCT FROM NEW.column_name)
 EXECUTE PROCEDURE base.rename_list_column();
+
+/*Trigger on update of parent list*/
+CREATE TRIGGER list_update_attribute_user_group_id AFTER UPDATE
+ON base.sys_list FOR EACH ROW WHEN (OLD.user_group_id IS DISTINCT FROM NEW.user_group_id) 
+EXECUTE PROCEDURE base.update_attribute_user_group_id();
