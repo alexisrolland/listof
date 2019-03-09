@@ -31,6 +31,7 @@
                 <div class="col-md-4">
                     <user-group-meta-data
                         v-if="userGroup.id"
+                        v-bind:id="userGroup.id"
                         v-bind:createdDate="userGroup.createdDate"
                         v-bind:createdBy="userGroup.sysUserByCreatedById.email"
                         v-bind:updatedDate="userGroup.updatedDate"

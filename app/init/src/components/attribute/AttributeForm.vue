@@ -105,6 +105,7 @@
                 <div class="col-md-4">
                     <attribute-meta-data
                         v-if="attribute.id"
+                        v-bind:id="attribute.id"
                         v-bind:createdDate="attribute.createdDate"
                         v-bind:createdBy="attribute.sysUserByCreatedById.email"
                         v-bind:updatedDate="attribute.updatedDate"
