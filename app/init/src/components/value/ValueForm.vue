@@ -1,7 +1,8 @@
 <template>
     <div>
         <h1 class="mt-5">{{ list.name }}</h1>
-        <p>{{ list.description }}</p>
+        <p>User Group: {{ list.sysUserGroupByUserGroupId.name }}</br>
+        Description: {{ list.description }}</p>
 
         <!-- Button Menu -->
         <div>
@@ -102,6 +103,7 @@
                 <div class="col-md-4">
                     <value-meta-data
                         v-if="value.id"
+                        v-bind:id="value.id"
                         v-bind:createdDate="value.createdDate"
                         v-bind:createdBy="value.sysUserByCreatedById.email"
                         v-bind:updatedDate="value.updatedDate"

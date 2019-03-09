@@ -72,6 +72,7 @@
                 <div class="col-md-4">
                     <user-meta-data
                         v-if="user.id"
+                        v-bind:id="user.id"
                         v-bind:createdDate="user.createdDate"
                         v-bind:createdBy="user.sysUserByCreatedById.email"
                         v-bind:updatedDate="user.updatedDate"

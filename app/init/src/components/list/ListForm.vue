@@ -64,6 +64,7 @@
                 <div class="col-md-4">
                     <list-meta-data
                         v-if="list.id"
+                        v-bind:id="list.id"
                         v-bind:createdDate="list.createdDate"
                         v-bind:createdBy="list.sysUserByCreatedById.email"
                         v-bind:updatedDate="list.updatedDate"

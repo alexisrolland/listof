@@ -17,6 +17,7 @@ export const queryGetList = `query getList($id: Int!) {
         description
         tableName
         userGroupId
+        sysUserGroupByUserGroupId { name }
         sysAttributesByListId {
             nodes {
                 id

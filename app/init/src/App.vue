@@ -51,4 +51,7 @@ export default {
 .form-control::-moz-placeholder { color: #bfbfbf; }  /* Mozilla Firefox 19+ */
 .form-control:-ms-input-placeholder { color: #bfbfbf; }  /* Internet Explorer 10-11 */
 .form-control::-ms-input-placeholder { color: #bfbfbf; }  /* Microsoft Edge */
+
+/*Style for readonly fields*/
+.form-control[readonly] { background-color: #a7a7a7; border-color: #6c757d; }
 </style>
