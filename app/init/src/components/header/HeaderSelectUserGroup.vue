@@ -22,13 +22,14 @@
 
 <script>
 export default {
-    data: function () {
-        return {
-            'selectedUserGroup': this.$store.state.currentUser.selectedUserGroup,
-            'userGroups': this.$store.state.currentUser.userGroups
-        }
-    },
     computed: {
+        selectedUserGroup() {
+            this.displayedUserGroup = this.$store.state.currentUser.selectedUserGroup;
+            return this.$store.state.currentUser.selectedUserGroup
+        },
+        userGroups() {
+            return this.$store.state.currentUser.userGroups
+        },
         show(){
             let roles = ['admin', 'advanced', 'standard']
             return roles.includes(this.$store.state.currentUser.role)
@@ -37,7 +38,6 @@ export default {
     methods: {
         selectUserGroup(userGroup){
             this.$store.state.currentUser.selectedUserGroup = userGroup;
-            this.selectedUserGroup = userGroup;
         }
     }
 }

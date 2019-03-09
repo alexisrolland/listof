@@ -9,6 +9,7 @@ The anonymous role is the default role used to query the database for non authen
 It grants permissions to read lists and their values which belong to the Public group only.
 */
 CREATE ROLE anonymous;
+GRANT user_group_1 TO anonymous;  /*Grant Public user group to anonymous*/
 
 /*base schema*/
 GRANT USAGE ON SCHEMA base TO anonymous;
@@ -98,3 +99,12 @@ WHEN TAG IN (
     'DROP TABLE'
 )
 EXECUTE PROCEDURE base.refresh_permission();
+
+
+
+/*Create row level security policies*/
+CREATE POLICY user_group_policy on base.sys_list FOR ALL TO PUBLIC
+USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));
+
+CREATE POLICY user_group_policy on base.sys_attribute FOR ALL TO PUBLIC
+USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));

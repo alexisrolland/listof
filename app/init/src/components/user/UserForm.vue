@@ -61,7 +61,8 @@
                         </user-button-save>
                         
                         <user-button-reset-password
-                            v-on:resetPassword="resetPassword">
+                            v-on:resetPassword="resetPassword"
+                            v-bind:userId="userId">
                         </user-button-reset-password>
                         
                         <user-button-close>

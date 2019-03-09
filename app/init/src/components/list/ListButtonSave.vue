@@ -21,6 +21,7 @@ export default {
                         'sysListPatch': {
                             "name": this.list.name,
                             "description": this.list.description,
+                            "userGroupId": this.list.userGroupId
                         }
                     }
                 };
@@ -44,7 +45,8 @@ export default {
                     'variables': {
                         'sysList': {
                             'name': this.list.name,
-                            'description': this.list.description
+                            'description': this.list.description,
+                            "userGroupId": this.list.userGroupId
                         }
                     }
                 };

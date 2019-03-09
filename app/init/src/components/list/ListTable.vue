@@ -9,6 +9,9 @@
                     Description
                 </th>
                 <th scope="col">
+                    User Group
+                </th>
+                <th scope="col">
                     Actions
                 </th>
             </tr>
@@ -22,6 +25,9 @@
                 </td>
                 <td>
                     {{ list.description }}
+                </td>
+                <td>
+                    {{ list.sysUserGroupByUserGroupId.name }}
                 </td>
                 <td>
                     <router-link v-if="showEditValues" class="badge badge-secondary" v-bind:to="'lists/' + list.id + '/values'">
