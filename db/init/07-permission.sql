@@ -103,6 +103,9 @@ EXECUTE PROCEDURE base.refresh_permission();
 
 
 /*Create row level security policies*/
+ALTER TABLE base.sys_list ENABLE ROW LEVEL SECURITY;
+ALTER TABLE base.sys_attribute ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY user_group_policy on base.sys_list FOR ALL TO PUBLIC
 USING (pg_has_role('user_group_' || user_group_id, 'MEMBER'));
 
