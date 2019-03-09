@@ -4,6 +4,7 @@ export const queryGetAllLists = `query getAllLists($first: Int $offset: Int){
             id
             name
             description
+            sysUserGroupByUserGroupId { name }
         }
         totalCount
     }
@@ -15,6 +16,7 @@ export const queryGetList = `query getList($id: Int!) {
         name
         description
         tableName
+        userGroupId
         sysAttributesByListId {
             nodes {
                 id

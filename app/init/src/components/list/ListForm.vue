@@ -5,6 +5,7 @@
         <form>
             <div class="form-row">
                 <div class="col-md-8">
+
                     <!-- List Form -->
                     <div class="form-group required">
                         <label for="listName" class="col-form-label">
@@ -17,6 +18,7 @@
                             placeholder="Type list name"
                             v-model="list.name" />
                     </div>
+
                     <div class="form-group required">
                         <label for="listDescription" class="col-form-label">
                             Description:
@@ -28,6 +30,11 @@
                             rows="3"
                             v-model="list.description" />
                     </div>
+
+                    <list-select-user-group
+                        v-model="list.userGroupId"
+                        v-on:changeUserGroup="getUserGroup">
+                    </list-select-user-group>
 
                     <!-- Button Menu -->
                     <div>
@@ -72,6 +79,7 @@
 </template>
 
 <script>
+import ListSelectUserGroup from './ListSelectUserGroup.vue';
 import ListButtonSave from './ListButtonSave.vue';
 import ListButtonAddAttribute from './ListButtonAddAttribute.vue';
 import ListButtonEditValue from './ListButtonEditValue.vue';
@@ -82,6 +90,7 @@ import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
     components: {
+        'list-select-user-group': ListSelectUserGroup,
         'list-button-save': ListButtonSave,
         'list-button-add-attribute': ListButtonAddAttribute,
         'list-button-edit-value': ListButtonEditValue,
@@ -124,6 +133,16 @@ export default {
                 }
             );
         };
+    },
+    methods: {
+        getUserGroup(value) {
+            // Get user group from child component
+            if (value != null) {
+                this.list['userGroupId'] = value;
+            } else {
+                this.list['userGroupId'] = null;
+            }
+        }
     }
 }
 </script>

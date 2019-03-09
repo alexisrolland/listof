@@ -7,7 +7,8 @@
         </span>
 
         <form class="form-inline">
-            <header-select-user-group></header-select-user-group>
+            <!-- User group is picked when creating lists instead of at session level -->
+            <!-- <header-select-user-group></header-select-user-group> -->
             <header-button-admin></header-button-admin>
             <header-button-login></header-button-login>
             <header-button-logout></header-button-logout>
