@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 class="mt-5">{{ list.name }}</h1>
-        <p>User Group: {{ list.sysUserGroupByUserGroupId.name }}</br>
+        <p>User Group: {{ list.sysUserGroupByUserGroupId.name }}<br>
         Description: {{ list.description }}</p>
 
          <!-- Button Menu -->
@@ -45,7 +45,9 @@ export default {
         // Get list details
         let payload = {
             'query': this.$store.state.queryGetList,
-            'variables': { 'id': this.listId }
+            'variables': {
+                'id': parseInt(this.listId)
+            }
         };
         let headers = {};
         if (this.$session.exists()) {

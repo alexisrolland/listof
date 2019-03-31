@@ -142,7 +142,7 @@ export default {
             let payload = {
                 'query': this.$store.state.queryGetUser,
                 'variables': {
-                    'id': this.userId
+                    'id': parseInt(this.userId)
                 }
             };
             let headers = {};

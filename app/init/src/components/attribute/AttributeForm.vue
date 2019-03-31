@@ -174,7 +174,7 @@ export default {
             let payload = {
                 'query': this.$store.state.queryGetAttribute,
                 'variables': {
-                    'id': this.attributeId
+                    'id': parseInt(this.attributeId)
                 }
             };
             let headers = {};

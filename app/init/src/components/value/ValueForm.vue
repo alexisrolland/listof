@@ -213,7 +213,9 @@ export default {
                         // Execute GraphQL query to get value
                         let payloadValue = {
                             'query': graphQlQuery,
-                            'variables': { 'id': this.valueId }
+                            'variables': {
+                                'id': parseInt(this.valueId)
+                            }
                         };
                         let headers = {};
                         if (this.$session.exists()) {

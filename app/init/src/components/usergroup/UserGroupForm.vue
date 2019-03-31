@@ -70,7 +70,7 @@ export default {
             let payload = {
                 'query': this.$store.state.queryGetUserGroup,
                 'variables': {
-                    'id': this.userGroupId
+                    'id': parseInt(this.userGroupId)
                 }
             };
             let headers = {};

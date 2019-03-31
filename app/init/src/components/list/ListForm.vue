@@ -116,7 +116,7 @@ export default {
             let payload = {
                 'query': this.$store.state.queryGetList,
                 'variables': {
-                    'id': this.listId
+                    'id': parseInt(this.listId)
                 }
             };
             let headers = {};
