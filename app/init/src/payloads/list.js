@@ -93,6 +93,7 @@ export const mutationSearchList = `mutation searchList($keyword: String) {
             id
             name
             description
+            sysUserGroupByUserGroupId { name }
         }
     }
 }`;
