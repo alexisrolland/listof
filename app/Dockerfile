@@ -8,6 +8,9 @@ WORKDIR $PROJECT_DIR
 # Copy both 'package.json' and 'package-lock.json' (if available)
 COPY ./init/package*.json ./
 
+# Install Vue CLI
+RUN npm install -g vue-cli
+
 # Install project dependencies
 RUN npm install \
     && npm install --save vue-router \
@@ -17,5 +20,5 @@ RUN npm install \
     && npm install --save vue-session \
     && npm install --save @riophae/vue-treeselect
 
-# Copy project files and folders to the current working directory (i.e. '/srv/app' folder)
-COPY ./init/ .
+# Copy project files and folders to the current working directory
+COPY ./init/ ./

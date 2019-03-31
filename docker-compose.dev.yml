@@ -16,7 +16,9 @@ services:
 
   app:
     volumes:
-      - ./app/init/:/srv/app
+      - ./app/init/libs:/srv/app/libs
+      - ./app/init/src:/srv/app/src
+      - ./app/init/index.html:/srv/app/index.html
     expose:
       - 8080
     ports:
