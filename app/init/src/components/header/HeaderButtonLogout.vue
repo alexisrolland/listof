@@ -16,7 +16,11 @@ export default {
                 'userGroups': [{
                     id: 0,
                     name: ''
-                }]
+                }],
+                selectedUserGroup: {
+                    id: 0,
+                    name: ''
+                }
             };
             this.$store.state.currentUser = currentUser;
             this.$router.push({
