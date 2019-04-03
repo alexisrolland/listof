@@ -126,14 +126,26 @@ COMMENT ON FUNCTION base.create_list_column IS
 CREATE OR REPLACE FUNCTION base.rename_list_column()
 RETURNS TRIGGER AS $$
 DECLARE
+    v_alter_statement TEXT;
+    v_alter_table TEXT;
     v_table_name TEXT;
 BEGIN
     SELECT table_name 
     INTO v_table_name
     FROM base.sys_list
     WHERE id = OLD.list_id;
+    v_alter_table = format('ALTER TABLE public.%I ', v_table_name);
 
-    EXECUTE format('ALTER TABLE public.%I RENAME COLUMN %I TO %I;', v_table_name, OLD.column_name, NEW.column_name);
+    /* Rename column*/
+    v_alter_statement = v_alter_table || format('RENAME COLUMN %I TO %I;', OLD.column_name, NEW.column_name);
+    EXECUTE v_alter_statement;
+
+    /*Test if attribute is a foreign key of another list*/
+    IF (NEW.linked_attribute_id IS NOT NULL) THEN
+        v_alter_statement = v_alter_table || format('RENAME CONSTRAINT %I_%I_fkey TO %I_%I_fkey;', v_table_name, OLD.column_name, v_table_name, NEW.column_name);
+        EXECUTE v_alter_statement;
+    END IF;
+
     RETURN NEW;
 END;
 $$ language plpgsql;
