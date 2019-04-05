@@ -79,8 +79,27 @@ COMMENT ON FUNCTION base.create_list_table IS
 /*Create function to automatically rename a list table when a list is renamed*/
 CREATE OR REPLACE FUNCTION base.rename_list_table()
 RETURNS TRIGGER AS $$
+DECLARE
+    v_alter_statement TEXT;
+    v_alter_table TEXT;
+    v_column_name RECORD;
 BEGIN
-    EXECUTE format('ALTER TABLE IF EXISTS public.%I RENAME TO %I;', OLD.table_name, NEW.table_name);
+    /*Select attributes which are foreign keys, rename corresponding integrity constraints*/
+    v_alter_table = format('ALTER TABLE public.%I ', OLD.table_name);
+    FOR v_column_name IN
+        SELECT b.column_name
+        FROM base.sys_list a
+        INNER JOIN base.sys_attribute b ON a.id=b.list_id
+        WHERE a.id=NEW.id
+        AND b.linked_attribute_id IS NOT NULL
+    LOOP
+        EXECUTE(v_alter_table || format('RENAME CONSTRAINT %I_%I_fkey TO %I_%I_fkey;', OLD.table_name, v_column_name.column_name, NEW.table_name, v_column_name.column_name));
+    END LOOP;
+
+    /*Rename table*/
+    v_alter_statement = v_alter_table || format('RENAME TO %I;', NEW.table_name);
+    EXECUTE v_alter_statement;
+
     RETURN NEW;
 END;
 $$ language plpgsql;
