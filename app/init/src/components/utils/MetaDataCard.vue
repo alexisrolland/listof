@@ -1,10 +1,27 @@
 <template>
     <p class="card text-white bg-secondary small p-2">
-        id: {{id}} <br>
-        Created date: {{createdDate}} <br>
-        Created by: {{createdBy}} <br>
-        Updated date: {{updatedDate}} <br>
-        Updated by: {{updatedBy}}
+        <table>
+            <tr>
+                <td>Id:</td>
+                <td>{{id}}</td>
+            </tr>
+            <tr>
+                <td>Created Date:</td>
+                <td>{{createdDate}}</td>
+            </tr>
+            <tr>
+                <td>Created By:</td>
+                <td>{{createdBy}}</td>
+            </tr>
+            <tr>
+                <td>Updated Date:</td>
+                <td>{{updatedDate}}</td>
+            </tr>
+            <tr>
+                <td>Updated By:</td>
+                <td>{{updatedBy}}</td>
+            </tr>
+        </table>
     </p>
 </template>
 
