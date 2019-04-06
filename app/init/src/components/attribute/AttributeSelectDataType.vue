@@ -6,6 +6,8 @@
         <select class="form-control col-sm"
             id="dataType"
             required="true"
+            v-bind:disabled="isReadOnly"
+            v-bind:readonly="isReadOnly"
             v-model="dataTypeId"
             v-on:change="change">
                 <option v-for="dataType in dataTypes" v-bind:value="dataType.id" v-bind:key="dataType.id">
@@ -24,6 +26,15 @@ export default {
         return {
             'dataTypes': [],
             'dataTypeId': this.value
+        }
+    },
+    computed: {
+        attributeId() {
+            return this.$route.params.attributeId;
+        },
+        isReadOnly() {
+            if(this.attributeId != 'new'){ return true; }
+            else { return false; }
         }
     },
     watch: {
