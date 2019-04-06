@@ -38,6 +38,7 @@
                                 id="mandatory"
                                 type="checkbox"
                                 value=""
+                                v-bind:disabled="isReadOnly"
                                 v-model="attribute.flagMandatory"/>
                             <label for="mandatory" class="custom-control-label">
                                 Mandatory
@@ -50,6 +51,7 @@
                                 id="unique"
                                 type="checkbox"
                                 value=""
+                                v-bind:disabled="isReadOnly"
                                 v-model="attribute.flagUnique"/>
                             <label for="unique" class="custom-control-label">
                                 Unique
@@ -61,6 +63,7 @@
                     <attribute-select-attribute
                         v-if="showLinkedAttribute"
                         v-model="attribute.linkedAttributeId"
+                        v-bind:linkedAttribute="attribute.sysAttributeByLinkedAttributeId"
                         v-on:changeLinkedAttribute="getLinkedAttribute">
                     </attribute-select-attribute>
 
@@ -153,11 +156,15 @@ export default {
         showLinkedAttribute() {
             if(this.attributeId == 'new'){ return true; }
             else if (this.attribute.linkedAttributeId != null){ return true; }
-            else { return false;}
+            else { return false; }
         },
         showDataType() {
             if(this.attribute.linkedAttributeId == null){ return true; }
-            else { return false;}
+            else { return false; }
+        },
+        isReadOnly() {
+            if(this.attributeId != 'new'){ return true; }
+            else { return false; }
         }
     },
     methods: {
