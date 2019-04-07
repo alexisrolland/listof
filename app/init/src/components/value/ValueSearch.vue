@@ -4,8 +4,7 @@
         <div class="input-group mb-5">
             <!-- Selected attribute to search -->
             <div id="inputGroupPrepend" class="dropdown input-group-prepend">
-                <button class="btn btn-secondary dropdown-toggle ml-1"
-                    id="admin"
+                <button class="btn btn-secondary dropdown-toggle"
                     type="button"
                     data-toggle="dropdown"
                     aria-haspopup="true"
@@ -76,7 +75,7 @@ export default {
             },
             'keyword': null,
             'searchAttribute': {
-                'name': null
+                'name': 'Search Attribute'
             }
         }
     },
@@ -90,9 +89,9 @@ export default {
 
         // GraphQL attributes name
         let attributes = this.list.sysAttributesByListId.nodes;
+        this.graphQLAttributeName = '';
         for (let i = 0; i < attributes.length; i++) {
             attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true); // Example colum_name > columnName
-            this.graphQLAttributeName = '';
             this.graphQLAttributeName = this.graphQLAttributeName + ' ' + attributes[i]['graphQlAttributeName'];
 
             // If attribute is linked to another list attribute, adjust query to fetch linked attribute value
@@ -172,7 +171,7 @@ export default {
                 let payload = {
                     'query': this.graphQlMutation,
                     'variables': {
-                        'columnName': this.searchAttribute.graphQlAttributeName,
+                        'columnName': this.searchAttribute.columnName,
                         'keyword': this.keyword
                     }
                 };
