@@ -49,7 +49,7 @@ COMMENT ON FUNCTION base.generate_table_name IS
 
 
 
-/*Create function to automatically create a list table when a list is created*/
+/*Create function to automatically create a table when a list is created*/
 CREATE OR REPLACE FUNCTION base.create_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -65,18 +65,41 @@ BEGIN
         NEW.table_name
     );
 
-    -- Set ownership to advanced user to allow all advanced users to manage table structure
+    /*Set ownership to advanced user to allow all advanced users to manage table structure*/
     EXECUTE format('ALTER TABLE public.%I OWNER TO advanced;', NEW.table_name);
+
+    /*Create function to search list table*/
+    EXECUTE format(
+        $code$
+            CREATE OR REPLACE FUNCTION public.search_%I(column_name TEXT, keyword TEXT)
+            RETURNS SETOF public.%I AS $str$
+                BEGIN
+                    RETURN QUERY
+                    EXECUTE 'SELECT a.*
+                    FROM public.%I a
+                    WHERE CAST(a.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
+                    ORDER BY ' || column_name || ' ASC';
+                END;
+            $str$ language plpgsql;
+        $code$,
+        NEW.table_name,
+        NEW.table_name,
+        NEW.table_name
+    );
+
+    /*Add comment to search function*/
+    EXECUTE format('COMMENT ON FUNCTION public.search_%I IS ''Function used to search list based on keywords.''', NEW.table_name);
+
     RETURN NEW;
 END;
 $$ language plpgsql;
 
 COMMENT ON FUNCTION base.create_list_table IS
-'Function used to automatically create a list table when a list is created.';
+'Function used to automatically create a table when a list is created.';
 
 
 
-/*Create function to automatically rename a list table when a list is renamed*/
+/*Create function to automatically rename a table when a list is renamed*/
 CREATE OR REPLACE FUNCTION base.rename_list_table()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -93,23 +116,55 @@ BEGIN
         WHERE a.id=NEW.id
         AND b.linked_attribute_id IS NOT NULL
     LOOP
-        EXECUTE(v_alter_table || format('RENAME CONSTRAINT %I_%I_fkey TO %I_%I_fkey;', OLD.table_name, v_column_name.column_name, NEW.table_name, v_column_name.column_name));
+        EXECUTE(v_alter_table || format(
+            'RENAME CONSTRAINT %I_%I_fkey TO %I_%I_fkey;',
+            OLD.table_name,
+            v_column_name.column_name,
+            NEW.table_name,
+            v_column_name.column_name
+        ));
     END LOOP;
 
     /*Rename table*/
     v_alter_statement = v_alter_table || format('RENAME TO %I;', NEW.table_name);
     EXECUTE v_alter_statement;
 
+    /*Update function to search list table based on its new name*/
+    EXECUTE format(
+        $code$
+            CREATE OR REPLACE FUNCTION public.search_%I(column_name TEXT, keyword TEXT)
+            RETURNS SETOF public.%I AS $str$
+                BEGIN
+                    RETURN QUERY
+                    EXECUTE 'SELECT a.*
+                    FROM public.%I a
+                    WHERE CAST(a.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
+                    ORDER BY ' || column_name || ' ASC';
+                END;
+            $str$ language plpgsql;
+        $code$,
+        OLD.table_name,
+        NEW.table_name,
+        NEW.table_name
+    );
+
+    /*Rename function to reflect new table name*/
+    EXECUTE format(
+        'ALTER FUNCTION public.search_%I RENAME TO search_%I',
+        OLD.table_name,
+        NEW.table_name
+    );
+
     RETURN NEW;
 END;
 $$ language plpgsql;
 
 COMMENT ON FUNCTION base.rename_list_table IS
-'Function used to automatically rename a list table when a list is renamed.';
+'Function used to automatically rename a table when a list is renamed.';
 
 
 
-/*Create function to automatically delete a list table when a list is deleted*/
+/*Create function to automatically delete a table when a list is deleted*/
 CREATE OR REPLACE FUNCTION base.delete_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -119,7 +174,7 @@ END;
 $$ language plpgsql;
 
 COMMENT ON FUNCTION base.delete_list_table IS
-'Function used to automatically delete a list table when a list is deleted.';
+'Function used to automatically delete a table when a list is deleted.';
 
 
 
