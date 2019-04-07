@@ -273,6 +273,8 @@ CREATE TRIGGER attribute_rename_list_column AFTER UPDATE
 ON base.sys_attribute FOR EACH ROW WHEN (OLD.column_name IS DISTINCT FROM NEW.column_name)
 EXECUTE PROCEDURE base.rename_list_column();
 
+
+
 /*Trigger on update of parent list*/
 CREATE TRIGGER list_update_attribute_user_group_id AFTER UPDATE
 ON base.sys_list FOR EACH ROW WHEN (OLD.user_group_id IS DISTINCT FROM NEW.user_group_id) 
