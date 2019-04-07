@@ -60,3 +60,15 @@ export const mutationDeleteValue = `mutation deleteValue($id: Int!) {
         }
     }
 }`;
+
+// Generic mutation to search a list of values
+export const mutationSearchValue = `mutation searchValue($columnName: String, $keyword: String) {
+    search<GraphQlMutationName>(input: {columnName: $columnName, keyword: $keyword}) {
+        <graphQlMutationListName> {
+            id
+            createdDate
+            updatedDate
+            <graphQlAttributeName>
+        }
+    }
+}`;

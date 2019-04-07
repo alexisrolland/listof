@@ -59,6 +59,7 @@ export const store = new Vuex.Store({
         mutationCreateValue: ValuePayload.mutationCreateValue,
         mutationUpdateValue: ValuePayload.mutationUpdateValue,
         mutationDeleteValue: ValuePayload.mutationDeleteValue,
+        mutationSearchValue: ValuePayload.mutationSearchValue,
 
         // Users queries and mutations
         queryGetAllUsers: UserPayload.queryGetAllUsers,

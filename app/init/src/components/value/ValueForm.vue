@@ -9,7 +9,7 @@
             <value-button-add-value v-bind:listId="list.id"></value-button-add-value>
         </div>
 
-        <h1 class="mt-5">Edit Value</h1>
+        <h2 class="mt-5">Edit Value</h2>
         <form>
             <div class="form-row">
                 <div class="col-md-8">
