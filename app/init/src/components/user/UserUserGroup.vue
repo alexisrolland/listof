@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mt-5">User Groups</h2>
+        <h1 class="mt-5">User Groups</h1>
 
         <div class="form-group">
             <div class="w-50 float-left mr-2 mb-4">

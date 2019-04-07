@@ -1,8 +1,8 @@
 <template>
     <div>
         <h1 class="mt-5">{{ list.name }}</h1>
-        <!-- <p>User Group: {{ list.sysUserGroupByUserGroupId.name }}<br>
-        Description: {{ list.description }}</p> -->
+        <p>User Group: {{ list.sysUserGroupByUserGroupId.name }}<br>
+        Description: {{ list.description }}</p>
 
          <!-- Button Menu -->
         <div>
@@ -15,7 +15,7 @@
             </value-button-edit-list>
         </div>
 
-        <h2 class="mt-5">Values</h2>
+        <h1 class="mt-5">Values</h1>
 
         <!-- Values Search -->
         <value-search v-if="list.id" v-bind:list="list"></value-search>
@@ -26,14 +26,12 @@
 import ValueButtonAddValue from './ValueButtonAddValue.vue';
 import ValueButtonEditList from './ValueButtonEditList.vue';
 import ValueSearch from './ValueSearch.vue';
-import ValueTable from './ValueTable.vue';
 
 export default {
     components: {
         'value-button-add-value': ValueButtonAddValue,
         'value-button-edit-list': ValueButtonEditList,
-        'value-search': ValueSearch,
-        'value-table': ValueTable
+        'value-search': ValueSearch
     },
     data: function () {
         return {

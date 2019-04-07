@@ -1,21 +1,36 @@
 <template>
     <div class="mt-5">
         <!-- Search bar -->
-        <div class="input-group">
-            <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroupPrepend">@</span>
+        <div class="input-group mb-5">
+            <!-- Selected attribute to search -->
+            <div id="inputGroupPrepend" class="dropdown input-group-prepend">
+                <button class="btn btn-secondary dropdown-toggle ml-1"
+                    id="admin"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    {{ searchAttribute.name }}
+                </button>
+                <!-- Attributes to search -->
+                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="admin">
+                    <a class="dropdown-item"
+                        href="#"
+                        v-for="attribute in attributes"
+                        v-bind:key="attribute.id"
+                        v-on:click="setSearchAttribute(attribute)">
+                            {{ attribute.name }}
+                    </a>
+                </div>
             </div>
-            <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
-            <div class="invalid-feedback">
-                Please choose a username.
-            </div>
+            <input class="form-control form-control-lg"
+                type="search"
+                aria-label="Search"
+                aria-describedby="inputGroupPrepend"
+                placeholder="Search values"
+                v-model="keyword"
+                v-on:keyup.enter="search">
         </div>
-        <input class="form-control form-control-lg mb-5"
-            type="search"
-            aria-label="Search"
-            placeholder="Search values"
-            v-model="keyword"
-            v-on:keyup.enter="search">
 
         <!-- List of Values -->
         <value-table
@@ -59,7 +74,10 @@ export default {
                 'nbItems': 10,
                 'isActive': true
             },
-            'keyword': null
+            'keyword': null,
+            'searchAttribute': {
+                'name': null
+            }
         }
     },
     created: function () {
@@ -154,7 +172,7 @@ export default {
                 let payload = {
                     'query': this.graphQlMutation,
                     'variables': {
-                        'columnName': 'attribute', //this.columnName,
+                        'columnName': this.searchAttribute.graphQlAttributeName,
                         'keyword': this.keyword
                     }
                 };
@@ -182,6 +200,9 @@ export default {
                     }
                 );
             }
+        },
+        setSearchAttribute(attribute) {
+            this.searchAttribute = attribute;
         }
     }
 }
