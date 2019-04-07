@@ -41,7 +41,7 @@ export default {
         change(val) {
             let attributeValue = {
                 'attribute': this.attribute.graphQlAttributeName,
-                'value': this.inputValue
+                'value': parseInt(this.inputValue)
             }
             this.$emit('changeAttributeValue', attributeValue);
         }
