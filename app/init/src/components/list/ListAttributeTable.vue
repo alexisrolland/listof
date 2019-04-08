@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mt-5">Attributes</h2>
+        <h1 class="mt-5">Attributes</h1>
 
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>

@@ -25,7 +25,7 @@
 export default {
     props: {
         attribute: Object,
-        value: String
+        value: null // Set to null to avoid alerts because real and decimal value expect different types
     },
     data: function () {
         return {
@@ -41,7 +41,7 @@ export default {
         change(val) {
             let attributeValue = {
                 'attribute': this.attribute.graphQlAttributeName,
-                'value': this.inputValue
+                'value': parseFloat(this.inputValue)
             }
             this.$emit('changeAttributeValue', attributeValue);
         }

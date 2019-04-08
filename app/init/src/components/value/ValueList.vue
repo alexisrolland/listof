@@ -15,21 +15,23 @@
             </value-button-edit-list>
         </div>
 
-        <!-- List of Values -->
-        <value-table v-if="list.id" v-bind:list="list"></value-table>
+        <h1 class="mt-5">Values</h1>
+
+        <!-- Values Search -->
+        <value-search v-if="list.id" v-bind:list="list"></value-search>
     </div>
 </template>
 
 <script>
 import ValueButtonAddValue from './ValueButtonAddValue.vue';
 import ValueButtonEditList from './ValueButtonEditList.vue';
-import ValueTable from './ValueTable.vue';
+import ValueSearch from './ValueSearch.vue';
 
 export default {
     components: {
         'value-button-add-value': ValueButtonAddValue,
         'value-button-edit-list': ValueButtonEditList,
-        'value-table': ValueTable
+        'value-search': ValueSearch
     },
     data: function () {
         return {
