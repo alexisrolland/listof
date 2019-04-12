@@ -168,7 +168,7 @@ COMMENT ON FUNCTION base.rename_list_table IS
 CREATE OR REPLACE FUNCTION base.delete_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
-    /*Drop list search function*/
+    /*Drop search list function*/
     EXECUTE format('DROP FUNCTION public.search_%I;', OLD.table_name);
 
     /*Drop list table*/
