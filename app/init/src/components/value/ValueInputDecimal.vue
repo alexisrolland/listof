@@ -5,7 +5,7 @@
             {{ attribute.name }}:
         </label>
 
-        <!-- Number input, used for data type real (id: 7) -->
+        <!-- Number input, used for data type decimal (id: 5) -->
         <input class="form-control col-sm"
             type="number"
             v-bind:id="attribute.id"
@@ -25,7 +25,7 @@
 export default {
     props: {
         attribute: Object,
-        value: Number
+        value: String
     },
     data: function () {
         return {
@@ -41,7 +41,7 @@ export default {
         change(val) {
             let attributeValue = {
                 'attribute': this.attribute.graphQlAttributeName,
-                'value': parseFloat(this.inputValue)
+                'value': this.inputValue
             }
             this.$emit('changeAttributeValue', attributeValue);
         }

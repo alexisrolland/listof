@@ -46,6 +46,14 @@
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-timestamp>
 
+                                <!-- Text input, used for data types decimal (id: 5) -->
+                                <value-input-decimal
+                                    v-if="[5].includes(attribute.dataTypeId)"
+                                    v-bind:attribute="attribute"
+                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-on:changeAttributeValue="getAttributeValue">
+                                </value-input-decimal>
+                                
                                 <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
                                 <value-input-integer
                                     v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
@@ -54,9 +62,9 @@
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-integer>
 
-                                <!-- Text input, used for non integer data types decimal (id: 5), real (id: 7) -->
+                                <!-- Text input, used for data types real (id: 7) -->
                                 <value-input-real
-                                    v-if="[5, 7].includes(attribute.dataTypeId)"
+                                    v-if="[7].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
                                     v-model="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
@@ -119,6 +127,7 @@
 import ValueInputCheckbox from './ValueInputCheckbox.vue';
 import ValueInputDate from './ValueInputDate.vue';
 import ValueInputTimestamp from './ValueInputTimestamp.vue';
+import ValueInputDecimal from './ValueInputDecimal.vue';
 import ValueInputInteger from './ValueInputInteger.vue';
 import ValueInputReal from './ValueInputReal.vue';
 import ValueInputText from './ValueInputText.vue';
@@ -135,6 +144,7 @@ export default {
         'value-input-checkbox': ValueInputCheckbox,
         'value-input-date': ValueInputDate,
         'value-input-timestamp': ValueInputTimestamp,
+        'value-input-decimal': ValueInputDecimal,
         'value-input-integer': ValueInputInteger,
         'value-input-real': ValueInputReal,
         'value-input-text': ValueInputText,
