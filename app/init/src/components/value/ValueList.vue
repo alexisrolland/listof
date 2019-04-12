@@ -1,8 +1,9 @@
 <template>
     <div>
         <h1 class="mt-5">{{ list.name }}</h1>
-        <p>User Group: {{ list.sysUserGroupByUserGroupId.name }}<br>
+        <p v-if="list.id">User Group: {{ list.sysUserGroupByUserGroupId.name }}<br>
         Description: {{ list.description }}</p>
+        
 
          <!-- Button Menu -->
         <div>
