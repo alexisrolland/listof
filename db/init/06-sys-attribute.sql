@@ -196,11 +196,14 @@ BEGIN
         EXECUTE v_alter_statement;
     END IF;
 
+    /*Drop list view to be able to rename table column*/
+    EXECUTE format('DROP VIEW public.vw_%I;', v_table_name);
+
     /*Delete table column*/
     v_alter_statement = v_alter_table || format('DROP COLUMN %I;', OLD.column_name);
     EXECUTE v_alter_statement;
 
-    /*Recreate view to be used by search function*/
+    /*Recreate list view to be used by search function*/
     EXECUTE format('SELECT base.create_list_view(''%I'');', v_table_name);
 
     RETURN OLD;
