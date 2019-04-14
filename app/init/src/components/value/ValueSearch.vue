@@ -15,6 +15,11 @@
                 <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="admin">
                     <a class="dropdown-item"
                         href="#"
+                        v-on:click="setSearchAttribute('all')">
+                            Search all
+                    </a>
+                    <a class="dropdown-item"
+                        href="#"
                         v-for="attribute in attributes"
                         v-bind:key="attribute.id"
                         v-on:click="setSearchAttribute(attribute)">
@@ -75,7 +80,8 @@ export default {
             },
             'keyword': null,
             'searchAttribute': {
-                'name': 'Search Attribute'
+                'name': 'Search all',
+                'columnName': 'search_all'
             }
         }
     },
@@ -201,7 +207,15 @@ export default {
             }
         },
         setSearchAttribute(attribute) {
-            this.searchAttribute = attribute;
+            if(attribute == 'all') {
+                this.searchAttribute = {
+                    'name': 'Search all',
+                    'columnName': 'search_all'
+                }
+            }
+            else {
+                this.searchAttribute = attribute;
+            }
         }
     }
 }

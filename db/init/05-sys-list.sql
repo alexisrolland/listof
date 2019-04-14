@@ -91,6 +91,7 @@ DECLARE
     v_counter INTEGER;
     v_create TEXT;
     v_select TEXT;
+    v_search_all_column TEXT;
     v_from TEXT;
     v_join TEXT;
     v_attribute RECORD;
@@ -98,6 +99,7 @@ BEGIN
     v_counter = 0;
     v_create = format('CREATE OR REPLACE VIEW public.vw_%I AS SELECT "0".id', list_table_name);
     v_select = '';
+    v_search_all_column = ', CAST("0".id AS TEXT)';
     v_from = format(' FROM public.%I "0"', list_table_name);
     v_join = '';
 
@@ -115,13 +117,16 @@ BEGIN
         v_counter = v_counter + 1;
         IF v_attribute.linked_column_name IS NULL THEN
             v_select = v_select || format(', "0".%I', v_attribute.column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || CAST("0".%I AS TEXT)', v_attribute.column_name);
         ELSE
             v_select = v_select || format(', %I.%I AS %I', v_counter, v_attribute.linked_column_name, v_attribute.column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || CAST(%I.%I AS TEXT)', v_counter, v_attribute.linked_column_name);
             v_join = v_join || format(' LEFT JOIN public.%I %I ON "0".%I=%I.id', v_attribute.linked_table_name, v_counter, v_attribute.column_name, v_counter);
         END IF;
     END LOOP;
 
-    EXECUTE v_create || v_select || v_from || v_join;
+    v_search_all_column = v_search_all_column || ' AS search_all';
+    EXECUTE v_create || v_select || v_search_all_column || v_from || v_join;
 
     /*Add comment to view*/
     EXECUTE format('COMMENT ON VIEW public.vw_%I IS ''View used to search list based on keywords.''', list_table_name);
@@ -154,11 +159,9 @@ BEGIN
                     RETURN QUERY
                     EXECUTE 'SELECT a.*
                     FROM public.%I a
-                    WHERE a.id IN (
-                        SELECT id
-                        FROM public.vw_%I b
-                        WHERE CAST(b.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
-                    ) ORDER BY ' || column_name || ' ASC';
+                    INNER JOIN public.vw_%I b ON a.id = b.id
+                    WHERE CAST(b.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
+                    ORDER BY b.' || column_name || ' ASC';
                 END;
             $str$ language plpgsql;
         $code$,
