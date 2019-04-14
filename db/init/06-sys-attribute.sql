@@ -34,6 +34,7 @@ CREATE OR REPLACE FUNCTION base.generate_column_name()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.column_name = LOWER(REPLACE(NEW.name, ' ', '_'));
+
     RETURN NEW;
 END;
 $$ language plpgsql;
@@ -113,6 +114,9 @@ BEGIN
         EXECUTE v_alter_statement;
     END IF;
 
+    /*Recreate view to be used by search function*/
+    EXECUTE format('SELECT base.create_list_view(''%I'');', v_table_name);
+
     RETURN NEW;
 END;
 $$ language plpgsql;
@@ -142,9 +146,15 @@ BEGIN
         EXECUTE v_alter_statement;
     END IF;
 
-    /*Rename column*/
+    /*Drop list view to be able to rename table column*/
+    EXECUTE format('DROP VIEW public.vw_%I;', v_table_name);
+
+    /*Rename table column*/
     v_alter_statement = v_alter_table || format('RENAME COLUMN %I TO %I;', OLD.column_name, NEW.column_name);
     EXECUTE v_alter_statement;
+
+    /*Recreate list view to be used by search function*/
+    EXECUTE format('SELECT base.create_list_view(''%I'');', v_table_name);
 
     RETURN NEW;
 END;
@@ -185,9 +195,12 @@ BEGIN
         EXECUTE v_alter_statement;
     END IF;
 
-    /*Delete foreign key column*/
+    /*Delete table column*/
     v_alter_statement = v_alter_table || format('DROP COLUMN %I;', OLD.column_name);
     EXECUTE v_alter_statement;
+
+    /*Recreate view to be used by search function*/
+    EXECUTE format('SELECT base.create_list_view(''%I'');', v_table_name);
 
     RETURN OLD;
 END;
