@@ -10,7 +10,9 @@
             v-bind:placeholder="'Select value from ' + attribute.sysAttributeByLinkedAttributeId.sysListByListId.name"
             v-model="selectedValue"
             v-bind:options="options"
-            v-bind:multiple="false" />
+            v-bind:multiple="false"
+            v-bind:disabled="isReadOnly"
+            v-bind:readonly="isReadOnly"/>
 
         <!-- Description -->
         <small class="form-text text-muted" v-bind:id="attribute.id">
@@ -35,6 +37,12 @@ export default {
         return {
             'selectedValue': this.value,
             'options': []
+        }
+    },
+    computed: {
+        isReadOnly(){
+            let roles = ['admin', 'advanced']
+            return !roles.includes(this.$store.state.currentUser.role)
         }
     },
     watch: {

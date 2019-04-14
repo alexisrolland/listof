@@ -15,6 +15,8 @@
                             id="listName"
                             type="text"
                             required="required"
+                            v-bind:disabled="isReadOnly"
+                            v-bind:readonly="isReadOnly"
                             placeholder="Type list name"
                             v-model="list.name" />
                     </div>
@@ -26,6 +28,8 @@
                         <textarea class="form-control col-sm"
                             id="listDescription"
                             required="true"
+                            v-bind:disabled="isReadOnly"
+                            v-bind:readonly="isReadOnly"
                             placeholder="Type list description"
                             rows="3"
                             v-model="list.description" />
@@ -108,6 +112,10 @@ export default {
     computed: {
         listId() {
             return this.$route.params.listId;
+        },
+        isReadOnly(){
+            let roles = ['admin', 'advanced']
+            return !roles.includes(this.$store.state.currentUser.role)
         }
     },
     created: function () {

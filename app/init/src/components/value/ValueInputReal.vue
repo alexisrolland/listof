@@ -10,6 +10,8 @@
             type="number"
             v-bind:id="attribute.id"
             v-bind:required="attribute.flagMandatory"
+            v-bind:disabled="isReadOnly"
+            v-bind:readonly="isReadOnly"
             v-bind:placeholder="attribute.sysDataTypeByDataTypeId.name"
             v-model="inputValue"
             v-on:change="change" />
@@ -30,6 +32,12 @@ export default {
     data: function () {
         return {
             'inputValue': this.value
+        }
+    },
+    computed: {
+        isReadOnly(){
+            let roles = ['admin', 'advanced']
+            return !roles.includes(this.$store.state.currentUser.role)
         }
     },
     watch: {

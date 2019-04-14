@@ -7,7 +7,9 @@
             v-model="selectedValue"
             v-bind:options="options"
             v-bind:multiple="false"
-            v-bind:disable-branch-nodes="true"/>
+            v-bind:disable-branch-nodes="true"
+            v-bind:disabled="isReadOnly"
+            v-bind:readonly="isReadOnly"/>
     </div>
 </template>
 
@@ -34,6 +36,12 @@ export default {
         },
         selectedValue(arg) {
             this.$emit("changeUserGroup", arg);
+        }
+    },
+    computed: {
+        isReadOnly(){
+            let roles = ['admin', 'advanced']
+            return !roles.includes(this.$store.state.currentUser.role)
         }
     },
     created: function () {
