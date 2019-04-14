@@ -11,4 +11,9 @@ See the demo on Youtube: [ListOf Playlist](https://www.youtube.com/watch?v=yXRrz
 [![Watch the demo](https://github.com/alexisrolland/listof/blob/master/doc/demo.gif)](https://www.youtube.com/watch?v=yXRrzHEJEIo&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM)
 
 # Getting Started
-Following the Getting Started page on our Github Wiki: [Getting Started](https://github.com/alexisrolland/listof/wiki/Getting-Started).
+Follow the Getting Started page on our Github Wiki: [Getting Started](https://github.com/alexisrolland/listof/wiki/Getting-Started). <br>
+A video is also available on Youtube:
+- ListOf Setup on Linux (tbd)
+- [ListOf Setup on Windows](https://youtu.be/cOi8J6vbXt4)
+
+[![Watch the video](https://github.com/alexisrolland/listof/blob/master/doc/setup.gif)](https://www.youtube.com/watch?v=cOi8J6vbXt4&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM&index=4)
