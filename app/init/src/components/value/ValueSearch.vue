@@ -192,7 +192,7 @@ export default {
                             this.$store.state.errorObject.message = response.data.errors[0].message;
                         } else {
                             this.values = response.data.data['search' + graphQlMutationName][graphQlMutationListName];
-                            this.nbValuess = this.values.length;
+                            this.nbValues = this.values.length;
 
                             // Set current page to first page
                             this.currentPage = {
