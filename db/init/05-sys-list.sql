@@ -3,7 +3,7 @@
 
 
 
-/*Create table for lists*/
+/*Create metadata table of lists*/
 CREATE TABLE base.sys_list (
     id SERIAL PRIMARY KEY
   , name TEXT NOT NULL UNIQUE
@@ -21,7 +21,7 @@ COMMENT ON TABLE base.sys_list IS
 
 
 
-/*Create function to search lists*/
+/*Create function to search metadata table of lists*/
 CREATE OR REPLACE FUNCTION base.search_list(keyword TEXT)
 RETURNS SETOF base.sys_list AS $$
     SELECT a.*
@@ -40,6 +40,7 @@ CREATE OR REPLACE FUNCTION base.generate_table_name()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.table_name = REPLACE(LOWER(NEW.name), ' ', '_');
+
     RETURN NEW;
 END;
 $$ language plpgsql;
@@ -49,7 +50,7 @@ COMMENT ON FUNCTION base.generate_table_name IS
 
 
 
-/*Create function to automatically create a table when a list is created*/
+/*Create function to create a table when a list is created*/
 CREATE OR REPLACE FUNCTION base.create_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -68,7 +69,95 @@ BEGIN
     /*Set ownership to advanced user to allow all advanced users to manage table structure*/
     EXECUTE format('ALTER TABLE public.%I OWNER TO advanced;', NEW.table_name);
 
-    /*Create function to search list table*/
+    /*Create view used in particular by the list search function*/
+    EXECUTE format('SELECT base.create_list_view(''%I'');', NEW.table_name);
+
+    /*Create function to search list table from the list view*/
+    EXECUTE format('SELECT base.create_list_search(''%I'');', NEW.table_name);
+
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.create_list_table IS
+'Function used to automatically create a table when a list is created.';
+
+
+
+/*Create function to create view for a list table*/
+CREATE OR REPLACE FUNCTION base.create_list_view(list_table_name TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_counter INTEGER;
+    v_create TEXT;
+    v_select TEXT;
+    v_search_all_column TEXT;
+    v_from TEXT;
+    v_join TEXT;
+    v_attribute RECORD;
+BEGIN
+    v_counter = 0;
+    v_create = format('CREATE OR REPLACE VIEW public.vw_%I AS SELECT "0".id', list_table_name);
+    v_select = '';
+    v_search_all_column = ', CAST("0".id AS TEXT)';
+    v_from = format(' FROM public.%I "0"', list_table_name);
+    v_join = '';
+
+    /*Build query select and joins to be used in the view*/
+    FOR v_attribute IN
+        SELECT b.column_name
+        ,c.column_name AS linked_column_name
+        ,d.table_name AS linked_table_name
+        FROM base.sys_list a
+        INNER JOIN base.sys_attribute b ON a.id=b.list_id
+        LEFT JOIN base.sys_attribute c ON b.linked_attribute_id=c.id
+        LEFT JOIN base.sys_list d ON c.list_id=d.id
+        WHERE a.table_name=list_table_name
+    LOOP
+        v_counter = v_counter + 1;
+        IF v_attribute.linked_column_name IS NULL THEN
+            v_select = v_select || format(', "0".%I', v_attribute.column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || CAST("0".%I AS TEXT)', v_attribute.column_name);
+        ELSE
+            v_select = v_select || format(', %I.%I AS %I', v_counter, v_attribute.linked_column_name, v_attribute.column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || CAST(%I.%I AS TEXT)', v_counter, v_attribute.linked_column_name);
+            v_join = v_join || format(' LEFT JOIN public.%I %I ON "0".%I=%I.id', v_attribute.linked_table_name, v_counter, v_attribute.column_name, v_counter);
+        END IF;
+    END LOOP;
+
+    /*Add search column to select*/
+    v_search_all_column = v_search_all_column || ' AS search_all';
+    EXECUTE v_create || v_select || v_search_all_column || v_from || v_join;
+
+    /*Set ownership to advanced user to allow all advanced users to manage view structure*/
+    EXECUTE format('ALTER VIEW public.vw_%I OWNER TO advanced;', list_table_name);
+    
+    /*Refresh privileges to allow users to query the view*/
+    EXECUTE 'GRANT SELECT ON ALL TABLES IN SCHEMA public TO anonymous;';
+
+    /*Add comment to view*/
+    EXECUTE format('COMMENT ON VIEW public.vw_%I IS ''View used to search list based on keywords.''', list_table_name);
+
+    RETURN true;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.create_list_view IS
+'Function used to automatically create a view for a list table.';
+
+
+
+/*Create function to search list table from the list view*/
+CREATE OR REPLACE FUNCTION base.create_list_search(list_table_name TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_counter INTEGER;
+    v_create TEXT;
+    v_select TEXT;
+    v_from TEXT;
+    v_join TEXT;
+    v_attribute RECORD;
+BEGIN
     EXECUTE format(
         $code$
             CREATE OR REPLACE FUNCTION public.search_%I(column_name TEXT, keyword TEXT)
@@ -77,25 +166,27 @@ BEGIN
                     RETURN QUERY
                     EXECUTE 'SELECT a.*
                     FROM public.%I a
-                    WHERE CAST(a.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
-                    ORDER BY ' || column_name || ' ASC';
+                    INNER JOIN public.vw_%I b ON a.id = b.id
+                    WHERE CAST(b.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
+                    ORDER BY b.' || column_name || ' ASC';
                 END;
             $str$ language plpgsql;
         $code$,
-        NEW.table_name,
-        NEW.table_name,
-        NEW.table_name
+        list_table_name,
+        list_table_name,
+        list_table_name,
+        list_table_name
     );
 
     /*Add comment to search function*/
-    EXECUTE format('COMMENT ON FUNCTION public.search_%I IS ''Function used to search list based on keywords.''', NEW.table_name);
+    EXECUTE format('COMMENT ON FUNCTION public.search_%I IS ''Function used to search list based on keywords.''', list_table_name);
 
-    RETURN NEW;
+    RETURN true;
 END;
 $$ language plpgsql;
 
-COMMENT ON FUNCTION base.create_list_table IS
-'Function used to automatically create a table when a list is created.';
+COMMENT ON FUNCTION base.create_list_search IS
+'Function used to automatically create a search function for a list table.';
 
 
 
@@ -116,6 +207,7 @@ BEGIN
         WHERE a.id=NEW.id
         AND b.linked_attribute_id IS NOT NULL
     LOOP
+        /*Rename integrity constraints*/
         EXECUTE(v_alter_table || format(
             'RENAME CONSTRAINT %I_%I_fkey TO %I_%I_fkey;',
             OLD.table_name,
@@ -125,35 +217,18 @@ BEGIN
         ));
     END LOOP;
 
-    /*Rename table*/
+    /*Rename list table*/
     v_alter_statement = v_alter_table || format('RENAME TO %I;', NEW.table_name);
     EXECUTE v_alter_statement;
 
-    /*Update function to search list table based on its new name*/
-    EXECUTE format(
-        $code$
-            CREATE OR REPLACE FUNCTION public.search_%I(column_name TEXT, keyword TEXT)
-            RETURNS SETOF public.%I AS $str$
-                BEGIN
-                    RETURN QUERY
-                    EXECUTE 'SELECT a.*
-                    FROM public.%I a
-                    WHERE CAST(a.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
-                    ORDER BY ' || column_name || ' ASC';
-                END;
-            $str$ language plpgsql;
-        $code$,
-        OLD.table_name,
-        NEW.table_name,
-        NEW.table_name
-    );
+    /*Rename list view*/
+    EXECUTE format('ALTER VIEW public.vw_%I RENAME TO vw_%I;', OLD.table_name, NEW.table_name);
 
-    /*Rename function to reflect new table name*/
-    EXECUTE format(
-        'ALTER FUNCTION public.search_%I RENAME TO search_%I',
-        OLD.table_name,
-        NEW.table_name
-    );
+    /*Rename list search*/
+    EXECUTE format('ALTER FUNCTION public.search_%I RENAME TO search_%I', OLD.table_name, NEW.table_name);
+
+    /*Rebuild list search to map it to the new list view*/
+    EXECUTE format('SELECT base.create_list_search(''%I'');', NEW.table_name);
 
     RETURN NEW;
 END;
@@ -168,11 +243,15 @@ COMMENT ON FUNCTION base.rename_list_table IS
 CREATE OR REPLACE FUNCTION base.delete_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
-    /*Drop search list function*/
+    /*Drop list search function*/
     EXECUTE format('DROP FUNCTION public.search_%I;', OLD.table_name);
+
+    /*Drop list table view*/
+    EXECUTE format('DROP VIEW public.vw_%I;', OLD.table_name);
 
     /*Drop list table*/
     EXECUTE format('DROP TABLE public.%I;', OLD.table_name);
+
     RETURN OLD;
 END;
 $$ language plpgsql;
