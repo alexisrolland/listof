@@ -125,8 +125,15 @@ BEGIN
         END IF;
     END LOOP;
 
+    /*Add search column to select*/
     v_search_all_column = v_search_all_column || ' AS search_all';
     EXECUTE v_create || v_select || v_search_all_column || v_from || v_join;
+
+    /*Set ownership to advanced user to allow all advanced users to manage view structure*/
+    EXECUTE format('ALTER VIEW public.vw_%I OWNER TO advanced;', list_table_name);
+    
+    /*Refresh privileges to allow users to query the view*/
+    EXECUTE 'GRANT SELECT ON ALL TABLES IN SCHEMA public TO anonymous;';
 
     /*Add comment to view*/
     EXECUTE format('COMMENT ON VIEW public.vw_%I IS ''View used to search list based on keywords.''', list_table_name);

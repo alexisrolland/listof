@@ -115,6 +115,7 @@ BEGIN
     END IF;
 
     /*Recreate view to be used by search function*/
+    EXECUTE format('DROP VIEW public.vw_%I;', v_table_name);
     EXECUTE format('SELECT base.create_list_view(''%I'');', v_table_name);
 
     RETURN NEW;
