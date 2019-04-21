@@ -73,7 +73,7 @@ BEGIN
     EXECUTE format('SELECT base.create_list_view(''%I'');', NEW.table_name);
 
     /*Set ownership to advanced user to allow all advanced users to delete view*/
-    EXECUTE format('ALTER FUNCTION public.vw_%I OWNER TO advanced;', NEW.table_name);
+    EXECUTE format('ALTER VIEW public.vw_%I OWNER TO advanced;', NEW.table_name);
 
     /*Create function to search list table from the list view*/
     EXECUTE format('SELECT base.create_list_search(''%I'');', NEW.table_name);
