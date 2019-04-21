@@ -3,6 +3,9 @@
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>
                 <tr>
+                    <th>
+                        Id
+                    </th>
                     <th v-for="attribute in attributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
                     </th>
@@ -13,6 +16,9 @@
             </thead>
             <tbody>
                 <tr v-for="value in values" v-bind:key="value.id">
+                    <td>
+                        {{ value.id }}
+                    </td>
                     <td v-for="attribute in attributes" v-bind:key="attribute.id">
                         <!-- If attribute is linked to a list, fetch parent list value -->
                         <span v-if="attribute.linkedAttributeId">
