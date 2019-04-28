@@ -3,6 +3,7 @@ export const queryGetAttribute = `query getAttribute($id: Int!) {
         id
         name
         description
+        order
         flagMandatory
         flagUnique
         dataTypeId

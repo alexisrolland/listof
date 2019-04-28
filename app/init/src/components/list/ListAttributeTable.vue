@@ -6,6 +6,9 @@
             <thead>
                 <tr>
                     <th scope="col">
+                        Order
+                    </th>
+                    <th scope="col">
                         Name
                     </th>
                     <th scope="col">
@@ -26,7 +29,10 @@
                 </tr>
             </thead>
             <tbody v-if="list.sysAttributesByListId">
-                <tr v-for="attribute in list.sysAttributesByListId.nodes" v-bind:key="attribute.id">
+                <tr v-for="attribute in sortedAttributes" v-bind:key="attribute.id">
+                    <td>
+                        {{ attribute.order }}
+                    </td>
                     <td>
                         {{ attribute.name }}
                     </td>
@@ -68,6 +74,10 @@ export default {
         showEditAttribute(){
             let roles = ['admin', 'advanced']
             return roles.includes(this.$store.state.currentUser.role)
+        },
+        sortedAttributes(){
+            let _ = require('lodash');
+            return _.sortBy(this.list.sysAttributesByListId.nodes, 'order');
         }
     }
 }

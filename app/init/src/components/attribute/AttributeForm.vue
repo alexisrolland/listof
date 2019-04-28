@@ -31,6 +31,19 @@
                             v-model="attribute.description" />
                     </div>
 
+                    <!-- Attribute Order -->
+                    <div class="form-group">
+                        <label for="order" class="col-form-label">
+                            Order:
+                        </label>
+                        <input
+                            id="description"
+                            class="form-control col-sm"
+                            placeholder="Type attribute order"
+                            type="number"
+                            v-model="attribute.order" />
+                    </div>
+
                     <div class="form-check form-check-inline">
                         <!-- Flag Attribute Mandatory -->
                         <div class="custom-control custom-switch mr-4 mt-1 mb-2">

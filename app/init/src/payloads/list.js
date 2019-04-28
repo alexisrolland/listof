@@ -23,6 +23,7 @@ export const queryGetList = `query getList($id: Int!) {
                 id
                 name
                 description
+                order
                 flagMandatory
                 flagUnique
                 dataTypeId

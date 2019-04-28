@@ -25,6 +25,7 @@ export default {
                         'sysAttributePatch': {
                             'name': this.attribute.name,
                             'description': this.attribute.description,
+                            'order': parseInt(this.attribute.order),
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
                             'linkedAttributeId': this.attribute.linkedAttributeId,
@@ -55,6 +56,7 @@ export default {
                         'sysAttribute': {
                             'name': this.attribute.name,
                             'description': this.attribute.description,
+                            'order': parseInt(this.attribute.order),
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
                             'linkedAttributeId': this.attribute.linkedAttributeId,

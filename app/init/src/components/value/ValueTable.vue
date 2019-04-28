@@ -3,7 +3,7 @@
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>
                 <tr>
-                    <th v-for="attribute in attributes" v-bind:key="attribute.id" scope="col">
+                    <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
                     </th>
                     <th scope="col">
@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <tr v-for="value in values" v-bind:key="value.id">
-                    <td v-for="attribute in attributes" v-bind:key="attribute.id">
+                    <td v-for="attribute in sortedAttributes" v-bind:key="attribute.id">
                         <!-- If attribute is linked to a list, fetch parent list value -->
                         <span v-if="attribute.linkedAttributeId">
                             <router-link v-if="value[attribute.graphQlAttributeName]"
@@ -48,6 +48,10 @@ export default {
         showEditValue(){
             let roles = ['admin', 'advanced', 'standard']
             return roles.includes(this.$store.state.currentUser.role)
+        },
+        sortedAttributes(){
+            let _ = require('lodash');
+            return _.sortBy(this.attributes, 'order');
         }
     }
 }

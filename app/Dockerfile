@@ -16,6 +16,7 @@ RUN npm install \
     && npm install --save vue-router \
     && npm install --save vue-resource \
     && npm install --save vuex \
+    && npm install --save lodash \
     && npm install --save inflection \
     && npm install --save vue-session \
     && npm install --save @riophae/vue-treeselect
