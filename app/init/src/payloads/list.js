@@ -39,6 +39,16 @@ export const queryGetList = `query getList($id: Int!) {
                     }
                 }
                 columnName
+                sysAttributesByLinkedAttributeId{
+                    nodes {
+                        id
+                        name
+                        sysListByListId {
+                            id
+                            name
+                        }
+                    }
+                }
             }
         }
         createdDate

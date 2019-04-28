@@ -60,13 +60,14 @@ export default {
     created: function () {
         // Compute GraphQL names for the list and attributes
         let inflection = require('inflection');
+        let lodash = require('lodash');
 
         // GraphQL list name
         let graphQlListName = inflection.pluralize(this.attribute.sysAttributeByLinkedAttributeId.sysListByListId.tableName); // Example table_name > table_names
-        graphQlListName = inflection.camelize(graphQlListName); // Example table_names > TableNames
+        graphQlListName = lodash.upperFirst(lodash.camelCase(graphQlListName)); // Example table_names > TableNames
 
         // GraphQL attributes name
-        let graphQlAttributeName = inflection.camelize(this.attribute.sysAttributeByLinkedAttributeId.columnName, true); // Example colum_name > columnName
+        let graphQlAttributeName = lodash.camelCase(this.attribute.sysAttributeByLinkedAttributeId.columnName); // Example colum_name > columnName
 
         // Build GraphQL query
         let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(/<GraphQlListName>/g, graphQlListName);
