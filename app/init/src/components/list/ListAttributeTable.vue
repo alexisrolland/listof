@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1 class="mt-5">Attributes</h1>
+        <p>Attributes of {{ list.name }}.</p>
 
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>

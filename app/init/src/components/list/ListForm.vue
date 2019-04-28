@@ -80,6 +80,9 @@
 
         <!-- List Attributes -->
         <list-attribute-table v-if="list.id" v-bind:list="list"></list-attribute-table>
+
+        <!-- List Dependencies -->
+        <list-dependency-table v-if="list.id" v-bind:list="list"></list-dependency-table>
     </div>
 </template>
 
@@ -91,6 +94,7 @@ import ListButtonEditValue from './ListButtonEditValue.vue';
 import ListButtonClose from './ListButtonClose.vue';
 import ListButtonDelete from './ListButtonDelete.vue';
 import ListAttributeTable from './ListAttributeTable.vue';
+import ListDependencyTable from './ListDependencyTable.vue';
 import MetaDataCard from '../utils/MetaDataCard.vue';
 
 export default {
@@ -102,6 +106,7 @@ export default {
         'list-button-close': ListButtonClose,
         'list-button-delete': ListButtonDelete,
         'list-attribute-table': ListAttributeTable,
+        'list-dependency-table': ListDependencyTable,
         'list-meta-data': MetaDataCard
     },
     data: function () {
