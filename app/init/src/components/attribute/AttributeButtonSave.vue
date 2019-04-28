@@ -13,8 +13,9 @@ export default {
     methods: {
         saveAttribute() {
             // Method to create or update an attribute
-            // Default dataTypeId to integer if attribute is a linked list
-            if (this.attribute.linkedAttributeId) { this.attribute.dataTypeId = 6 }
+            // Clean inputs
+            if (this.attribute.order) { this.attribute.order = parseInt(this.attribute.order) }
+            if (this.attribute.linkedAttributeId) { this.attribute.dataTypeId = 6 }  // Default dataTypeId to integer if attribute is a linked list
 
             // If attribute.id exists, update existing attribute
             if (this.attribute.id) {
@@ -25,7 +26,7 @@ export default {
                         'sysAttributePatch': {
                             'name': this.attribute.name,
                             'description': this.attribute.description,
-                            'order': parseInt(this.attribute.order),
+                            'order': this.attribute.order,
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
                             'linkedAttributeId': this.attribute.linkedAttributeId,
@@ -56,7 +57,7 @@ export default {
                         'sysAttribute': {
                             'name': this.attribute.name,
                             'description': this.attribute.description,
-                            'order': parseInt(this.attribute.order),
+                            'order': this.attribute.order,
                             'flagUnique': this.attribute.flagUnique,
                             'flagMandatory': this.attribute.flagMandatory,
                             'linkedAttributeId': this.attribute.linkedAttributeId,
