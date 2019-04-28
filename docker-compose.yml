@@ -8,11 +8,11 @@ services:
     build:
       context: ./db
     volumes:
-      - db_volume:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     env_file:
         - ./.env
     networks:
-      - default
+      - network
     expose:
       - 5432
     ports:
@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
     networks:
-      - default
+      - network
     command: ["postgraphile",
       "--connection", "${DATABASE_URL}",
       "--port", "5433",
@@ -49,7 +49,7 @@ services:
     depends_on:
       - graphql
     networks:
-      - default
+      - network
     command: ["npm", "run", "dev"]
 
   nginx:
@@ -66,13 +66,10 @@ services:
     depends_on:
       - app
     networks:
-      - default
+      - network
 
 networks:
-  default:
-    external:
-      name: listof-network
+  network:
 
 volumes:
-  db_volume:
-    external: false
+  db:
