@@ -79,8 +79,8 @@ export default {
             return roles.includes(this.$store.state.currentUser.role)
         },
         sortedAttributes(){
-            let _ = require('lodash');
-            return _.sortBy(this.list.sysAttributesByListId.nodes, 'order');
+            let lodash = require('lodash');
+            return lodash.sortBy(this.list.sysAttributesByListId.nodes, 'order');
         }
     },
     methods: {
@@ -119,8 +119,8 @@ export default {
                         let id = response.data.data.updateSysAttributeById.sysAttribute.id;
 
                         // Update order in frontend
-                        let _ = require('lodash');
-                        let attributeIndex = _.findIndex(this.list.sysAttributesByListId.nodes, ['id', id]);
+                        let lodash = require('lodash');
+                        let attributeIndex = lodash.findIndex(this.list.sysAttributesByListId.nodes, ['id', id]);
                         this.list.sysAttributesByListId.nodes[attributeIndex].order = order;
                     }
                 }

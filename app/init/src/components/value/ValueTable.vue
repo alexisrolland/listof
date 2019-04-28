@@ -56,8 +56,8 @@ export default {
             return roles.includes(this.$store.state.currentUser.role)
         },
         sortedAttributes(){
-            let _ = require('lodash');
-            return _.sortBy(this.attributes, 'order');
+            let lodash = require('lodash');
+            return lodash.sortBy(this.attributes, 'order');
         }
     }
 }

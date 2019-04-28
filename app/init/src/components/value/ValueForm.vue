@@ -196,10 +196,11 @@ export default {
 
                     // Compute GraphQL names for the list and attributes
                     let inflection = require('inflection');
+                    let lodash = require('lodash');
 
                     // GraphQL list name
                     let graphQlListName = inflection.singularize(this.list.tableName); // Example table_names > table_name
-                    graphQlListName = inflection.camelize(graphQlListName, true); // Example table_name > tableName
+                    graphQlListName = lodash.camelCase(graphQlListName); // Example table_name > tableName
                     this.list['graphQlListName'] = graphQlListName;
 
                     // GraphQL attributes name
@@ -207,7 +208,7 @@ export default {
                     if (this.list.sysAttributesByListId) {
                         let attributes = this.list.sysAttributesByListId.nodes;
                         for (let i = 0; i < attributes.length; i++) {
-                            attributes[i]['graphQlAttributeName'] = inflection.camelize(attributes[i].columnName, true); // Example colum_name > columnName
+                            attributes[i]['graphQlAttributeName'] = lodash.camelCase(attributes[i].columnName); // Example colum_name > columnName
                             attributeName = attributes[i]['graphQlAttributeName'] + ' ' + attributeName;
                         }
                         this.list['attributes'] = attributes;
