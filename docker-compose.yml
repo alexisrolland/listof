@@ -8,7 +8,7 @@ services:
     build:
       context: ./db
     volumes:
-      - listof-db-volume:/var/lib/postgresql/data
+      - db_volume:/var/lib/postgresql/data
     env_file:
         - ./.env
     networks:
@@ -74,5 +74,5 @@ networks:
       name: listof-network
 
 volumes:
-  listof-db-volume:
-    external: true
+  db_volume:
+    external: false
