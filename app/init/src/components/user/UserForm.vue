@@ -100,8 +100,10 @@ import UserButtonResetPassword from './UserButtonResetPassword.vue';
 import UserButtonClose from './UserButtonClose.vue';
 import UserUserGroup from './UserUserGroup.vue';
 import MetaDataCard from '../utils/MetaDataCard.vue';
+import Mixins from '../utils/Mixins.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'user-button-save': UserButtonSave,
         'user-button-reset-password': UserButtonResetPassword,
@@ -152,11 +154,14 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.user = response.data.data.sysUserById;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         }

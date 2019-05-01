@@ -18,7 +18,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         value: Number
     },
@@ -62,12 +65,15 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.dataTypes = response.data.data.allSysDataTypes.nodes;
                         this.$store.state.dataTypes = this.dataTypes;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         }

@@ -141,8 +141,10 @@ import AttributeButtonSave from './AttributeButtonSave.vue';
 import AttributeButtonClose from './AttributeButtonClose.vue';
 import AttributeButtonDelete from './AttributeButtonDelete.vue';
 import MetaDataCard from '../utils/MetaDataCard.vue';
+import Mixins from '../utils/Mixins.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'attribute-select-attribute': AttributeSelectAttribute,
         'attribute-select-data-type': AttributeSelectDataType,
@@ -210,11 +212,14 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.attribute = response.data.data.sysAttributeById;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         };

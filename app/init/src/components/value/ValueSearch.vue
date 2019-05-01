@@ -52,10 +52,12 @@
 </template>
 
 <script>
-import ValueTable from './ValueTable.vue';
+import Mixins from '../utils/Mixins.vue';
 import Pagination from '../utils/Pagination.vue';
+import ValueTable from './ValueTable.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'value-table': ValueTable,
         'value-pagination': Pagination
@@ -142,8 +144,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.values = response.data.data['all' + this.graphQlListName].nodes;
                         this.nbValues = response.data.data['all' + this.graphQlListName].totalCount;
@@ -156,6 +157,10 @@ export default {
                             'isActive': page.isActive
                         }
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         },
@@ -191,8 +196,7 @@ export default {
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                            this.displayError(response);
                         } else {
                             this.values = response.data.data['search' + graphQlMutationName][graphQlMutationListName];
                             this.nbValues = this.values.length;
@@ -205,6 +209,10 @@ export default {
                                 'isActive': true
                             }
                         }
+                    },
+                    // Error callback
+                    function(response){
+                        this.displayError(response);
                     }
                 );
             }

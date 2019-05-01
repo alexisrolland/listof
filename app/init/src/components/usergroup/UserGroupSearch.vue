@@ -21,10 +21,12 @@
 </template>
 
 <script>
-import UserGroupTable from './UserGroupTable.vue';
+import Mixins from '../utils/Mixins.vue';
 import Pagination from '../utils/Pagination.vue';
+import UserGroupTable from './UserGroupTable.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'user-group-table': UserGroupTable,
         'user-group-pagination': Pagination
@@ -58,8 +60,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.userGroups = response.data.data.allSysUserGroups.nodes;
                         this.nbUserGroups = response.data.data.allSysUserGroups.totalCount;
@@ -72,6 +73,10 @@ export default {
                             'isActive': page.isActive
                         }
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         },
@@ -94,8 +99,7 @@ export default {
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                            this.displayError(response);
                         } else {
                             this.userGroups = response.data.data.searchUserGroup.sysUserGroups;
                             this.nbUserGroups = this.userGroups.length;
@@ -108,6 +112,10 @@ export default {
                                 'isActive': true
                             }
                         }
+                    },
+                    // Error callback
+                    function(response){
+                        this.displayError(response);
                     }
                 );
             }

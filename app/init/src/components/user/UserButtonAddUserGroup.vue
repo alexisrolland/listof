@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         user: Object,
         userGroups: Array
@@ -40,12 +43,15 @@ export default {
                     this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                         function(response){
                             if(response.data.errors){
-                                this.$store.state.errorObject.flag = true;
-                                this.$store.state.errorObject.message = response.data.errors[0].message;
+                                this.displayError(response);
                             } else {
                                 let userGroupUser = response.data.data.createSysUserGroupUser.sysUserGroupUser;
                                 this.$emit("addUserGroupUser", userGroupUser);
                             }
+                        },
+                        // Error callback
+                        function(response){
+                            this.displayError(response);
                         }
                     );
                 }
@@ -69,8 +75,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         // Prepare list of current user groups
                         let rawUserGroups = response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
@@ -83,6 +88,10 @@ export default {
                         this.$session.set('userGroups', currentUserGroups);
                         this.$store.state.currentUser.userGroups = currentUserGroups;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             )
         }

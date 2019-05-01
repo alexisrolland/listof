@@ -24,11 +24,13 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
 import ValueButtonAddValue from './ValueButtonAddValue.vue';
 import ValueButtonEditList from './ValueButtonEditList.vue';
 import ValueSearch from './ValueSearch.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'value-button-add-value': ValueButtonAddValue,
         'value-button-edit-list': ValueButtonEditList,
@@ -59,11 +61,14 @@ export default {
         this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
             function(response){
                 if(response.data.errors){
-                    this.$store.state.errorObject.flag = true;
-                    this.$store.state.errorObject.message = response.data.errors[0].message;
+                    this.displayError(response);
                 } else {
                     this.list = response.data.data.sysListById;
                 }
+            },
+            // Error callback
+            function(response){
+                this.displayError(response);
             }
         );
     }
