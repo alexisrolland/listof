@@ -1,46 +1,28 @@
 <template>
-    <button v-if="show" type="button" class="btn btn-danger float-right" v-on:click="deleteList">
-        Delete
-    </button>
+    <span>
+        <button v-if="show" type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#ModalBoxDelete">
+            Delete
+        </button>
+
+        <!-- Modal box to confirm deletion -->
+        <modal-box-delete
+            v-bind:objectType="'list'"
+            v-bind:listId="listId">
+        </modal-box-delete>
+    </span>
 </template>
 
 <script>
+import ModalBoxDelete from '../utils/ModalBoxDelete.vue';
 import Mixins from '../utils/Mixins.vue';
 
 export default {
     mixins: [Mixins],
+    components: {
+        'modal-box-delete': ModalBoxDelete
+    },
     props: {
         listId: Number
-    },
-    methods: {
-        deleteList() {
-            // Method to delete a list
-            let payload = {
-                'query': this.$store.state.mutationDeleteList,
-                'variables': { 
-                    'id': this.listId
-                }
-            };
-            let headers = {};
-            if (this.$session.exists()) {
-                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
-            };
-            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
-                function(response){
-                    if(response.data.errors){
-                        this.displayError(response);
-                    } else {
-                        this.$router.push({
-                            name: 'view-list'
-                        });
-                    }
-                },
-                // Error callback
-                function(response){
-                    this.displayError(response);
-                }
-            );
-        }
     },
     computed: {
         show(){
