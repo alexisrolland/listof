@@ -3,6 +3,13 @@
         <h1 class="mt-5">Attributes</h1>
         <p>Attributes of {{ list.name }}.</p>
 
+        <p>
+            <list-button-add-attribute
+                v-if="list.id"
+                v-bind:listId="list.id">
+            </list-button-add-attribute>
+        </p>
+
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>
                 <tr>
@@ -69,10 +76,14 @@
 </template>
 
 <script>
+import ListButtonAddAttribute from './ListButtonAddAttribute.vue';
 import Mixins from '../utils/Mixins.vue';
 
 export default {
     mixins: [Mixins],
+    components: {
+        'list-button-add-attribute': ListButtonAddAttribute
+    },
     props: {
         list: {}
     },

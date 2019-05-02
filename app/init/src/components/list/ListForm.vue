@@ -46,11 +46,6 @@
                             v-bind:list="list">
                         </list-button-save>
 
-                        <list-button-add-attribute
-                            v-if="list.id"
-                            v-bind:listId="list.id">
-                        </list-button-add-attribute>
-
                         <list-button-edit-value
                             v-if="list.id"
                             v-bind:listId="list.id">
@@ -89,7 +84,6 @@
 <script>
 import ListSelectUserGroup from './ListSelectUserGroup.vue';
 import ListButtonSave from './ListButtonSave.vue';
-import ListButtonAddAttribute from './ListButtonAddAttribute.vue';
 import ListButtonEditValue from './ListButtonEditValue.vue';
 import ListButtonClose from './ListButtonClose.vue';
 import ListButtonDelete from './ListButtonDelete.vue';
@@ -103,7 +97,6 @@ export default {
     components: {
         'list-select-user-group': ListSelectUserGroup,
         'list-button-save': ListButtonSave,
-        'list-button-add-attribute': ListButtonAddAttribute,
         'list-button-edit-value': ListButtonEditValue,
         'list-button-close': ListButtonClose,
         'list-button-delete': ListButtonDelete,
