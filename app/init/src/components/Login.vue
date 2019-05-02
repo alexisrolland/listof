@@ -32,7 +32,10 @@
 </template>
 
 <script>
+import Mixins from './utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     data: function () {
         return {
             'credentials': {}
@@ -51,8 +54,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         let token = response.data.data.authenticateUser.sysToken
                         if (token) {
@@ -67,6 +69,10 @@ export default {
                             this.$store.state.errorObject.message = 'Authentication failed. Login or password incorrect or user account has been inactivated.';
                         }
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             )
         },
@@ -83,8 +89,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         // Prepare list of current user groups
                         let rawUserGroups = response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
@@ -109,6 +114,10 @@ export default {
                         };
                         this.$store.state.currentUser = currentUser;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             )
         }

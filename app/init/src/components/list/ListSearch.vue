@@ -23,8 +23,10 @@
 <script>
 import ListTable from './ListTable.vue';
 import Pagination from '../utils/Pagination.vue';
+import Mixins from '../utils/Mixins.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'list-table': ListTable,
         'list-pagination': Pagination
@@ -58,8 +60,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.lists = response.data.data.allSysLists.nodes;
                         this.nbLists = response.data.data.allSysLists.totalCount;
@@ -72,6 +73,10 @@ export default {
                             'isActive': page.isActive
                         }
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         },
@@ -94,8 +99,7 @@ export default {
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                            this.displayError(response)
                         } else {
                             this.lists = response.data.data.searchList.sysLists;
                             this.nbLists = this.lists.length;
@@ -108,6 +112,10 @@ export default {
                                 'isActive': true
                             }
                         }
+                    },
+                    // Error callback
+                    function(response){
+                        this.displayError(response)
                     }
                 );
             }

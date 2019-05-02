@@ -19,10 +19,12 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
+    mixins: [Mixins],
     components: {
         'treeselect': Treeselect
     },
@@ -64,8 +66,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.options = response.data.data.allSysLists.nodes;
                         for (let i = 0; i < this.options.length; i++) {
@@ -73,6 +74,10 @@ export default {
                             delete this.options[i]['attributes'];
                         }
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         }

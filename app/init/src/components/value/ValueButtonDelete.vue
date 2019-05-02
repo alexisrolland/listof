@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         graphQlListName: String, // Example tableName
         valueId: Number,
@@ -33,8 +36,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.$router.push({
                             name: 'view-list-value',
@@ -43,6 +45,10 @@ export default {
                             }
                         });
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         }

@@ -138,8 +138,10 @@ import ValueButtonSave from './ValueButtonSave.vue';
 import ValueButtonClose from './ValueButtonClose.vue';
 import ValueButtonDelete from './ValueButtonDelete.vue';
 import MetaDataCard from '../utils/MetaDataCard.vue';
+import Mixins from '../utils/Mixins.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'value-input-checkbox': ValueInputCheckbox,
         'value-input-date': ValueInputDate,
@@ -189,8 +191,7 @@ export default {
         this.$http.post(this.$store.state.graphqlUrl, payloadList, {headers}).then (
             function(response){
                 if(response.data.errors){
-                    this.$store.state.errorObject.flag = true;
-                    this.$store.state.errorObject.message = response.data.errors[0].message;
+                    this.displayError(response);
                 } else {
                     this.list = response.data.data.sysListById;
 
@@ -235,15 +236,22 @@ export default {
                         this.$http.post(this.$store.state.graphqlUrl, payloadValue, {headers}).then (
                             function(response){
                                 if(response.data.errors){
-                                    this.$store.state.errorObject.flag = true;
-                                    this.$store.state.errorObject.message = response.data.errors[0].message;
+                                    this.displayError(response);
                                 } else {
                                     this.value = response.data.data[this.list.graphQlListName + 'ById'];
                                 }
+                            },
+                            // Error callback
+                            function(response){
+                                this.displayError(response);
                             }
                         );
                     }
                 }
+            },
+            // Error callback
+            function(response){
+                this.displayError(response);
             }
         );
     }

@@ -69,7 +69,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         list: {}
     },
@@ -113,8 +116,7 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         let id = response.data.data.updateSysAttributeById.sysAttribute.id;
 
@@ -123,6 +125,10 @@ export default {
                         let attributeIndex = lodash.findIndex(this.list.sysAttributesByListId.nodes, ['id', id]);
                         this.list.sysAttributesByListId.nodes[attributeIndex].order = order;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         }

@@ -47,8 +47,10 @@
 import UserGroupButtonSave from './UserGroupButtonSave.vue';
 import UserGroupButtonClose from './UserGroupButtonClose.vue';
 import MetaDataCard from '../utils/MetaDataCard.vue';
+import Mixins from '../utils/Mixins.vue';
 
 export default {
+    mixins: [Mixins],
     components: {
         'user-group-meta-data': MetaDataCard,
         'user-group-button-save': UserGroupButtonSave,
@@ -80,11 +82,14 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                 function(response){
                     if(response.data.errors){
-                        this.$store.state.errorObject.flag = true;
-                        this.$store.state.errorObject.message = response.data.errors[0].message;
+                        this.displayError(response);
                     } else {
                         this.userGroup = response.data.data.sysUserGroupById;
                     }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
                 }
             );
         };

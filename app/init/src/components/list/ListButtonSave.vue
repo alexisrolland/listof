@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         list: Object
     },
@@ -32,9 +35,12 @@ export default {
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                            this.displayError(response);
                         }
+                    },
+                    // Error callback
+                    function(response){
+                        this.displayError(response);
                     }
                 );
             }
@@ -57,8 +63,7 @@ export default {
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
-                            this.$store.state.errorObject.flag = true;
-                            this.$store.state.errorObject.message = response.data.errors[0].message;
+                            this.displayError(response);
                         } else {
                             // Capture new list Id in case user wants to delete or update it
                             this.list.id = response.data.data.createSysList.sysList.id;
@@ -69,6 +74,10 @@ export default {
                                 }
                             });
                         }
+                    },
+                    // Error callback
+                    function(response){
+                        this.displayError(response);
                     }
                 );
             }
