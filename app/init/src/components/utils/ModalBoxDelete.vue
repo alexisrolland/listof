@@ -22,7 +22,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         objectType: String,
         listId: Number,
@@ -80,6 +83,7 @@ export default {
                 },
                 // Error callback
                 function(response){
+                    console.log('error');
                     this.displayError(response);
                 }
             );

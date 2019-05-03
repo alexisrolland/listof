@@ -45,6 +45,7 @@ export const store = new Vuex.Store({
         mutationUpdateList: ListPayload.mutationUpdateList,
         mutationDeleteList: ListPayload.mutationDeleteList,
         mutationSearchList: ListPayload.mutationSearchList,
+        mutationDuplicateListValue: ListPayload.mutationDuplicateListValue,
 
         // Attributes queries and mutations
         queryGetAttribute: AttributePayload.queryGetAttribute,

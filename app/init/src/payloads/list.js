@@ -108,3 +108,9 @@ export const mutationSearchList = `mutation searchList($keyword: String) {
         }
     }
 }`;
+
+export const mutationDuplicateListValue = `mutation duplicateListValue($sourceListId: Int!, $targetListId: Int!){
+    duplicateListValue(input:{sourceListId: $sourceListId, targetListId: $targetListId}) {
+        boolean
+    }
+}`;

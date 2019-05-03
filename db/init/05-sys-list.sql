@@ -196,6 +196,37 @@ COMMENT ON FUNCTION base.create_list_search IS
 
 
 
+/*Create function to duplicate values of a list*/
+CREATE OR REPLACE FUNCTION base.duplicate_list_value(source_list_id INTEGER, target_list_id INTEGER)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_source_table_name TEXT;
+    v_target_table_name TEXT;
+BEGIN
+    /*Get source table name*/
+    SELECT table_name
+    INTO v_source_table_name
+    FROM base.sys_list
+    WHERE id=source_list_id;
+
+    /*Get target table name*/
+    SELECT table_name
+    INTO v_target_table_name
+    FROM base.sys_list
+    WHERE id=target_list_id;
+
+    /*Duplicate list data*/
+    EXECUTE format('INSERT INTO public.%I SELECT * FROM public.%I;', v_target_table_name, v_source_table_name);
+
+    RETURN true;
+END;
+$$ language plpgsql strict;
+
+COMMENT ON FUNCTION base.duplicate_list_value IS
+'Function used to duplicate data from a source list table to another target list table.';
+
+
+
 /*Create function to automatically rename a table when a list is renamed*/
 CREATE OR REPLACE FUNCTION base.rename_list_table()
 RETURNS TRIGGER AS $$
