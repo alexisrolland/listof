@@ -1,7 +1,7 @@
 <template>
     <div class="mt-5">
         <!-- Search bar -->
-        <input class="form-control form-control-lg mb-5"
+        <input class="form-control form-control-lg mb-4"
             type="search"
             aria-label="Search"
             placeholder="Search users"
