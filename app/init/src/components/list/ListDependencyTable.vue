@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1 class="mt-5">Dependencies</h1>
-        <p>Dependent lists which have attributes linked to {{ list.name }}.</p>
+        <p>Lists which have attributes linked to {{ list.name }}.</p>
 
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>
