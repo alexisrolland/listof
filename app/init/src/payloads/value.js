@@ -61,6 +61,8 @@ export const mutationUpdateValue = `mutation updateValue($id: Int!, $<graphQlLis
     update<GraphQlListName>ById(input: {id: $id, <graphQlListName>Patch: $<graphQlListName>Patch }) {
         <graphQlListName> {
             id
+            updatedDate
+            sysUserByUpdatedById { email }
         }
     }
 }`;

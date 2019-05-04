@@ -92,7 +92,8 @@
                     <div>
                         <value-button-save
                             v-bind:graphQlListName="list.graphQlListName"
-                            v-bind:value="value">
+                            v-bind:value="value"
+                            v-on:updatedValue="updateMetaData">
                         </value-button-save>
                         
                         <value-button-close
@@ -176,6 +177,10 @@ export default {
         getAttributeValue(obj) {
             // Get attribute value from child component
             this.value[obj['attribute']] = obj['value'];
+        },
+        updateMetaData(metaData) {
+            this.value.updatedDate = metaData.updatedDate;
+            this.value.sysUserByUpdatedById.email = metaData.updatedBy;
         }
     },
     created: function () {
