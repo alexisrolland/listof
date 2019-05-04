@@ -102,10 +102,13 @@ export default {
             // Method to change the order of an attribute
             if (change == 'up') {
                 order = order - 1;
+                if (order < 1) { order = 1 }
                 this.updateAttributeOrder(attributeId, order)
             }
             else if (change == "down") {
                 order = order + 1;
+                let nbAttributes = this.list.sysAttributesByListId.nodes.length;
+                if (order > nbAttributes) { order = nbAttributes }
                 this.updateAttributeOrder(attributeId, order)
             }
         },
