@@ -86,6 +86,8 @@ export const mutationUpdateList = `mutation updateList($id: Int!, $sysListPatch:
     updateSysListById(input: {id: $id, sysListPatch: $sysListPatch }) {
         sysList {
             id
+            updatedDate
+            sysUserByUpdatedById { email }
         }
     }
 }`;
@@ -106,5 +108,11 @@ export const mutationSearchList = `mutation searchList($keyword: String) {
             description
             sysUserGroupByUserGroupId { name }
         }
+    }
+}`;
+
+export const mutationDuplicateListValue = `mutation duplicateListValue($sourceListId: Int!, $targetListId: Int!){
+    duplicateListValue(input:{sourceListId: $sourceListId, targetListId: $targetListId}) {
+        boolean
     }
 }`;

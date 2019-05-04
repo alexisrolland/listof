@@ -42,6 +42,8 @@ export const mutationUpdateUser = `mutation updateUser($id: Int!, $sysUserPatch:
     updateSysUserById(input: {id: $id, sysUserPatch: $sysUserPatch}) {
         sysUser {
             id
+            updatedDate
+            sysUserByUpdatedById { email }
         }
     }
 }`;

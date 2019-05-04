@@ -3,6 +3,13 @@
         <h1 class="mt-5">Attributes</h1>
         <p>Attributes of {{ list.name }}.</p>
 
+        <p>
+            <list-attribute-button-add
+                v-if="list.id"
+                v-bind:listId="list.id">
+            </list-attribute-button-add>
+        </p>
+
         <table class="table table-striped table-dark table-hover table-borderless">
             <thead>
                 <tr>
@@ -69,10 +76,14 @@
 </template>
 
 <script>
+import ListAttributeButtonAdd from './ListAttributeButtonAdd.vue';
 import Mixins from '../utils/Mixins.vue';
 
 export default {
     mixins: [Mixins],
+    components: {
+        'list-attribute-button-add': ListAttributeButtonAdd
+    },
     props: {
         list: {}
     },
@@ -91,10 +102,13 @@ export default {
             // Method to change the order of an attribute
             if (change == 'up') {
                 order = order - 1;
+                if (order < 1) { order = 1 }
                 this.updateAttributeOrder(attributeId, order)
             }
             else if (change == "down") {
                 order = order + 1;
+                let nbAttributes = this.list.sysAttributesByListId.nodes.length;
+                if (order > nbAttributes) { order = nbAttributes }
                 this.updateAttributeOrder(attributeId, order)
             }
         },

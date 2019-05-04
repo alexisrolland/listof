@@ -32,7 +32,7 @@
                     </div>
 
                     <!-- Attribute Order -->
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="order" class="col-form-label">
                             Order:
                         </label>
@@ -42,7 +42,7 @@
                             placeholder="Type attribute order"
                             type="number"
                             v-model="attribute.order" />
-                    </div>
+                    </div> -->
 
                     <div class="form-check form-check-inline">
                         <!-- Flag Attribute Mandatory -->

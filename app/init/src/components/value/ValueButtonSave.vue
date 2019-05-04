@@ -34,7 +34,7 @@ export default {
 
                 // Build mutation payload
                 let variables = { 'id': this.value.id };
-                let patch = this.value;
+                let patch = Object.assign({}, this.value); // Clone object
                 delete patch['createdDate'];
                 delete patch['sysUserByCreatedById'];
                 delete patch['updatedDate'];
@@ -53,6 +53,13 @@ export default {
                     function(response){
                         if(response.data.errors){
                             this.displayError(response);
+                        } else {
+                            // Send updates to parent component
+                            let metaData = {
+                                'updatedDate': response.data.data['update' + graphQlListNameUpperCase + 'ById'][this.graphQlListName].updatedDate,
+                                'updatedBy': response.data.data['update' + graphQlListNameUpperCase + 'ById'][this.graphQlListName].sysUserByUpdatedById.email
+                            }
+                            this.$emit('updatedValue', metaData);
                         }
                     },
                     // Error callback

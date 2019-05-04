@@ -45,6 +45,7 @@ export const store = new Vuex.Store({
         mutationUpdateList: ListPayload.mutationUpdateList,
         mutationDeleteList: ListPayload.mutationDeleteList,
         mutationSearchList: ListPayload.mutationSearchList,
+        mutationDuplicateListValue: ListPayload.mutationDuplicateListValue,
 
         // Attributes queries and mutations
         queryGetAttribute: AttributePayload.queryGetAttribute,
@@ -52,10 +53,11 @@ export const store = new Vuex.Store({
         mutationUpdateAttribute: AttributePayload.mutationUpdateAttribute,
         mutationDeleteAttribute: AttributePayload.mutationDeleteAttribute,
 
-        // Lists values queries and mutations 
+        // Values queries and mutations 
         queryGetAllValues: ValuePayload.queryGetAllValues,
         queryGetValue: ValuePayload.queryGetValue,
         queryGetLinkedListValues: ValuePayload.queryGetLinkedListValues,  // Data for linked list & attributes drodpdown in value form
+        queryDownloadAllValues: ValuePayload.queryDownloadAllValues,
         mutationCreateValue: ValuePayload.mutationCreateValue,
         mutationUpdateValue: ValuePayload.mutationUpdateValue,
         mutationDeleteValue: ValuePayload.mutationDeleteValue,

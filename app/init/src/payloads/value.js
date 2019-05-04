@@ -34,6 +34,19 @@ export const queryGetLinkedListValues = `query getAllValues {
     }
 }`;
 
+// Generic query used as template to download all values from a list (no pagination is applied)
+export const queryDownloadAllValues = `query downloadAllValues{
+    all<GraphQlListName>{
+        nodes {
+            id
+            createdDate
+            updatedDate
+            <graphQlAttributeName>
+        }
+        totalCount
+    }
+}`;
+
 // Generic mutation used as template to create a new value in a list
 export const mutationCreateValue = `mutation createValue($<graphQlListName>: <GraphQlListName>Input!) {
     create<GraphQlListName>(input: {<graphQlListName>: $<graphQlListName>}) {
@@ -48,6 +61,8 @@ export const mutationUpdateValue = `mutation updateValue($id: Int!, $<graphQlLis
     update<GraphQlListName>ById(input: {id: $id, <graphQlListName>Patch: $<graphQlListName>Patch }) {
         <graphQlListName> {
             id
+            updatedDate
+            sysUserByUpdatedById { email }
         }
     }
 }`;

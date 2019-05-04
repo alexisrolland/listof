@@ -13,7 +13,7 @@
 
 <script>
 import HeaderBar from './components/header/HeaderBar.vue'
-import ErrorMessage from './components/error/ErrorMessage.vue'
+import ErrorMessage from './components/utils/ErrorMessage.vue'
 
 export default {
     name: 'app',

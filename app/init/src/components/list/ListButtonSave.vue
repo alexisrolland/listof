@@ -36,6 +36,9 @@ export default {
                     function(response){
                         if(response.data.errors){
                             this.displayError(response);
+                        } else {
+                            this.list.updatedDate = response.data.data.updateSysListById.sysList.updatedDate;
+                            this.list.sysUserByUpdatedById.email = response.data.data.updateSysListById.sysList.sysUserByUpdatedById.email;
                         }
                     },
                     // Error callback

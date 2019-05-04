@@ -1,7 +1,7 @@
 <template>
-    <div class="mt-5">
+    <div class="mt-3">
         <!-- Search bar -->
-        <div class="input-group mb-5">
+        <div class="input-group mb-4">
             <!-- Selected attribute to search -->
             <div id="inputGroupPrepend" class="dropdown input-group-prepend">
                 <button class="btn btn-secondary dropdown-toggle"

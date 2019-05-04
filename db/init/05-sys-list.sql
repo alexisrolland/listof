@@ -54,6 +54,7 @@ COMMENT ON FUNCTION base.generate_table_name IS
 CREATE OR REPLACE FUNCTION base.create_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
+    /*Create table*/
     EXECUTE format('
         CREATE TABLE public.%I (
             id SERIAL PRIMARY KEY
@@ -80,6 +81,24 @@ BEGIN
 
     /*Set ownership to advanced user to allow all advanced users to delete function*/
     EXECUTE format('ALTER FUNCTION public.search_%I OWNER TO advanced;', NEW.table_name);
+
+    /*Create trigger to update updated date*/
+    EXECUTE format('
+        CREATE TRIGGER %I_update_updated_date BEFORE UPDATE
+        ON public.%I FOR EACH ROW EXECUTE PROCEDURE
+        base.update_updated_date();',
+        NEW.table_name,
+        NEW.table_name
+    );
+    
+    /*Create trigger to update updated by*/
+    EXECUTE format('
+        CREATE TRIGGER %I_update_updated_by_id BEFORE UPDATE
+        ON public.%I FOR EACH ROW EXECUTE PROCEDURE
+        base.update_updated_by_id();',
+        NEW.table_name,
+        NEW.table_name
+    );
 
     RETURN NEW;
 END;
@@ -196,6 +215,40 @@ COMMENT ON FUNCTION base.create_list_search IS
 
 
 
+/*Create function to duplicate values of a list*/
+CREATE OR REPLACE FUNCTION base.duplicate_list_value(source_list_id INTEGER, target_list_id INTEGER)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_source_table_name TEXT;
+    v_target_table_name TEXT;
+BEGIN
+    /*Get source table name*/
+    SELECT table_name
+    INTO v_source_table_name
+    FROM base.sys_list
+    WHERE id=source_list_id;
+
+    /*Get target table name*/
+    SELECT table_name
+    INTO v_target_table_name
+    FROM base.sys_list
+    WHERE id=target_list_id;
+
+    /*Duplicate list data*/
+    EXECUTE format('INSERT INTO public.%I SELECT * FROM public.%I;', v_target_table_name, v_source_table_name);
+    
+    /*Reset sequence to avoid unique constraint error*/
+    EXECUTE format('SELECT SETVAL(''%I_id_seq'', (SELECT MAX(id) FROM public.%I));', v_target_table_name, v_target_table_name);
+
+    RETURN true;
+END;
+$$ language plpgsql strict;
+
+COMMENT ON FUNCTION base.duplicate_list_value IS
+'Function used to duplicate data from a source list table to another target list table.';
+
+
+
 /*Create function to automatically rename a table when a list is renamed*/
 CREATE OR REPLACE FUNCTION base.rename_list_table()
 RETURNS TRIGGER AS $$
@@ -235,6 +288,10 @@ BEGIN
 
     /*Rebuild list search to map it to the new list view*/
     EXECUTE format('SELECT base.create_list_search(''%I'');', NEW.table_name);
+
+    /*Rename triggers*/
+    EXECUTE format('ALTER TRIGGER %I_update_updated_date ON public.%I RENAME TO %I_update_updated_date;', OLD.table_name, NEW.table_name, NEW.table_name);
+    EXECUTE format('ALTER TRIGGER %I_update_updated_by_id ON public.%I RENAME TO %I_update_updated_by_id;', OLD.table_name, NEW.table_name, NEW.table_name);
 
     RETURN NEW;
 END;
