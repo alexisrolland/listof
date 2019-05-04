@@ -88,18 +88,64 @@
                     </attribute-select-data-type>
 
                     <!-- Attribute Default Value -->
-                    <!-- Deactivate this feature until it's implemented
-                    <div class="form-group" v-if="showDataType">
-                        <label for="defaultValue" class="col-form-label">
-                            Default Value:
-                        </label>
-                        <input class="form-control col-sm"
-                            id="defaultValue"
-                            type="text"
-                            placeholder="Attribute default value"
-                            v-model="attribute.defaultValue" />
+                    <div class="form-group">
+                        <!-- Checkbox input, used for data types boolean (id: 2) -->
+                        <attribute-default-value-input-checkbox
+                            v-if="[2].includes(attribute.dataTypeId)"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-checkbox>
+
+                        <!-- Date input, used for data types date (id: 4) -->
+                        <attribute-default-value-input-date
+                            v-if="[4].includes(attribute.dataTypeId)"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-date>
+
+                        <!-- Timestamp input, used for data types timestamp (id: 10) -->
+                        <attribute-default-value-input-timestamp
+                            v-if="[10].includes(attribute.dataTypeId)"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-timestamp>
+
+                        <!-- Text input, used for data types decimal (id: 5) -->
+                        <attribute-default-value-input-decimal
+                            v-if="[5].includes(attribute.dataTypeId)"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-decimal>
+                        
+                        <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
+                        <attribute-default-value-input-integer
+                            v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-integer>
+
+                        <!-- Text input, used for data types real (id: 7) -->
+                        <attribute-default-value-input-real
+                            v-if="[7].includes(attribute.dataTypeId)"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-real>
+
+                        <!-- Text input, used for all other data types char (id: 3), text (id: 9), varchar (id: 11) -->
+                        <attribute-default-value-input-text
+                            v-if="[3, 9, 11].includes(attribute.dataTypeId)"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-input-text>
+
+                        <!-- Select input, used for attributes which are linked to another list -->
+                        <!-- <attribute-default-value-select-dropdown
+                            v-if="attribute.linkedAttributeId"
+                            v-bind:linkedAttributeId="attribute.linkedAttributeId"
+                            v-bind:value="attribute.defaultValue"
+                            v-on:setDefaultValue="setDefaultValue">
+                        </attribute-default-value-select-dropdown> -->
                     </div>
-                    -->
                 
                     <!-- Button Menu -->
                     <div>
@@ -137,6 +183,15 @@
 <script>
 import AttributeSelectAttribute from './AttributeSelectAttribute.vue';
 import AttributeSelectDataType from './AttributeSelectDataType.vue';
+import AttributeDefaultValueInputCheckbox from './AttributeDefaultValueInputCheckbox.vue';
+import AttributeDefaultValueInputDate from './AttributeDefaultValueInputDate.vue';
+import AttributeDefaultValueInputDecimal from './AttributeDefaultValueInputDecimal.vue';
+import AttributeDefaultValueInputInteger from './AttributeDefaultValueInputInteger.vue';
+import AttributeDefaultValueInputReal from './AttributeDefaultValueInputReal.vue';
+import AttributeDefaultValueInputText from './AttributeDefaultValueInputText.vue';
+import AttributeDefaultValueInputTimestamp from './AttributeDefaultValueInputTimestamp.vue';
+import AttributeDefaultValueSelectDropdown from './AttributeDefaultValueSelectDropdown.vue';
+
 import AttributeButtonSave from './AttributeButtonSave.vue';
 import AttributeButtonClose from './AttributeButtonClose.vue';
 import AttributeButtonDelete from './AttributeButtonDelete.vue';
@@ -148,6 +203,15 @@ export default {
     components: {
         'attribute-select-attribute': AttributeSelectAttribute,
         'attribute-select-data-type': AttributeSelectDataType,
+        'attribute-default-value-input-checkbox': AttributeDefaultValueInputCheckbox,
+        'attribute-default-value-input-date': AttributeDefaultValueInputDate,
+        'attribute-default-value-input-decimal': AttributeDefaultValueInputDecimal,
+        'attribute-default-value-input-integer': AttributeDefaultValueInputInteger,
+        'attribute-default-value-input-real': AttributeDefaultValueInputReal,
+        'attribute-default-value-input-text': AttributeDefaultValueInputText,
+        'attribute-default-value-input-timestamp': AttributeDefaultValueInputTimestamp,
+        'attribute-default-value-select-dropdown': AttributeDefaultValueSelectDropdown,
+
         'attribute-button-save': AttributeButtonSave,
         'attribute-button-close': AttributeButtonClose,
         'attribute-button-delete': AttributeButtonDelete,
@@ -194,6 +258,9 @@ export default {
             } else {
                 this.attribute['linkedAttributeId'] = null;
             }
+        },
+        setDefaultValue(value) {
+            this.attribute['defaultValue'] = value;
         }
     },
     created: function () {

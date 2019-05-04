@@ -38,6 +38,7 @@ export const queryGetList = `query getList($id: Int!) {
                         tableName
                     }
                 }
+                defaultValue
                 columnName
                 sysAttributesByLinkedAttributeId{
                     nodes {
