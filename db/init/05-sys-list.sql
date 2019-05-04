@@ -54,6 +54,7 @@ COMMENT ON FUNCTION base.generate_table_name IS
 CREATE OR REPLACE FUNCTION base.create_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
+    /*Create table*/
     EXECUTE format('
         CREATE TABLE public.%I (
             id SERIAL PRIMARY KEY
@@ -80,6 +81,24 @@ BEGIN
 
     /*Set ownership to advanced user to allow all advanced users to delete function*/
     EXECUTE format('ALTER FUNCTION public.search_%I OWNER TO advanced;', NEW.table_name);
+
+    /*Create trigger to update updated date*/
+    EXECUTE format('
+        CREATE TRIGGER %I_update_updated_date BEFORE UPDATE
+        ON public.%I FOR EACH ROW EXECUTE PROCEDURE
+        base.update_updated_date();',
+        NEW.table_name,
+        NEW.table_name
+    );
+    
+    /*Create trigger to update updated by*/
+    EXECUTE format('
+        CREATE TRIGGER %I_update_updated_by_id BEFORE UPDATE
+        ON public.%I FOR EACH ROW EXECUTE PROCEDURE
+        base.update_updated_by_id();',
+        NEW.table_name,
+        NEW.table_name
+    );
 
     RETURN NEW;
 END;
@@ -269,6 +288,10 @@ BEGIN
 
     /*Rebuild list search to map it to the new list view*/
     EXECUTE format('SELECT base.create_list_search(''%I'');', NEW.table_name);
+
+    /*Rename triggers*/
+    EXECUTE format('ALTER TRIGGER %I_update_updated_date ON public.%I RENAME TO %I_update_updated_date;', OLD.table_name, NEW.table_name, NEW.table_name);
+    EXECUTE format('ALTER TRIGGER %I_update_updated_by_id ON public.%I RENAME TO %I_update_updated_by_id;', OLD.table_name, NEW.table_name, NEW.table_name);
 
     RETURN NEW;
 END;
