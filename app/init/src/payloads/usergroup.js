@@ -42,6 +42,8 @@ export const mutationUpdateUserGroup = `mutation updateUserGroup($id: Int!, $sys
     updateSysUserGroupById(input: {id: $id, sysUserGroupPatch: $sysUserGroupPatch }) {
         sysUserGroup {
             id
+            updatedDate
+            sysUserByUpdatedById { email }
         }
     }
 }`;

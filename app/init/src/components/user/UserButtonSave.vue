@@ -47,6 +47,9 @@ export default {
                     function(response){
                         if(response.data.errors){
                             this.displayError(response);
+                        } else {
+                            this.user.updatedDate = response.data.data.updateSysUserById.sysUser.updatedDate;
+                            this.user.sysUserByUpdatedById.email = response.data.data.updateSysUserById.sysUser.sysUserByUpdatedById.email;
                         }
                     },
                     // Error callback

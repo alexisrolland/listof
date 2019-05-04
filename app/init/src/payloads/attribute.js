@@ -34,6 +34,8 @@ export const mutationUpdateAttribute = `mutation updateAttribute($id: Int!, $sys
     updateSysAttributeById(input: {id: $id, sysAttributePatch: $sysAttributePatch }) {
         sysAttribute {
             id
+            updatedDate
+            sysUserByUpdatedById { email }
         }
     }
 }`;
