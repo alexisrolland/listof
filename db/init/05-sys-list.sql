@@ -217,6 +217,9 @@ BEGIN
 
     /*Duplicate list data*/
     EXECUTE format('INSERT INTO public.%I SELECT * FROM public.%I;', v_target_table_name, v_source_table_name);
+    
+    /*Reset sequence to avoid unique constraint error*/
+    EXECUTE format('SELECT SETVAL(''%I_id_seq'', (SELECT MAX(id) FROM public.%I));', v_target_table_name, v_target_table_name);
 
     RETURN true;
 END;
