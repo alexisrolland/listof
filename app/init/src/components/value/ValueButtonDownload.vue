@@ -1,0 +1,90 @@
+<template>
+        <button type="button" class="btn btn-secondary" v-on:click="downloadCsv">
+            Download CSV
+        </button>
+</template>
+
+<script>
+export default {
+    props: {
+        list: Object
+    },
+    data: function () {
+        return {
+            'test': ''
+        }
+    },
+    methods: {
+        buildGraphQlQuery(){
+            // Method to build GraphQL query
+            // Compute GraphQL names for the list and attributes
+            let inflection = require('inflection');
+            let lodash = require('lodash');
+
+            // GraphQL list name
+            let graphQlListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
+            graphQlListName = lodash.upperFirst(lodash.camelCase(graphQlListName)); // Example table_names > TableNames
+
+            // GraphQL attributes name
+            let attributes = this.list.sysAttributesByListId.nodes;
+            let graphQLAttributeName = '';
+            for (let i = 0; i < attributes.length; i++) {
+                attributes[i]['graphQlAttributeName'] = lodash.camelCase(attributes[i].columnName); // Example colum_name > columnName
+                graphQLAttributeName = graphQLAttributeName + ' ' + attributes[i]['graphQlAttributeName'];
+            }
+
+            // Build GraphQL query
+            let graphQlQuery = this.$store.state.queryDownloadAllValues.replace(/<GraphQlListName>/g, graphQlListName);
+            graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQLAttributeName);
+            return { 'listName': graphQlListName, 'query': graphQlQuery };
+        },
+        downloadCsv(){
+            // Build GraphQL query
+            let graphQl = this.buildGraphQlQuery();
+
+            // Execute GraphQL query to get values
+            let payload = { 'query': graphQl.query };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                function(response){
+                    if(response.data.errors) {
+                        this.displayError(response);
+                    } else {
+                        // Prepare CSV header by renaming keys of first object in the data array
+                        let data = response.data.data['all' + graphQl.listName].nodes;
+                        
+                        // Convert data to CSV format
+                        let papa = require('papaparse');
+                        let text = papa.unparse(data);
+
+                        // Change header to snake_case
+                        let rows = text.split(/\r\n|\r|\n/);
+                        let headers = rows[0].split(',');
+                        let lodash = require('lodash');
+                        for (let i = 0; i < headers.length; i++) { headers[i] = lodash.snakeCase(headers[i]) }
+                        rows[0] = headers.join(',');
+                        text = rows.join('\r\n');
+
+                        // Create CSV file
+                        let file = new Blob([text], {type: 'text/csv;charset=utf-8;'});
+                        let url;
+                        if (navigator.msSaveBlob) { url = navigator.msSaveBlob(file, this.list.name + '.csv'); }
+                        else { url = window.URL.createObjectURL(file); }
+                        let link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', this.list.name + '.csv');
+                        link.click();
+                    }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
+                }
+            );
+        }
+    }
+}
+</script>

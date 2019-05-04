@@ -19,7 +19,8 @@ RUN npm install \
     && npm install --save lodash \
     && npm install --save inflection \
     && npm install --save vue-session \
-    && npm install --save @riophae/vue-treeselect
+    && npm install --save @riophae/vue-treeselect \
+    && npm install --save papaparse
 
 # Copy project files and folders to the current working directory
 COPY ./init/ ./
