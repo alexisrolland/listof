@@ -41,7 +41,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" v-on:click="duplicateList" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-success" v-on:click="duplicateList" data-dismiss="modal">Duplicate</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
