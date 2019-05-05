@@ -7,7 +7,7 @@
 
         <!-- Select input, used for attributes which are linked to another list -->
         <treeselect
-            v-bind:placeholder="'Select value from ' + 'attribute.sysAttributeByLinkedAttributeId.sysListByListId.name'"
+            v-bind:placeholder="'Select value from ' + linkedList.sysListByListId.name"
             v-model="selectedValue"
             v-bind:options="options"
             v-bind:multiple="false"
@@ -32,6 +32,7 @@ export default {
     },
     data() {
         return {
+            'linkedList': '',
             'selectedValue': this.value,
             'options': []
         }
@@ -43,30 +44,22 @@ export default {
         }
     },
     watch: {
-        value(val) {
-            this.selectedValue = val;
-        },
         selectedValue(val) {
-            this.$emit('setDefaultValue', String(this.selectedValue));
+            if (val) {
+                this.$emit('setDefaultValue', String(val));
+            } else {
+                this.$emit('setDefaultValue', null);
+            }
         }
     },
     created: function () {
-        // Compute GraphQL names for the list and attributes
-        let inflection = require('inflection');
-        let lodash = require('lodash');
-
-        // GraphQL list name
-        let graphQlListName = inflection.pluralize(this.attribute.sysAttributeByLinkedAttributeId.sysListByListId.tableName); // Example table_name > table_names
-        graphQlListName = lodash.upperFirst(lodash.camelCase(graphQlListName)); // Example table_names > TableNames
-
-        // GraphQL attributes name
-        let graphQlAttributeName = lodash.camelCase(this.attribute.sysAttributeByLinkedAttributeId.columnName); // Example colum_name > columnName
-
-        // Build GraphQL query
-        let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(/<GraphQlListName>/g, graphQlListName);
-        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQlAttributeName);
-
-        let payload = { 'query': graphQlQuery };
+        // Get linked list and attribute
+        let payload = {
+            'query': this.$store.state.queryGetLinkedList,
+            'variables': {
+                'id': this.linkedAttributeId
+            }
+        };
         let headers = {};
         if (this.$session.exists()) {
             headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
@@ -76,7 +69,34 @@ export default {
                 if(response.data.errors){
                     this.displayError(response);
                 } else {
-                    this.options = response.data.data['all' + graphQlListName].nodes;
+                    this.linkedList = response.data.data.sysAttributeById;
+
+                    // Compute GraphQL names for the list and attributes
+                    let graphQlListName = this.getGraphQlName(this.linkedList.sysListByListId.tableName, 'plural', true);  // Example table_name > TableNames
+                    let graphQlAttributeName = this.getGraphQlName(this.linkedList.columnName) // Example colum_name > columnName
+
+                    // Build GraphQL query
+                    let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(/<GraphQlListName>/g, graphQlListName);
+                    graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQlAttributeName);
+
+                    let payload = { 'query': graphQlQuery };
+                    let headers = {};
+                    if (this.$session.exists()) {
+                        headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                    };
+                    this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                        function(response){
+                            if(response.data.errors){
+                                this.displayError(response);
+                            } else {
+                                this.options = response.data.data['all' + graphQlListName].nodes;
+                            }
+                        },
+                        // Error callback
+                        function(response){
+                            this.displayError(response);
+                        }
+                    );
                 }
             },
             // Error callback

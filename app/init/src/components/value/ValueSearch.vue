@@ -89,31 +89,25 @@ export default {
     },
     created: function () {
         // Compute GraphQL names for the list and attributes
-        let inflection = require('inflection');
-        let lodash = require('lodash');
-
-        // GraphQL list name
-        this.graphQlListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
-        this.graphQlListName = lodash.upperFirst(lodash.camelCase(this.graphQlListName)); // Example table_names > TableNames
+        this.graphQlListName = this.getGraphQlName(this.list.tableName, 'plural', true);  // Example table_name > TableNames
 
         // GraphQL attributes name
         let attributes = this.list.sysAttributesByListId.nodes;
         this.graphQLAttributeName = '';
         for (let i = 0; i < attributes.length; i++) {
-            attributes[i]['graphQlAttributeName'] = lodash.camelCase(attributes[i].columnName); // Example colum_name > columnName
+            attributes[i]['graphQlAttributeName'] = this.getGraphQlName(attributes[i].columnName);  // Example colum_name > columnName
             this.graphQLAttributeName = this.graphQLAttributeName + ' ' + attributes[i]['graphQlAttributeName'];
 
             // If attribute is linked to another list attribute, adjust query to fetch linked attribute value
             if (attributes[i].linkedAttributeId) {
                 // Build GraphQL attribute path for the linked attribute
                 let attributePath = attributes[i]['sysAttributeByLinkedAttributeId']['sysListByListId']['tableName'];
-                attributePath = inflection.singularize(attributePath);
-                attributePath = lodash.camelCase(attributePath); // Example column_name > columnName
-                attributePath = attributePath + "By" + lodash.upperFirst(lodash.camelCase(attributes[i].columnName)); // Example column_name > ColumnName
+                attributePath = this.getGraphQlName(attributePath, 'singular');  // Example column_name > columnName
+                attributePath = attributePath + "By" + this.getGraphQlName(attributes[i].columnName, null, true);  // Example column_name > ColumnName
                 attributes[i]['graphQlAttributePath'] = attributePath;
                 
                 // Build GraphQL attribute name for the linked attribute
-                let attributeName = lodash.camelCase(attributes[i]['sysAttributeByLinkedAttributeId']['columnName']); // Example column_name > columnName
+                let attributeName = this.getGraphQlName(attributes[i]['sysAttributeByLinkedAttributeId']['columnName']);  // Example column_name > columnName
                 attributes[i]['graphQlLinkedAttributeName'] = attributeName;
 
                 // Add attribute path and name to the query
@@ -171,12 +165,8 @@ export default {
                 this.getAllValues(this.currentPage);
             } else {
                 // Build GraphQL mutation
-                let inflection = require('inflection');
-                let lodash = require('lodash');
-
-                let graphQlMutationName = lodash.upperFirst(lodash.camelCase(this.list.tableName)); // Example table_name > TableName
-                let graphQlMutationListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
-                graphQlMutationListName = lodash.camelCase(graphQlMutationListName); // Example table_names > tableNames
+                let graphQlMutationName = this.getGraphQlName(this.list.tableName, null, true);  // Example table_name > TableName
+                let graphQlMutationListName = this.getGraphQlName(this.list.tableName, 'plural');  // Example table_name > tableNames
 
                 this.graphQlMutation = this.$store.state.mutationSearchValue.replace(/<GraphQlMutationName>/g, graphQlMutationName);
                 this.graphQlMutation = this.graphQlMutation.replace(/<graphQlMutationListName>/g, graphQlMutationListName);

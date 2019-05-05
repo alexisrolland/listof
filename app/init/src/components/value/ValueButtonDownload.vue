@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import Mixins from '../utils/Mixins.vue';
+
 export default {
+    mixins: [Mixins],
     props: {
         list: Object
     },
@@ -18,18 +21,11 @@ export default {
         buildGraphQlQuery(){
             // Method to build GraphQL query
             // Compute GraphQL names for the list and attributes
-            let inflection = require('inflection');
-            let lodash = require('lodash');
-
-            // GraphQL list name
-            let graphQlListName = inflection.pluralize(this.list.tableName); // Example table_name > table_names
-            graphQlListName = lodash.upperFirst(lodash.camelCase(graphQlListName)); // Example table_names > TableNames
-
-            // GraphQL attributes name
+            let graphQlListName = this.getGraphQlName(this.list.tableName, 'plural', true);  // Example table_name > TableNames
             let attributes = this.list.sysAttributesByListId.nodes;
             let graphQLAttributeName = '';
             for (let i = 0; i < attributes.length; i++) {
-                attributes[i]['graphQlAttributeName'] = lodash.camelCase(attributes[i].columnName); // Example colum_name > columnName
+                attributes[i]['graphQlAttributeName'] = this.getGraphQlName(attributes[i].columnName);  // Example colum_name > columnName
                 graphQLAttributeName = graphQLAttributeName + ' ' + attributes[i]['graphQlAttributeName'];
             }
 

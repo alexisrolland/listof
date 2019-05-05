@@ -34,12 +34,16 @@ export default {
     },
     watch: {
         value(val) {
-            this.inputValue = this.value;
+            this.inputValue = val;
         }
     },
     methods: {
-        change(val) {
-            this.$emit('setDefaultValue', String(this.inputValue));
+        change() {
+            if (this.inputValue == '') {
+                this.$emit('setDefaultValue', null);
+            } else {
+                this.$emit('setDefaultValue', String(this.inputValue));
+            }
         }
     }
 }

@@ -26,7 +26,7 @@
                                 <value-input-checkbox
                                     v-if="[2].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-checkbox>
 
@@ -34,7 +34,7 @@
                                 <value-input-date
                                     v-if="[4].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-date>
 
@@ -42,7 +42,7 @@
                                 <value-input-timestamp
                                     v-if="[10].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-timestamp>
 
@@ -50,7 +50,7 @@
                                 <value-input-decimal
                                     v-if="[5].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-decimal>
                                 
@@ -58,7 +58,7 @@
                                 <value-input-integer
                                     v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-integer>
 
@@ -66,7 +66,7 @@
                                 <value-input-real
                                     v-if="[7].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-real>
 
@@ -74,7 +74,7 @@
                                 <value-input-text
                                     v-if="[3, 9, 11].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-text>
 
@@ -82,7 +82,7 @@
                                 <value-select-dropdown
                                     v-if="[6].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
                                     v-bind:attribute="attribute"
-                                    v-model="value[attribute.graphQlAttributeName]"
+                                    v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-select-dropdown>
                         </div>
@@ -201,12 +201,7 @@ export default {
                     this.list = response.data.data.sysListById;
 
                     // Compute GraphQL names for the list and attributes
-                    let inflection = require('inflection');
-                    let lodash = require('lodash');
-
-                    // GraphQL list name
-                    let graphQlListName = inflection.singularize(this.list.tableName); // Example table_names > table_name
-                    graphQlListName = lodash.camelCase(graphQlListName); // Example table_name > tableName
+                    let graphQlListName = this.getGraphQlName(this.list.tableName, 'singular');  // Example table_names > tableName
                     this.list['graphQlListName'] = graphQlListName;
 
                     // GraphQL attributes name
@@ -214,7 +209,7 @@ export default {
                     if (this.list.sysAttributesByListId) {
                         let attributes = this.list.sysAttributesByListId.nodes;
                         for (let i = 0; i < attributes.length; i++) {
-                            attributes[i]['graphQlAttributeName'] = lodash.camelCase(attributes[i].columnName); // Example colum_name > columnName
+                            attributes[i]['graphQlAttributeName'] = this.getGraphQlName(attributes[i].columnName);  // Example colum_name > columnName
                             attributeName = attributes[i]['graphQlAttributeName'] + ' ' + attributeName;
                         }
                         this.list['attributes'] = attributes;
