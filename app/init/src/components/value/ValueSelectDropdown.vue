@@ -49,27 +49,20 @@ export default {
     },
     watch: {
         value(val) {
-            this.selectedValue = val;
+            this.selectedValue = this.value;
         },
         selectedValue(val) {
             let attributeValue = {
                 'attribute': this.attribute.graphQlAttributeName,
-                'value': this.selectedValue
+                'value': val
             }
             this.$emit('changeAttributeValue', attributeValue);
         }
     },
     created: function () {
         // Compute GraphQL names for the list and attributes
-        let inflection = require('inflection');
-        let lodash = require('lodash');
-
-        // GraphQL list name
-        let graphQlListName = inflection.pluralize(this.attribute.sysAttributeByLinkedAttributeId.sysListByListId.tableName); // Example table_name > table_names
-        graphQlListName = lodash.upperFirst(lodash.camelCase(graphQlListName)); // Example table_names > TableNames
-
-        // GraphQL attributes name
-        let graphQlAttributeName = lodash.camelCase(this.attribute.sysAttributeByLinkedAttributeId.columnName); // Example colum_name > columnName
+        let graphQlListName = this.getGraphQlName(this.attribute.sysAttributeByLinkedAttributeId.sysListByListId.tableName, 'plural', true);  // Example table_name > TableNames
+        let graphQlAttributeName = this.getGraphQlName(this.attribute.sysAttributeByLinkedAttributeId.columnName);  // Example colum_name > columnName
 
         // Build GraphQL query
         let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(/<GraphQlListName>/g, graphQlListName);

@@ -41,7 +41,6 @@ END;
 $$ language plpgsql;
 
 COMMENT ON FUNCTION base.generate_column_name IS
-/*Create function to generate a column name from a list name*/
 'Function used to generate a table name from an attribute name.';
 
 
@@ -164,6 +163,40 @@ $$ language plpgsql;
 
 COMMENT ON FUNCTION base.rename_list_column IS
 'Function used to automatically rename a column on a list table when an attribute is renamed.';
+
+
+/*Create function to update default value of a column*/
+CREATE OR REPLACE FUNCTION base.update_list_column_default_value()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_alter_statement TEXT;
+    v_alter_table TEXT;
+    v_data_type TEXT;
+    v_linked_table_name TEXT;
+    v_table_name TEXT;
+BEGIN
+    /*Get table name*/
+    SELECT table_name 
+    INTO v_table_name
+    FROM base.sys_list
+    WHERE id=NEW.list_id;
+    v_alter_table = format('ALTER TABLE public.%I ', v_table_name);
+
+    /*Update default value*/
+    IF (NEW.default_value IS NOT NULL) THEN
+        v_alter_statement = v_alter_table || format('ALTER COLUMN %I SET DEFAULT %L;', NEW.column_name, NEW.default_value);
+        EXECUTE v_alter_statement;
+    ELSE
+        v_alter_statement = v_alter_table || format('ALTER COLUMN %I DROP DEFAULT;', NEW.column_name);
+        EXECUTE v_alter_statement;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.update_list_column_default_value IS
+'Function used to update the default value of a list column.';
 
 
 
@@ -290,6 +323,10 @@ EXECUTE PROCEDURE base.generate_column_name();
 CREATE TRIGGER attribute_rename_list_column AFTER UPDATE
 ON base.sys_attribute FOR EACH ROW WHEN (OLD.column_name IS DISTINCT FROM NEW.column_name)
 EXECUTE PROCEDURE base.rename_list_column();
+
+CREATE TRIGGER attribute_update_default_value AFTER UPDATE
+ON base.sys_attribute FOR EACH ROW WHEN (OLD.default_value IS DISTINCT FROM NEW.default_value) 
+EXECUTE PROCEDURE base.update_list_column_default_value();
 
 
 

@@ -120,7 +120,7 @@
                         <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
                         <attribute-default-value-input-integer
                             v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
-                            v-bind:value="attribute.defaultValue"
+                            v-bind:value="parseInt(attribute.defaultValue)"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-integer>
 
@@ -139,12 +139,12 @@
                         </attribute-default-value-input-text>
 
                         <!-- Select input, used for attributes which are linked to another list -->
-                        <!-- <attribute-default-value-select-dropdown
+                        <attribute-default-value-select-dropdown
                             v-if="attribute.linkedAttributeId"
                             v-bind:linkedAttributeId="attribute.linkedAttributeId"
                             v-bind:value="attribute.defaultValue"
                             v-on:setDefaultValue="setDefaultValue">
-                        </attribute-default-value-select-dropdown> -->
+                        </attribute-default-value-select-dropdown>
                     </div>
                 
                     <!-- Button Menu -->

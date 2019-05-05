@@ -22,6 +22,17 @@ export const queryGetAttribute = `query getAttribute($id: Int!) {
     }
 }`;
 
+export const queryGetLinkedList = `query queryGetLinkedList($id: Int!) {
+    sysAttributeById(id: $id) {
+        name
+        columnName
+        sysListByListId {
+            name
+            tableName
+        }
+    }
+}`;
+
 export const mutationCreateAttribute = `mutation createAttribute($sysAttribute: SysAttributeInput!) {
     createSysAttribute(input: {sysAttribute: $sysAttribute}) {
         sysAttribute {

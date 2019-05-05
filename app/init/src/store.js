@@ -49,6 +49,7 @@ export const store = new Vuex.Store({
 
         // Attributes queries and mutations
         queryGetAttribute: AttributePayload.queryGetAttribute,
+        queryGetLinkedList: AttributePayload.queryGetLinkedList,
         mutationCreateAttribute: AttributePayload.mutationCreateAttribute,
         mutationUpdateAttribute: AttributePayload.mutationUpdateAttribute,
         mutationDeleteAttribute: AttributePayload.mutationDeleteAttribute,
