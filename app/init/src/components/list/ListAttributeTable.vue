@@ -64,8 +64,8 @@
                         <router-link v-if="showEditAttribute" class="badge badge-secondary" v-bind:to="list.id + '/attributes/' + attribute.id">
                             Edit Attribute
                         </router-link>
-                        <a class="badge badge-secondary" style="cursor: pointer;" v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'up')">▲</a>
-                        <a class="badge badge-secondary" style="cursor: pointer;" v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'down')">▼</a>
+                        <a v-if="showEditAttribute" class="badge badge-secondary" style="cursor: pointer;" v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'up')">▲</a>
+                        <a v-if="showEditAttribute" class="badge badge-secondary" style="cursor: pointer;" v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'down')">▼</a>
                     </td>
                 </tr>
             </tbody>
