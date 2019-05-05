@@ -12,4 +12,4 @@ All data warehousing projects face similar challenges to standardize data coming
 See the demo on Youtube: [ListOf Playlist](https://www.youtube.com/watch?v=yXRrzHEJEIo&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM)
 
 # Getting Started
-Follow the Getting Started page on our Github Wiki: [Getting Started](https://github.com/alexisrolland/listof/wiki/Getting-Started).
+Follow the Getting Started page on the Github Wiki: [Getting Started](https://github.com/alexisrolland/listof/wiki/Getting-Started).
