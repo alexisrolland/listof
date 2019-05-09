@@ -212,7 +212,10 @@ export default {
                             attributes[i]['graphQlAttributeName'] = this.getGraphQlName(attributes[i].columnName);  // Example colum_name > columnName
                             attributeName = attributes[i]['graphQlAttributeName'] + ' ' + attributeName;
                         }
-                        this.list['attributes'] = attributes;
+
+                        // Sort attributes
+                        let lodash = require('lodash');
+                        this.list['attributes'] = lodash.sortBy(attributes, 'order');
                         delete this.list.sysAttributesByListId;
 
                         // If valueId == new then default attributes in form
