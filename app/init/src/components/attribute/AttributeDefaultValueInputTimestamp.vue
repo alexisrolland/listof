@@ -5,7 +5,7 @@
             Default Value:
         </label>
 
-        <!-- Timestamp input, used for data types timestamp (id: 10) -->
+        <!-- Timestamp input, used for data types timestamp (id: 9) -->
         <input class="form-control col-sm"
             id="defaultValue"
             type="datetime-local"

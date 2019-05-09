@@ -18,7 +18,7 @@ export default {
             // Method to create or update an attribute
             // Clean inputs
             if (this.attribute.order) { this.attribute.order = parseInt(this.attribute.order) }
-            if (this.attribute.linkedAttributeId) { this.attribute.dataTypeId = 6 }  // Default dataTypeId to integer if attribute is a linked list
+            if (this.attribute.linkedAttributeId) { this.attribute.dataTypeId = 5 }  // Default dataTypeId to integer if attribute is a linked list
 
             // If attribute.id exists, update existing attribute
             if (this.attribute.id) {

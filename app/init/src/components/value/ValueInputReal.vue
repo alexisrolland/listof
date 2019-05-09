@@ -5,7 +5,7 @@
             {{ attribute.name }}:
         </label>
 
-        <!-- Number input, used for data type real (id: 7) -->
+        <!-- Number input, used for data type real (id: 6) -->
         <input class="form-control col-sm"
             type="number"
             v-bind:id="attribute.id"

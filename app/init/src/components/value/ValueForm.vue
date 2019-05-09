@@ -30,49 +30,49 @@
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-checkbox>
 
-                                <!-- Date input, used for data types date (id: 4) -->
+                                <!-- Date input, used for data types date (id: 3) -->
                                 <value-input-date
-                                    v-if="[4].includes(attribute.dataTypeId)"
+                                    v-if="[3].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-date>
 
-                                <!-- Timestamp input, used for data types timestamp (id: 10) -->
+                                <!-- Timestamp input, used for data types timestamp (id: 9) -->
                                 <value-input-timestamp
-                                    v-if="[10].includes(attribute.dataTypeId)"
+                                    v-if="[9].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-timestamp>
 
-                                <!-- Text input, used for data types decimal (id: 5) -->
+                                <!-- Text input, used for data types decimal (id: 4) -->
                                 <value-input-decimal
-                                    v-if="[5].includes(attribute.dataTypeId)"
+                                    v-if="[4].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-decimal>
                                 
-                                <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
+                                <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
                                 <value-input-integer
-                                    v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
+                                    v-if="[1, 5, 7].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-integer>
 
-                                <!-- Text input, used for data types real (id: 7) -->
+                                <!-- Text input, used for data types real (id: 6) -->
                                 <value-input-real
-                                    v-if="[7].includes(attribute.dataTypeId)"
+                                    v-if="[6].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
                                 </value-input-real>
 
-                                <!-- Text input, used for all other data types char (id: 3), text (id: 9), varchar (id: 11) -->
+                                <!-- Text input, used for all other data types text (id: 8) -->
                                 <value-input-text
-                                    v-if="[3, 9, 11].includes(attribute.dataTypeId)"
+                                    v-if="[8].includes(attribute.dataTypeId)"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
@@ -80,7 +80,7 @@
 
                                 <!-- Select input, used for attributes which are linked to another list -->
                                 <value-select-dropdown
-                                    v-if="[6].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
+                                    v-if="[5].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
                                     v-bind:attribute="attribute"
                                     v-bind:value="value[attribute.graphQlAttributeName]"
                                     v-on:changeAttributeValue="getAttributeValue">
@@ -226,12 +226,12 @@ export default {
                                 if ([2].includes(this.list.attributes[i].dataTypeId)) {
                                     this.value[this.list.attributes[i].graphQlAttributeName] = (this.list.attributes[i].defaultValue == 'true');
                                 }
-                                // Data types bigint (id: 1), integer (id: 6), smallint (id:8)
-                                else if ([1, 6, 8].includes(this.list.attributes[i].dataTypeId)) {
+                                // Data types bigint (id: 1), integer (id: 5), smallint (id: 7)
+                                else if ([1, 5, 7].includes(this.list.attributes[i].dataTypeId)) {
                                     this.value[this.list.attributes[i].graphQlAttributeName] = parseInt(this.list.attributes[i].defaultValue);
                                 }
-                                // Data types real (id: 7)
-                                else if ([7].includes(this.list.attributes[i].dataTypeId)) {
+                                // Data types real (id: 6)
+                                else if ([6].includes(this.list.attributes[i].dataTypeId)) {
                                     this.value[this.list.attributes[i].graphQlAttributeName] = parseFloat(this.list.attributes[i].defaultValue);
                                 }
                                 // Other data types accept strings
