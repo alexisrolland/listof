@@ -14,6 +14,8 @@
                             id="name"
                             type="text"
                             required="true"
+                            v-bind:disabled="isReadOnly"
+                            v-bind:readonly="isReadOnly"
                             placeholder="Type attribute name"
                             v-model="attribute.name" />
                     </div>
@@ -23,9 +25,10 @@
                         <label for="description" class="col-form-label">
                             Description:
                         </label>
-                        <textarea
+                        <textarea class="form-control col-sm"
                             id="description"
-                            class="form-control col-sm"
+                            v-bind:disabled="isReadOnly"
+                            v-bind:readonly="isReadOnly"
                             placeholder="Type attribute description"
                             rows="3"
                             v-model="attribute.description" />
