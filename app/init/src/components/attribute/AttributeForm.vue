@@ -54,7 +54,7 @@
                                 id="mandatory"
                                 type="checkbox"
                                 value=""
-                                v-bind:disabled="isReadOnly"
+                                v-bind:disabled="preventUpdate"
                                 v-model="attribute.flagMandatory"/>
                             <label for="mandatory" class="custom-control-label">
                                 Mandatory
@@ -67,7 +67,7 @@
                                 id="unique"
                                 type="checkbox"
                                 value=""
-                                v-bind:disabled="isReadOnly"
+                                v-bind:disabled="preventUpdate"
                                 v-model="attribute.flagUnique"/>
                             <label for="unique" class="custom-control-label">
                                 Unique
@@ -245,8 +245,15 @@ export default {
             else { return false; }
         },
         isReadOnly() {
-            if(this.attributeId != 'new'){ return true; }
+            let roles = ['admin', 'advanced'];
+            if (!roles.includes(this.$store.state.currentUser.role)) { return true; }
             else { return false; }
+        },
+        preventUpdate() {
+            if (!this.isReadOnly) {
+                if (this.attributeId != 'new') { return true; }
+                else { return false; }
+            } else { return true; }
         }
     },
     methods: {
