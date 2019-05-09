@@ -235,8 +235,6 @@ export default {
                                 else {
                                     this.value[this.list.attributes[i].graphQlAttributeName] = this.list.attributes[i].defaultValue;
                                 }
-                                
-                                console.log('hello');
                             }
                         }
                         // If valueId != new then get data for existing value
