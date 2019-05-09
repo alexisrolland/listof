@@ -8,7 +8,7 @@ CREATE TABLE base.sys_attribute (
     id SERIAL PRIMARY KEY
   , name TEXT NOT NULL
   , description TEXT
-  , "order" INTEGER NOT NULL DEFAULT 0
+  , "order" INTEGER NOT NULL DEFAULT 1
   , column_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
   , flag_mandatory BOOLEAN DEFAULT FALSE
