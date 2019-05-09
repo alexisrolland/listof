@@ -214,38 +214,62 @@ export default {
                         }
                         this.list['attributes'] = attributes;
                         delete this.list.sysAttributesByListId;
-                    }
 
-                    // If valueId != new then get data for existing value
-                    if (this.valueId != 'new') {
-                        // Build GraphQL query
-                        let graphQlQuery = this.$store.state.queryGetValue.replace(/<graphQlListName>/g, this.list.graphQlListName);
-                        graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
-
-                        // Execute GraphQL query to get value
-                        let payloadValue = {
-                            'query': graphQlQuery,
-                            'variables': {
-                                'id': parseInt(this.valueId)
-                            }
-                        };
-                        let headers = {};
-                        if (this.$session.exists()) {
-                            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
-                        };
-                        this.$http.post(this.$store.state.graphqlUrl, payloadValue, {headers}).then (
-                            function(response){
-                                if(response.data.errors){
-                                    this.displayError(response);
-                                } else {
-                                    this.value = response.data.data[this.list.graphQlListName + 'ById'];
+                        // If valueId == new then default attributes in form
+                        if (this.valueId == 'new') {
+                            for (let i = 0; i < this.list.attributes.length; i++) {
+                                // Format default value according to data type
+                                // Data types boolean (id: 2)
+                                if ([2].includes(this.list.attributes[i].dataTypeId)) {
+                                    this.value[this.list.attributes[i].graphQlAttributeName] = (this.list.attributes[i].defaultValue == 'true');
                                 }
-                            },
-                            // Error callback
-                            function(response){
-                                this.displayError(response);
+                                // Data types bigint (id: 1), integer (id: 6), smallint (id:8)
+                                else if ([1, 6, 8].includes(this.list.attributes[i].dataTypeId)) {
+                                    this.value[this.list.attributes[i].graphQlAttributeName] = parseInt(this.list.attributes[i].defaultValue);
+                                }
+                                // Data types real (id: 7)
+                                else if ([7].includes(this.list.attributes[i].dataTypeId)) {
+                                    this.value[this.list.attributes[i].graphQlAttributeName] = parseFloat(this.list.attributes[i].defaultValue);
+                                }
+                                // Other data types accept strings
+                                else {
+                                    this.value[this.list.attributes[i].graphQlAttributeName] = this.list.attributes[i].defaultValue;
+                                }
+                                
+                                console.log('hello');
                             }
-                        );
+                        }
+                        // If valueId != new then get data for existing value
+                        else {
+                            // Build GraphQL query
+                            let graphQlQuery = this.$store.state.queryGetValue.replace(/<graphQlListName>/g, this.list.graphQlListName);
+                            graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
+
+                            // Execute GraphQL query to get value
+                            let payloadValue = {
+                                'query': graphQlQuery,
+                                'variables': {
+                                    'id': parseInt(this.valueId)
+                                }
+                            };
+                            let headers = {};
+                            if (this.$session.exists()) {
+                                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                            };
+                            this.$http.post(this.$store.state.graphqlUrl, payloadValue, {headers}).then (
+                                function(response){
+                                    if(response.data.errors){
+                                        this.displayError(response);
+                                    } else {
+                                        this.value = response.data.data[this.list.graphQlListName + 'ById'];
+                                    }
+                                },
+                                // Error callback
+                                function(response){
+                                    this.displayError(response);
+                                }
+                            );
+                        }
                     }
                 }
             },
