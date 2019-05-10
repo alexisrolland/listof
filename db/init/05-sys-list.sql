@@ -307,13 +307,13 @@ CREATE OR REPLACE FUNCTION base.delete_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
     /*Drop list search function*/
-    EXECUTE format('DROP FUNCTION public.search_%I;', OLD.table_name);
+    EXECUTE format('DROP FUNCTION IF EXISTS public.search_%I;', OLD.table_name);
 
     /*Drop list table view*/
-    EXECUTE format('DROP VIEW public.vw_%I;', OLD.table_name);
+    EXECUTE format('DROP VIEW IF EXISTS public.vw_%I;', OLD.table_name);
 
     /*Drop list table*/
-    EXECUTE format('DROP TABLE public.%I;', OLD.table_name);
+    EXECUTE format('DROP TABLE IF EXISTS public.%I;', OLD.table_name);
 
     RETURN OLD;
 END;
