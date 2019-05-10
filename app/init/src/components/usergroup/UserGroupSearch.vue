@@ -13,6 +13,7 @@
 
         <!-- User group pagination -->
         <user-group-pagination
+            v-if="showPagination"
             v-bind:totalCount="nbUserGroups"
             v-bind:currentPage="currentPage"
             v-on:goToPage="getAllUserGroups"
@@ -36,6 +37,7 @@ export default {
             'keyword': null,
             'userGroups': [],
             'nbUserGroups': null,
+            'showPagination': true,
             'currentPage': {
                 'pageNum': 1,
                 'offset': 0,
@@ -84,8 +86,12 @@ export default {
             // Search user groups based on keywords
             // If keyword is empty, use GraphQL native query to benefit from pagination
             if (this.keyword == "") {
+                // Show pagination since regular query provide pagination feature
+                this.showPagination = true;
                 this.getAllUserGroups(this.currentPage);
             } else {
+                // Do not show pagination since custom search feature does not include pagination
+                this.showPagination = false;
                 let payload = {
                     'query': this.$store.state.mutationSearchUserGroup,
                     'variables': {
