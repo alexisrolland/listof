@@ -99,44 +99,44 @@
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-checkbox>
 
-                        <!-- Date input, used for data types date (id: 4) -->
+                        <!-- Date input, used for data types date (id: 3) -->
                         <attribute-default-value-input-date
-                            v-if="[4].includes(attribute.dataTypeId)"
+                            v-if="[3].includes(attribute.dataTypeId)"
                             v-bind:value="attribute.defaultValue"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-date>
 
-                        <!-- Timestamp input, used for data types timestamp (id: 10) -->
+                        <!-- Timestamp input, used for data types timestamp (id: 9) -->
                         <attribute-default-value-input-timestamp
-                            v-if="[10].includes(attribute.dataTypeId)"
+                            v-if="[9].includes(attribute.dataTypeId)"
                             v-bind:value="attribute.defaultValue"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-timestamp>
 
-                        <!-- Text input, used for data types decimal (id: 5) -->
+                        <!-- Text input, used for data types decimal (id: 4) -->
                         <attribute-default-value-input-decimal
-                            v-if="[5].includes(attribute.dataTypeId)"
+                            v-if="[4].includes(attribute.dataTypeId)"
                             v-bind:value="attribute.defaultValue"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-decimal>
                         
-                        <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
+                        <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
                         <attribute-default-value-input-integer
-                            v-if="[1, 6, 8].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
+                            v-if="[1, 5, 7].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
                             v-bind:value="parseInt(attribute.defaultValue)"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-integer>
 
-                        <!-- Text input, used for data types real (id: 7) -->
+                        <!-- Text input, used for data types real (id: 6) -->
                         <attribute-default-value-input-real
-                            v-if="[7].includes(attribute.dataTypeId)"
+                            v-if="[6].includes(attribute.dataTypeId)"
                             v-bind:value="attribute.defaultValue"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-real>
 
-                        <!-- Text input, used for all other data types char (id: 3), text (id: 9), varchar (id: 11) -->
+                        <!-- Text input, used for all other data types text (id: 8) -->
                         <attribute-default-value-input-text
-                            v-if="[3, 9, 11].includes(attribute.dataTypeId)"
+                            v-if="[8].includes(attribute.dataTypeId)"
                             v-bind:value="attribute.defaultValue"
                             v-on:setDefaultValue="setDefaultValue">
                         </attribute-default-value-input-text>

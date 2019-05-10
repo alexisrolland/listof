@@ -5,7 +5,7 @@
             Default Value:
         </label>
 
-        <!-- Number input, used for data types bigint (id: 1), integer (id: 6), smallint (id:8) -->
+        <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
         <input class="form-control col-sm"
             id="defaultValue"
             type="number"

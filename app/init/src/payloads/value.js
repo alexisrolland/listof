@@ -3,8 +3,6 @@ export const queryGetAllValues = `query getAllValues($first: Int $offset: Int){
     all<GraphQlListName>(first: $first offset: $offset) {
         nodes {
             id
-            createdDate
-            updatedDate
             <graphQlAttributeName>
         }
         totalCount
@@ -41,6 +39,8 @@ export const queryDownloadAllValues = `query downloadAllValues{
             id
             createdDate
             updatedDate
+            createdById
+            updatedById
             <graphQlAttributeName>
         }
         totalCount

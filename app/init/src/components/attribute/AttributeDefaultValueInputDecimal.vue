@@ -5,7 +5,7 @@
             Default Value:
         </label>
 
-        <!-- Number input, used for data type decimal (id: 5) -->
+        <!-- Number input, used for data type decimal (id: 4) -->
         <input class="form-control col-sm"
             id="defaultValue"
             type="number"

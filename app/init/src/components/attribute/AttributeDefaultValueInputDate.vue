@@ -5,7 +5,7 @@
             Default Value:
         </label>
 
-        <!-- Date input, used for data types date (id: 4) -->
+        <!-- Date input, used for data types date (id: 3) -->
         <input class="form-control col-sm"
             id="defaultValue"
             type="date"
