@@ -33,20 +33,22 @@
                 aria-describedby="inputGroupPrepend"
                 placeholder="Search values"
                 v-model="keyword"
-                v-on:keyup.enter="search">
+                v-on:keyup.enter="search('asc')">
         </div>
 
         <!-- List of Values -->
         <value-table
             v-bind:attributes="attributes"
             v-bind:values="values"
+            v-on:sortList="sortList"
         ></value-table>
 
         <!-- Values pagination -->
         <value-pagination
+            v-if="showPagination"
             v-bind:totalCount="nbValues"
             v-bind:currentPage="currentPage"
-            v-on:goToPage="getAllValues"
+            v-on:goToPage="search"
         ></value-pagination>
     </div>
 </template>
@@ -74,6 +76,7 @@ export default {
             'attributes': [],
             'values': [],
             'nbValues': null,
+            'showPagination': true,
             'currentPage': {
                 'pageNum': 1,
                 'offset': 0,
@@ -158,12 +161,17 @@ export default {
                 }
             );
         },
-        search() {
+        search(sortOrder) {
             // Search values based on keywords
             // If keyword is empty, use GraphQL native query to benefit from pagination
             if (this.keyword == "") {
+                // Show pagination since regular query provide pagination feature
+                this.showPagination = true;
                 this.getAllValues(this.currentPage);
             } else {
+                // Do not show pagination since custom search feature does not include pagination
+                this.showPagination = false;
+
                 // Build GraphQL mutation
                 let graphQlMutationName = this.getGraphQlName(this.list.tableName, null, true);  // Example table_name > TableName
                 let graphQlMutationListName = this.getGraphQlName(this.list.tableName, 'plural');  // Example table_name > tableNames
@@ -176,7 +184,8 @@ export default {
                     'query': this.graphQlMutation,
                     'variables': {
                         'columnName': this.searchAttribute.columnName,
-                        'keyword': this.keyword
+                        'keyword': this.keyword,
+                        'sortOrder': sortOrder
                     }
                 };
                 let headers = {};
@@ -217,6 +226,9 @@ export default {
             else {
                 this.searchAttribute = attribute;
             }
+        },
+        sortList(payload) {
+            this.search(payload.sortOrder);
         }
     }
 }

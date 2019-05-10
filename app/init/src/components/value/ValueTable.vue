@@ -8,6 +8,8 @@
                     </th>
                     <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
+                        <a v-if="showSortAsc" style="cursor: pointer;" v-on:click="sort(attribute.graphQlAttributeName, 'asc')">▲</a>
+                        <a v-if="showSortDesc" style="cursor: pointer;" v-on:click="sort(attribute.graphQlAttributeName, 'desc')">▼</a>
                     </th>
                     <th scope="col">
                         Actions
@@ -58,6 +60,21 @@ export default {
         sortedAttributes(){
             let lodash = require('lodash');
             return lodash.sortBy(this.attributes, 'order');
+        },
+        showSortAsc() {
+            return true;
+        },
+        showSortDesc() {
+            return true;
+        }
+    },
+    methods :{
+        sort(attribute, order) {
+            let payload = {
+                'attribute': attribute,
+                'sortOrder': order
+            }
+            this.$emit('sortList', payload);
         }
     }
 }
