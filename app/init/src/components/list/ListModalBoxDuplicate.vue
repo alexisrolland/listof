@@ -90,7 +90,18 @@ export default {
                         this.listId = response.data.data.createSysList.sysList.id;
 
                         // Duplicate attributes
-                        this.duplicateAttributes(headers, this.list.sysAttributesByListId.nodes);
+                        if (this.list.sysAttributesByListId.nodes.lentgh > 0) {
+                            this.duplicateAttributes(headers, this.list.sysAttributesByListId.nodes);
+                        }
+                        else {
+                            // Reroute to duplicated list
+                            this.$router.push({
+                                name: 'edit-list',
+                                params: {
+                                    listId: this.listId
+                                }
+                            });
+                        }
                     }
                 },
                 // Error callback
