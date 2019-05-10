@@ -21,7 +21,9 @@ services:
   graphql:
     container_name: listof-graphql
     restart: always
-    image: graphile/postgraphile
+    image: listof-graphql
+    build:
+      context: ./graphql
     env_file:
       - ./.env
     depends_on:
