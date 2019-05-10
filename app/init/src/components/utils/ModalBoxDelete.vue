@@ -83,7 +83,6 @@ export default {
                 },
                 // Error callback
                 function(response){
-                    console.log('error');
                     this.displayError(response);
                 }
             );
