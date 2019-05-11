@@ -144,15 +144,6 @@ export default {
                         this.displayError(response);
                     } else {
                         this.values = response.data.data['all' + this.graphQlListName].nodes;
-                        this.nbValues = response.data.data['all' + this.graphQlListName].totalCount;
-
-                        // Set current page
-                        this.currentPage = {
-                            'pageNum': page.pageNum,
-                            'offset': page.offset,
-                            'nbItems': page.nbItems,
-                            'isActive': page.isActive
-                        }
                     }
                 },
                 // Error callback

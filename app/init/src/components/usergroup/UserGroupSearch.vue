@@ -108,15 +108,6 @@ export default {
                             this.displayError(response);
                         } else {
                             this.userGroups = response.data.data.searchUserGroup.sysUserGroups;
-                            this.nbUserGroups = this.userGroups.length;
-
-                            // Set current page to first page
-                            this.currentPage = {
-                                'pageNum': 1,
-                                'offset': 0,
-                                'nbItems': 10,
-                                'isActive': true
-                            }
                         }
                     },
                     // Error callback
