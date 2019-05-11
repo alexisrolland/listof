@@ -144,6 +144,15 @@ export default {
                         this.displayError(response);
                     } else {
                         this.values = response.data.data['all' + this.graphQlListName].nodes;
+                        this.nbValues = response.data.data['all' + this.graphQlListName].totalCount;
+
+                        // Set current page
+                        this.currentPage = {
+                            'pageNum': page.pageNum,
+                            'offset': page.offset,
+                            'nbItems': page.nbItems,
+                            'isActive': page.isActive
+                        }
                     }
                 },
                 // Error callback
@@ -189,15 +198,6 @@ export default {
                             this.displayError(response);
                         } else {
                             this.values = response.data.data['search' + graphQlMutationName][graphQlMutationListName];
-                            this.nbValues = this.values.length;
-
-                            // Set current page to first page
-                            this.currentPage = {
-                                'pageNum': 1,
-                                'offset': 0,
-                                'nbItems': 10,
-                                'isActive': true
-                            }
                         }
                     },
                     // Error callback
