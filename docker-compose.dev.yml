@@ -13,3 +13,7 @@ services:
       - ./app/init/src:/srv/app/src
       - ./app/init/index.html:/srv/app/index.html
     command: ["dev"]
+
+  nginx:
+    ports:
+      - 8080:8080
