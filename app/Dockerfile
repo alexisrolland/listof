@@ -26,6 +26,7 @@ RUN npm install \
     && npm install --save papaparse
 
 # Copy project files and folders to the current working directory
+COPY ./entrypoint.sh ./
 COPY ./init/ ./
 
 # Use entrypoint to differentiate build process between dev and prod
