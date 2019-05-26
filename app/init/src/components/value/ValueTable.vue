@@ -11,7 +11,8 @@
                     </th>
                     <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
-                        <table-sort v-bind:columnName="attribute.columnName"
+                        <table-sort v-if="showTableSort(attribute.linkedAttributeId)"
+                            v-bind:columnName="attribute.columnName"
                             v-bind:sortAttribute="sortAttribute"
                             v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
@@ -70,7 +71,14 @@ export default {
             return lodash.sortBy(this.attributes, 'order');
         }
     },
-    methods :{
+    methods: {
+        showTableSort(linkedAttributeId){
+            if (linkedAttributeId != null) {
+                return false;
+            } else {
+                return true;
+            }
+        },
         setSortAttribute(attribute) {
             this.$emit('sortAttribute', attribute);
         }
