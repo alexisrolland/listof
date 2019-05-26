@@ -90,7 +90,7 @@ export default {
                         this.listId = response.data.data.createSysList.sysList.id;
 
                         // Duplicate attributes
-                        if (this.list.sysAttributesByListId.nodes.lentgh > 0) {
+                        if (this.list.sysAttributesByListId.nodes.length > 0) {
                             this.duplicateAttributes(headers, this.list.sysAttributesByListId.nodes);
                         }
                         else {
