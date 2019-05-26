@@ -5,21 +5,15 @@
                 <tr>
                     <th>
                         Id
-                        <span class="sort"
-                            v-bind:class="{ active: sortAttribute.columnName == 'id' && sortAttribute.sortOrder == 'asc' }"
-                            v-on:click="sort('id', 'asc')">▲</span>
-                        <span class="sort"
-                            v-bind:class="{ active: sortAttribute.columnName == 'id' && sortAttribute.sortOrder == 'desc' }"
-                            v-on:click="sort('id', 'desc')">▼</span>
+                        <table-sort v-bind:columnName="'id'"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
-                        <span class="sort"
-                            v-bind:class="{ active: sortAttribute.columnName == attribute.columnName && sortAttribute.sortOrder == 'asc' }"
-                            v-on:click="sort(attribute.columnName, 'asc')">▲</span>
-                        <span class="sort"
-                            v-bind:class="{ active: sortAttribute.columnName == attribute.columnName && sortAttribute.sortOrder == 'desc' }"
-                            v-on:click="sort(attribute.columnName, 'desc')">▼</span>
+                        <table-sort v-bind:columnName="attribute.columnName"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th scope="col">
                         Actions
@@ -55,18 +49,16 @@
 </template>
 
 <script>
+import TableSort from '../utils/TableSort.vue';
+
 export default {
+    components: {
+        'table-sort': TableSort
+    },
     props: {
         attributes: Array,
-        values: Array
-    },
-    data: function () {
-        return {
-            'sortAttribute': {
-                'columnName': 'id',
-                'sortOrder': 'asc'
-            }
-        }
+        values: Array,
+        sortAttribute: Object
     },
     computed: {
         showEditValue(){
@@ -79,16 +71,8 @@ export default {
         }
     },
     methods :{
-        sort(columnName, sortOrder) {
-            this.sortAttribute = {
-                'columnName': columnName,
-                'sortOrder': sortOrder
-            }
-            let payload = {
-                'columnName': columnName,
-                'sortOrder': sortOrder
-            }
-            this.$emit('sortAttribute', payload);
+        setSortAttribute(attribute) {
+            this.$emit('sortAttribute', attribute);
         }
     }
 }

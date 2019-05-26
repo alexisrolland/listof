@@ -42,6 +42,7 @@
         <value-table
             v-bind:attributes="attributes"
             v-bind:values="values"
+            v-bind:sortAttribute="sortAttribute"
             v-on:sortAttribute="setSortAttribute"
         ></value-table>
 
