@@ -289,6 +289,24 @@ COMMENT ON FUNCTION base.update_attribute_user_group_id IS
 
 
 
+/*Create function to get the default attribute order of a list*/
+CREATE OR REPLACE FUNCTION base.get_attribute_order()
+RETURNS TRIGGER AS $$
+BEGIN
+    SELECT COUNT(a.id) + 1
+    INTO NEW.order
+    FROM base.sys_attribute a
+    WHERE a.list_id=NEW.list_id;
+
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.get_current_user_id IS
+'Function used to get the default attribute order of a list.';
+
+
+
 /*Triggers on insert*/
 CREATE TRIGGER attribute_generate_column_name BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
@@ -297,6 +315,10 @@ base.generate_column_name();
 CREATE TRIGGER attribute_set_user_group_id BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.get_list_user_group_id();
+
+CREATE TRIGGER attribute_get_attribute_order BEFORE INSERT
+ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
+base.get_attribute_order();
 
 CREATE TRIGGER attribute_create_list_column AFTER INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
