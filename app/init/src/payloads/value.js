@@ -1,10 +1,8 @@
 // Generic query used as template to fetch all values from a list
-export const queryGetAllValues = `query getAllValues($first: Int $offset: Int){
-    all<GraphQlListName>(first: $first offset: $offset) {
+export const queryGetAllValues = `query getAllValues($first: Int $offset: Int $orderBy: [<GraphQlListName>OrderBy!]){
+    all<GraphQlListName>(first: $first offset: $offset orderBy: $orderBy) {
         nodes {
             id
-            createdDate
-            updatedDate
             <graphQlAttributeName>
         }
         totalCount
@@ -41,6 +39,8 @@ export const queryDownloadAllValues = `query downloadAllValues{
             id
             createdDate
             updatedDate
+            createdById
+            updatedById
             <graphQlAttributeName>
         }
         totalCount
@@ -77,8 +77,8 @@ export const mutationDeleteValue = `mutation deleteValue($id: Int!) {
 }`;
 
 // Generic mutation to search a list of values
-export const mutationSearchValue = `mutation searchValue($columnName: String, $keyword: String) {
-    search<GraphQlMutationName>(input: {columnName: $columnName, keyword: $keyword}) {
+export const mutationSearchValue = `mutation searchValue($searchAttribute: String, $searchKeyword: String, $sortAttribute: String, $sortOrder: String) {
+    search<GraphQlMutationName>(input: {searchAttribute: $searchAttribute, searchKeyword: $searchKeyword, sortAttribute: $sortAttribute, sortOrder: $sortOrder}) {
         <graphQlMutationListName> {
             id
             createdDate

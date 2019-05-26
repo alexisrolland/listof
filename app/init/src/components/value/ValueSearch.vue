@@ -9,8 +9,9 @@
                     data-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false">
-                    {{ searchAttribute.name }}
+                    {{ searchAttribute.attributeName }}
                 </button>
+
                 <!-- Attributes to search -->
                 <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="admin">
                     <a class="dropdown-item"
@@ -27,23 +28,27 @@
                     </a>
                 </div>
             </div>
+
             <input class="form-control form-control-lg"
                 type="search"
                 aria-label="Search"
                 aria-describedby="inputGroupPrepend"
                 placeholder="Search values"
-                v-model="keyword"
-                v-on:keyup.enter="search">
+                v-model="searchKeyword"
+                v-on:keyup.enter="search('asc')">
         </div>
 
         <!-- List of Values -->
         <value-table
             v-bind:attributes="attributes"
             v-bind:values="values"
+            v-bind:sortAttribute="sortAttribute"
+            v-on:sortAttribute="setSortAttribute"
         ></value-table>
 
         <!-- Values pagination -->
         <value-pagination
+            v-if="showPagination"
             v-bind:totalCount="nbValues"
             v-bind:currentPage="currentPage"
             v-on:goToPage="getAllValues"
@@ -74,17 +79,130 @@ export default {
             'attributes': [],
             'values': [],
             'nbValues': null,
+            'showPagination': true,
             'currentPage': {
                 'pageNum': 1,
                 'offset': 0,
                 'nbItems': 10,
                 'isActive': true
             },
-            'keyword': null,
             'searchAttribute': {
-                'name': 'Search all',
+                'attributeName': 'Search all',
                 'columnName': 'search_all'
+            },
+            'searchKeyword': null,
+            'sortAttribute': {
+                'columnName': 'id',
+                'sortOrder': 'asc'
             }
+        }
+    },
+    methods: {
+        getAllValues(page) {
+            // Execute GraphQL query to get values
+            let lodash = require('lodash');
+            let payload = {
+                'query': this.graphQlQuery,
+                'variables': {
+                    'first': page.nbItems,
+                    'offset': page.offset,
+                    'orderBy': [ lodash.toUpper(this.sortAttribute.columnName + '_' + this.sortAttribute.sortOrder) ]
+                }
+            };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                function(response){
+                    if(response.data.errors){
+                        this.displayError(response);
+                    } else {
+                        this.values = response.data.data['all' + this.graphQlListName].nodes;
+                        this.nbValues = response.data.data['all' + this.graphQlListName].totalCount;
+
+                        // Set current page
+                        this.currentPage = {
+                            'pageNum': page.pageNum,
+                            'offset': page.offset,
+                            'nbItems': page.nbItems,
+                            'isActive': page.isActive
+                        }
+                    }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
+                }
+            );
+        },
+        search() {
+            // Search values based on keywords
+            // If keyword is empty, use GraphQL native query to benefit from pagination
+            if (this.searchKeyword == "" || this.searchKeyword == null) {
+                // Show pagination since regular query provide pagination feature
+                this.showPagination = true;
+                this.getAllValues(this.currentPage);
+            } else {
+                // Do not show pagination since custom search feature does not include pagination
+                this.showPagination = false;
+
+                // Build GraphQL mutation
+                let graphQlMutationName = this.getGraphQlName(this.list.tableName, null, true);  // Example table_name > TableName
+                let graphQlMutationListName = this.getGraphQlName(this.list.tableName, 'plural');  // Example table_name > tableNames
+
+                this.graphQlMutation = this.$store.state.mutationSearchValue.replace(/<GraphQlMutationName>/g, graphQlMutationName);
+                this.graphQlMutation = this.graphQlMutation.replace(/<graphQlMutationListName>/g, graphQlMutationListName);
+                this.graphQlMutation = this.graphQlMutation.replace(/<graphQlAttributeName>/g, this.graphQLAttributeName);
+
+                let payload = {
+                    'query': this.graphQlMutation,
+                    'variables': {
+                        'searchAttribute': this.searchAttribute.columnName,
+                        'searchKeyword': this.searchKeyword,
+                        'sortAttribute': this.sortAttribute.columnName,
+                        'sortOrder': this.sortAttribute.sortOrder
+                    }
+                };
+                let headers = {};
+                if (this.$session.exists()) {
+                    headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+                };
+                this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                    function(response){
+                        if(response.data.errors){
+                            this.displayError(response);
+                        } else {
+                            this.values = response.data.data['search' + graphQlMutationName][graphQlMutationListName];
+                        }
+                    },
+                    // Error callback
+                    function(response){
+                        this.displayError(response);
+                    }
+                );
+            }
+        },
+        setSearchAttribute(attribute) {
+            if(attribute == 'all') {
+                this.searchAttribute = {
+                    'attributeName': 'Search all',
+                    'columnName': 'search_all'
+                }
+            }
+            else {
+                this.searchAttribute = {
+                    'attributeName': attribute.name,
+                    'columnName': attribute.columnName
+                }
+            }
+        },
+        setSortAttribute(attribute) {
+            this.sortAttribute = {
+                'columnName': attribute.columnName,
+                'sortOrder': attribute.sortOrder
+            }
+            this.search();
         }
     },
     created: function () {
@@ -120,104 +238,6 @@ export default {
         this.graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, this.graphQlListName);
         this.graphQlQuery = this.graphQlQuery.replace(/<graphQlAttributeName>/g, this.graphQLAttributeName);
         this.getAllValues(this.currentPage);
-    },
-    methods: {
-        getAllValues(page) {
-            // Execute GraphQL query to get values
-            let payload = {
-                'query': this.graphQlQuery,
-                'variables': {
-                    'first': page.nbItems,
-                    'offset': page.offset
-                }
-            };
-            let headers = {};
-            if (this.$session.exists()) {
-                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
-            };
-            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
-                function(response){
-                    if(response.data.errors){
-                        this.displayError(response);
-                    } else {
-                        this.values = response.data.data['all' + this.graphQlListName].nodes;
-                        this.nbValues = response.data.data['all' + this.graphQlListName].totalCount;
-
-                        // Set current page
-                        this.currentPage = {
-                            'pageNum': page.pageNum,
-                            'offset': page.offset,
-                            'nbItems': page.nbItems,
-                            'isActive': page.isActive
-                        }
-                    }
-                },
-                // Error callback
-                function(response){
-                    this.displayError(response);
-                }
-            );
-        },
-        search() {
-            // Search values based on keywords
-            // If keyword is empty, use GraphQL native query to benefit from pagination
-            if (this.keyword == "") {
-                this.getAllValues(this.currentPage);
-            } else {
-                // Build GraphQL mutation
-                let graphQlMutationName = this.getGraphQlName(this.list.tableName, null, true);  // Example table_name > TableName
-                let graphQlMutationListName = this.getGraphQlName(this.list.tableName, 'plural');  // Example table_name > tableNames
-
-                this.graphQlMutation = this.$store.state.mutationSearchValue.replace(/<GraphQlMutationName>/g, graphQlMutationName);
-                this.graphQlMutation = this.graphQlMutation.replace(/<graphQlMutationListName>/g, graphQlMutationListName);
-                this.graphQlMutation = this.graphQlMutation.replace(/<graphQlAttributeName>/g, this.graphQLAttributeName);
-
-                let payload = {
-                    'query': this.graphQlMutation,
-                    'variables': {
-                        'columnName': this.searchAttribute.columnName,
-                        'keyword': this.keyword
-                    }
-                };
-                let headers = {};
-                if (this.$session.exists()) {
-                    headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
-                };
-                this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
-                    function(response){
-                        if(response.data.errors){
-                            this.displayError(response);
-                        } else {
-                            this.values = response.data.data['search' + graphQlMutationName][graphQlMutationListName];
-                            this.nbValues = this.values.length;
-
-                            // Set current page to first page
-                            this.currentPage = {
-                                'pageNum': 1,
-                                'offset': 0,
-                                'nbItems': 10,
-                                'isActive': true
-                            }
-                        }
-                    },
-                    // Error callback
-                    function(response){
-                        this.displayError(response);
-                    }
-                );
-            }
-        },
-        setSearchAttribute(attribute) {
-            if(attribute == 'all') {
-                this.searchAttribute = {
-                    'name': 'Search all',
-                    'columnName': 'search_all'
-                }
-            }
-            else {
-                this.searchAttribute = attribute;
-            }
-        }
     }
 }
 </script>

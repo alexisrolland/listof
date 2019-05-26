@@ -49,10 +49,8 @@ export default {
                     if(response.data.errors) {
                         this.displayError(response);
                     } else {
-                        // Prepare CSV header by renaming keys of first object in the data array
-                        let data = response.data.data['all' + graphQl.listName].nodes;
-                        
                         // Convert data to CSV format
+                        let data = response.data.data['all' + graphQl.listName].nodes;
                         let papa = require('papaparse');
                         let text = papa.unparse(data);
 

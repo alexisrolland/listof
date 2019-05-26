@@ -1,5 +1,5 @@
-export const queryGetAllUserGroups = `query getAllUserGroups($first: Int $offset: Int){
-    allSysUserGroups(first: $first offset: $offset orderBy: NAME_ASC) {
+export const queryGetAllUserGroups = `query getAllUserGroups($first: Int, $offset: Int, $orderBy: [SysUserGroupsOrderBy!]){
+    allSysUserGroups(first: $first, offset: $offset, orderBy: $orderBy) {
         nodes {
             id
             name
@@ -48,8 +48,8 @@ export const mutationUpdateUserGroup = `mutation updateUserGroup($id: Int!, $sys
     }
 }`;
 
-export const mutationSearchUserGroup = `mutation searchUserGroup($keyword: String) {
-    searchUserGroup(input: {keyword: $keyword}) {
+export const mutationSearchUserGroup = `mutation searchUserGroup($searchKeyword: String, $sortAttribute: String, $sortOrder: String) {
+    searchUserGroup(input: {searchKeyword: $searchKeyword, sortAttribute: $sortAttribute, sortOrder: $sortOrder}) {
         sysUserGroups {
             id
             name

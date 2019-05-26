@@ -5,7 +5,7 @@
             {{ attribute.name }}:
         </label>
 
-        <!-- Text input, used for all other data types char (id: 3), text (id: 9), varchar (id: 11) -->
+        <!-- Text input, used for all other data types char text (id: 8) -->
         <input class="form-control col-sm"
             type="text"
             v-bind:id="attribute.id"

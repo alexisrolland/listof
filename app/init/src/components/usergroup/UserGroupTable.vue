@@ -5,6 +5,9 @@
                 <tr>
                     <th scope="col">
                         Name
+                        <table-sort v-bind:columnName="'name'"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th scope="col">
                         Actions
@@ -30,14 +33,25 @@
 </template>
 
 <script>
+import TableSort from '../utils/TableSort.vue';
+
 export default {
+     components: {
+        'table-sort': TableSort
+    },
     props: {
-        userGroups: Array
+        userGroups: Array,
+        sortAttribute: Object
     },
     computed: {
         showEditUserGroup(){
             let roles = ['admin']
             return roles.includes(this.$store.state.currentUser.role)
+        }
+    },
+    methods :{
+        setSortAttribute(attribute) {
+            this.$emit('sortAttribute', attribute);
         }
     }
 }

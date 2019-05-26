@@ -19,13 +19,20 @@ COMMENT ON TABLE base.sys_user_group IS
 
 
 /*Create function to search user groups*/
-CREATE OR REPLACE FUNCTION base.search_user_group(keyword TEXT)
+CREATE OR REPLACE FUNCTION base.search_user_group(search_keyword TEXT, sort_attribute TEXT, sort_order TEXT)
 RETURNS SETOF base.sys_user_group AS $$
-    SELECT a.*
-    FROM base.sys_user_group a
-    WHERE a.name ILIKE ('%' || keyword || '%')
-    ORDER BY a.name ASC
-$$ language sql;
+BEGIN
+    RETURN QUERY
+    EXECUTE format(
+        'SELECT a.*
+        FROM base.sys_user_group a
+        WHERE a.name ILIKE (''%%%I%%'')
+        ORDER BY a.%I %s',
+        search_keyword,
+        sort_attribute,
+        sort_order);
+END;
+$$ language plpgsql;
 
 COMMENT ON FUNCTION base.search_user_group IS
 'Function used to search user groups based on keywords contained in their name.';

@@ -5,9 +5,15 @@
                 <tr>
                     <th scope="col">
                         E-mail
+                        <table-sort v-bind:columnName="'email'"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th scope="col">
                         Role
+                        <table-sort v-bind:columnName="'role'"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th scope="col">
                         Active
@@ -42,14 +48,25 @@
 </template>
 
 <script>
+import TableSort from '../utils/TableSort.vue';
+
 export default {
+    components: {
+        'table-sort': TableSort
+    },
     props: {
-        users: Array
+        users: Array,
+        sortAttribute: Object
     },
     computed: {
         showEditUser(){
             let roles = ['admin']
             return roles.includes(this.$store.state.currentUser.role)
+        }
+    },
+    methods: {
+        setSortAttribute(attribute) {
+            this.$emit('sortAttribute', attribute);
         }
     }
 }

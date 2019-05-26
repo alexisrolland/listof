@@ -5,9 +5,16 @@
                 <tr>
                     <th>
                         Id
+                        <table-sort v-bind:columnName="'id'"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
+                        <table-sort v-if="showTableSort(attribute.linkedAttributeId)"
+                            v-bind:columnName="attribute.columnName"
+                            v-bind:sortAttribute="sortAttribute"
+                            v-on:sortAttribute="setSortAttribute"></table-sort>
                     </th>
                     <th scope="col">
                         Actions
@@ -43,12 +50,16 @@
 </template>
 
 <script>
-import Pagination from '../utils/Pagination.vue';
+import TableSort from '../utils/TableSort.vue';
 
 export default {
+    components: {
+        'table-sort': TableSort
+    },
     props: {
         attributes: Array,
-        values: Array
+        values: Array,
+        sortAttribute: Object
     },
     computed: {
         showEditValue(){
@@ -59,6 +70,34 @@ export default {
             let lodash = require('lodash');
             return lodash.sortBy(this.attributes, 'order');
         }
+    },
+    methods: {
+        showTableSort(linkedAttributeId){
+            if (linkedAttributeId != null) {
+                return false;
+            } else {
+                return true;
+            }
+        },
+        setSortAttribute(attribute) {
+            this.$emit('sortAttribute', attribute);
+        }
     }
 }
 </script>
+
+<style>
+span.sort {
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: #6c757d;
+    background-color: transparent;
+}
+span.sort:hover {
+    color: white;
+    background-color: transparent;
+}
+span.active {
+    color: white;
+}
+</style>

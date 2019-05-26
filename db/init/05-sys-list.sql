@@ -6,8 +6,8 @@
 /*Create metadata table of lists*/
 CREATE TABLE base.sys_list (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL UNIQUE
-  , description TEXT NOT NULL
+  , name CITEXT NOT NULL UNIQUE
+  , description CITEXT NOT NULL
   , table_name TEXT
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -22,13 +22,21 @@ COMMENT ON TABLE base.sys_list IS
 
 
 /*Create function to search metadata table of lists*/
-CREATE OR REPLACE FUNCTION base.search_list(keyword TEXT)
+CREATE OR REPLACE FUNCTION base.search_list(search_keyword TEXT, sort_attribute TEXT, sort_order TEXT)
 RETURNS SETOF base.sys_list AS $$
-    SELECT a.*
-    FROM base.sys_list a
-    WHERE a.name ILIKE ('%' || keyword || '%') OR a.description ILIKE ('%' || keyword || '%')
-    ORDER BY a.name ASC
-$$ language sql;
+BEGIN
+    RETURN QUERY
+    EXECUTE format(
+        'SELECT a.*
+        FROM base.sys_list a
+        WHERE a.name ILIKE (''%%%I%%'') OR a.description ILIKE (''%%%I%%'')
+        ORDER BY a.%I %s',
+        search_keyword,
+        search_keyword,
+        sort_attribute,
+        sort_order);
+END;
+$$ language plpgsql;
 
 COMMENT ON FUNCTION base.search_list IS
 'Function used to search lists based on keywords contained in their name and description.';
@@ -185,15 +193,15 @@ DECLARE
 BEGIN
     EXECUTE format(
         $code$
-            CREATE OR REPLACE FUNCTION public.search_%I(column_name TEXT, keyword TEXT)
+            CREATE OR REPLACE FUNCTION public.search_%I(search_attribute TEXT, search_keyword TEXT, sort_attribute TEXT, sort_order TEXT)
             RETURNS SETOF public.%I AS $str$
                 BEGIN
                     RETURN QUERY
                     EXECUTE 'SELECT a.*
                     FROM public.%I a
                     INNER JOIN public.vw_%I b ON a.id = b.id
-                    WHERE CAST(b.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
-                    ORDER BY b.' || column_name || ' ASC';
+                    WHERE CAST(b.' || search_attribute || ' AS TEXT) ILIKE ''%%' || search_keyword || '%%''
+                    ORDER BY b.' || sort_attribute || ' ' || sort_order;
                 END;
             $str$ language plpgsql;
         $code$,
@@ -307,13 +315,13 @@ CREATE OR REPLACE FUNCTION base.delete_list_table()
 RETURNS TRIGGER AS $$
 BEGIN
     /*Drop list search function*/
-    EXECUTE format('DROP FUNCTION public.search_%I;', OLD.table_name);
+    EXECUTE format('DROP FUNCTION IF EXISTS public.search_%I;', OLD.table_name);
 
     /*Drop list table view*/
-    EXECUTE format('DROP VIEW public.vw_%I;', OLD.table_name);
+    EXECUTE format('DROP VIEW IF EXISTS public.vw_%I;', OLD.table_name);
 
     /*Drop list table*/
-    EXECUTE format('DROP TABLE public.%I;', OLD.table_name);
+    EXECUTE format('DROP TABLE IF EXISTS public.%I;', OLD.table_name);
 
     RETURN OLD;
 END;

@@ -6,13 +6,12 @@
 /*Create table for list attributes*/
 CREATE TABLE base.sys_attribute (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL
-  , description TEXT
+  , name CITEXT NOT NULL
+  , description CITEXT
   , "order" INTEGER NOT NULL DEFAULT 1
   , column_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
   , flag_mandatory BOOLEAN DEFAULT FALSE
-  , length INTEGER
   , default_value TEXT
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -89,6 +88,11 @@ BEGIN
         FROM base.sys_data_type
         WHERE id=NEW.data_type_id;
 
+        /*If data type is text, convert it to case insensitive text*/
+        IF (v_data_type = 'text') THEN
+            v_data_type = 'citext';
+        END IF;
+
         /*Create column*/
         v_alter_statement = v_alter_table || format('ADD COLUMN %I ', NEW.column_name);
         v_alter_statement = v_alter_statement || v_data_type || ';';
@@ -115,7 +119,7 @@ BEGIN
     END IF;
 
     /*Recreate view to be used by search function*/
-    EXECUTE format('DROP VIEW public.vw_%I;', v_table_name);
+    EXECUTE format('DROP VIEW IF EXISTS public.vw_%I;', v_table_name);
     EXECUTE format('SELECT base.create_list_view(''%I'');', v_table_name);
 
     RETURN NEW;
@@ -148,7 +152,7 @@ BEGIN
     END IF;
 
     /*Drop list view to be able to rename table column*/
-    EXECUTE format('DROP VIEW public.vw_%I;', v_table_name);
+    EXECUTE format('DROP VIEW IF EXISTS public.vw_%I;', v_table_name);
 
     /*Rename table column*/
     v_alter_statement = v_alter_table || format('RENAME COLUMN %I TO %I;', OLD.column_name, NEW.column_name);
@@ -231,7 +235,7 @@ BEGIN
     END IF;
 
     /*Drop list view to be able to rename table column*/
-    EXECUTE format('DROP VIEW public.vw_%I;', v_table_name);
+    EXECUTE format('DROP VIEW IF EXISTS public.vw_%I;', v_table_name);
 
     /*Delete table column*/
     v_alter_statement = v_alter_table || format('DROP COLUMN %I;', OLD.column_name);
@@ -285,6 +289,24 @@ COMMENT ON FUNCTION base.update_attribute_user_group_id IS
 
 
 
+/*Create function to get the default attribute order of a list*/
+CREATE OR REPLACE FUNCTION base.get_attribute_order()
+RETURNS TRIGGER AS $$
+BEGIN
+    SELECT COUNT(a.id) + 1
+    INTO NEW.order
+    FROM base.sys_attribute a
+    WHERE a.list_id=NEW.list_id;
+
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.get_current_user_id IS
+'Function used to get the default attribute order of a list.';
+
+
+
 /*Triggers on insert*/
 CREATE TRIGGER attribute_generate_column_name BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
@@ -293,6 +315,10 @@ base.generate_column_name();
 CREATE TRIGGER attribute_set_user_group_id BEFORE INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
 base.get_list_user_group_id();
+
+CREATE TRIGGER attribute_get_attribute_order BEFORE INSERT
+ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE
+base.get_attribute_order();
 
 CREATE TRIGGER attribute_create_list_column AFTER INSERT
 ON base.sys_attribute FOR EACH ROW EXECUTE PROCEDURE

@@ -5,14 +5,17 @@
             type="search"
             aria-label="Search"
             placeholder="Search lists"
-            v-model="keyword"
+            v-model="searchKeyword"
             v-on:keyup.enter="search">
 
         <!-- Lists table -->
-        <list-table v-bind:lists="lists"></list-table>
+        <list-table v-bind:lists="lists"
+            v-bind:sortAttribute="sortAttribute"
+            v-on:sortAttribute="setSortAttribute"></list-table>
 
         <!-- Lists pagination -->
         <list-pagination
+            v-if="showPagination"
             v-bind:totalCount="nbLists"
             v-bind:currentPage="currentPage"
             v-on:goToPage="getAllLists"
@@ -33,24 +36,31 @@ export default {
     },
     data: function () {
         return {
-            'keyword': null,
+            'searchKeyword': null,
             'lists': [],
             'nbLists': null,
+            'showPagination': true,
             'currentPage': {
                 'pageNum': 1,
                 'offset': 0,
                 'nbItems': 10,
                 'isActive': true
+            },
+            'sortAttribute': {
+                'columnName': 'name',
+                'sortOrder': 'asc'
             }
         }
     },
     methods: {
         getAllLists(page) {
+            let lodash = require('lodash');
             let payload = {
                 'query': this.$store.state.queryGetAllLists,
                 'variables': {
                     'first': page.nbItems,
-                    'offset': page.offset
+                    'offset': page.offset,
+                    'orderBy': [ lodash.toUpper(this.sortAttribute.columnName + '_' + this.sortAttribute.sortOrder) ]
                 }
             };
             let headers = {};
@@ -83,13 +93,19 @@ export default {
         search() {
             // Search list based on keywords
             // If keyword is empty, use GraphQL native query to benefit from pagination
-            if (this.keyword == "") {
+            if (this.searchKeyword == "" || this.searchKeyword == null) {
+                // Show pagination since regular query provide pagination feature
+                this.showPagination = true;
                 this.getAllLists(this.currentPage);
             } else {
+                // Do not show pagination since custom search feature does not include pagination
+                this.showPagination = false;
                 let payload = {
                     'query': this.$store.state.mutationSearchList,
                     'variables': {
-                        'keyword': this.keyword
+                        'searchKeyword': this.searchKeyword,
+                        'sortAttribute': this.sortAttribute.columnName,
+                        'sortOrder': this.sortAttribute.sortOrder
                     }
                 };
                 let headers = {};
@@ -102,15 +118,6 @@ export default {
                             this.displayError(response)
                         } else {
                             this.lists = response.data.data.searchList.sysLists;
-                            this.nbLists = this.lists.length;
-
-                            // Set current page to first page
-                            this.currentPage = {
-                                'pageNum': 1,
-                                'offset': 0,
-                                'nbItems': 10,
-                                'isActive': true
-                            }
                         }
                     },
                     // Error callback
@@ -119,6 +126,13 @@ export default {
                     }
                 );
             }
+        },
+        setSortAttribute(attribute) {
+            this.sortAttribute = {
+                'columnName': attribute.columnName,
+                'sortOrder': attribute.sortOrder
+            }
+            this.search();
         }
     },
     created: function () {

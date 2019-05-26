@@ -5,7 +5,7 @@
             {{ attribute.name }}:
         </label>
 
-        <!-- Date input, used for data types date (id: 4) -->
+        <!-- Date input, used for data types date (id: 3) -->
         <input class="form-control col-sm"
             type="date"
             v-bind:id="attribute.id"

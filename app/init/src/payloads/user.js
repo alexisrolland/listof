@@ -1,5 +1,5 @@
-export const queryGetAllUsers = `query getAllUsers($first: Int $offset: Int){
-    allSysUsers(first: $first offset: $offset orderBy: EMAIL_ASC) {
+export const queryGetAllUsers = `query getAllUsers($first: Int, $offset: Int, $orderBy: [SysUsersOrderBy!]){
+    allSysUsers(first: $first offset: $offset orderBy: $orderBy) {
         nodes {
             id
             email
@@ -48,8 +48,8 @@ export const mutationUpdateUser = `mutation updateUser($id: Int!, $sysUserPatch:
     }
 }`;
 
-export const mutationSearchUser = `mutation searchUser($keyword: String) {
-    searchUser(input: {keyword: $keyword}) {
+export const mutationSearchUser = `mutation searchUser($searchKeyword: String, $sortAttribute: String, $sortOrder: String) {
+    searchUser(input: {searchKeyword: $searchKeyword, sortAttribute: $sortAttribute, sortOrder: $sortOrder}) {
         sysUsers {
             id
             email
