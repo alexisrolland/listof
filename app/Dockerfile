@@ -8,6 +8,9 @@ WORKDIR $PROJECT_DIR
 # Copy both 'package.json' and 'package-lock.json' (if available)
 COPY ./init/package*.json ./
 
+# Install http-server to serve files to Nginx for production
+RUN npm install -g http-server
+
 # Install Vue CLI
 RUN npm install -g vue-cli
 
@@ -23,4 +26,8 @@ RUN npm install \
     && npm install --save papaparse
 
 # Copy project files and folders to the current working directory
+COPY ./entrypoint.sh ./
 COPY ./init/ ./
+
+# Use entrypoint to differentiate build process between dev and prod
+ENTRYPOINT [ "./entrypoint.sh" ]

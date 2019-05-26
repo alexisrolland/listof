@@ -185,15 +185,15 @@ DECLARE
 BEGIN
     EXECUTE format(
         $code$
-            CREATE OR REPLACE FUNCTION public.search_%I(column_name TEXT, keyword TEXT)
+            CREATE OR REPLACE FUNCTION public.search_%I(search_attribute TEXT, search_keyword TEXT, sort_attribute TEXT, sort_order TEXT)
             RETURNS SETOF public.%I AS $str$
                 BEGIN
                     RETURN QUERY
                     EXECUTE 'SELECT a.*
                     FROM public.%I a
                     INNER JOIN public.vw_%I b ON a.id = b.id
-                    WHERE CAST(b.' || column_name || ' AS TEXT) ILIKE ''%%' || keyword || '%%''
-                    ORDER BY b.' || column_name || ' ASC';
+                    WHERE CAST(b.' || search_attribute || ' AS TEXT) ILIKE ''%%' || search_keyword || '%%''
+                    ORDER BY b.' || sort_attribute || ' ' || sort_order;
                 END;
             $str$ language plpgsql;
         $code$,

@@ -108,15 +108,6 @@ export default {
                             this.displayError(response)
                         } else {
                             this.lists = response.data.data.searchList.sysLists;
-                            this.nbLists = this.lists.length;
-
-                            // Set current page to first page
-                            this.currentPage = {
-                                'pageNum': 1,
-                                'offset': 0,
-                                'nbItems': 10,
-                                'isActive': true
-                            }
                         }
                     },
                     // Error callback

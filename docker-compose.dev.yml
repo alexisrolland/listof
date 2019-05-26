@@ -12,8 +12,8 @@ services:
       - ./app/init/libs:/srv/app/libs
       - ./app/init/src:/srv/app/src
       - ./app/init/index.html:/srv/app/index.html
-    expose:
-      - 8080
+    command: ["dev"]
+
+  nginx:
     ports:
       - 8080:8080
-    command: ["npm", "run", "dev"]
