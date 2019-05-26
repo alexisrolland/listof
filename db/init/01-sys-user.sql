@@ -28,13 +28,21 @@ ALTER TABLE base.sys_user ADD CONSTRAINT sys_user_updated_by_id_fkey FOREIGN KEY
 
 
 /*Create function to search users*/
-CREATE OR REPLACE FUNCTION base.search_user(keyword TEXT)
+CREATE OR REPLACE FUNCTION base.search_user(search_keyword TEXT, sort_attribute TEXT, sort_order TEXT)
 RETURNS SETOF base.sys_user AS $$
-    SELECT a.*
-    FROM base.sys_user a
-    WHERE a.email ILIKE ('%' || keyword || '%')
-    ORDER BY a.email ASC
-$$ language sql;
+BEGIN
+    RETURN QUERY
+    EXECUTE format(
+        'SELECT a.*
+        FROM base.sys_user a
+        WHERE a.email ILIKE (''%%%I%%'') OR a.role ILIKE (''%%%I%%'')
+        ORDER BY a.%I %s',
+        search_keyword,
+        search_keyword,
+        sort_attribute,
+        sort_order);
+END;
+$$ language plpgsql;
 
 COMMENT ON FUNCTION base.search_user IS
 'Function used to search users based on keywords contained in their email.';
