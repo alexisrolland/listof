@@ -1,4 +1,4 @@
-export const queryGetAllLists = `query getAllLists($first: Int $offset: Int $orderBy: [SysListsOrderBy!]){
+export const queryGetAllLists = `query getAllLists($first: Int, $offset: Int, $orderBy: [SysListsOrderBy!]){
     allSysLists(first: $first offset: $offset orderBy: $orderBy) {
         nodes {
             id

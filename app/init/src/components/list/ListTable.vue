@@ -69,7 +69,7 @@ export default {
             return roles.includes(this.$store.state.currentUser.role)
         }
     },
-    methods :{
+    methods: {
         setSortAttribute(attribute) {
             this.$emit('sortAttribute', attribute);
         }
