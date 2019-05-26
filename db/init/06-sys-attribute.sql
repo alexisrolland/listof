@@ -6,8 +6,8 @@
 /*Create table for list attributes*/
 CREATE TABLE base.sys_attribute (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL
-  , description TEXT
+  , name CITEXT NOT NULL
+  , description CITEXT
   , "order" INTEGER NOT NULL DEFAULT 1
   , column_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE
@@ -87,6 +87,11 @@ BEGIN
         INTO v_data_type
         FROM base.sys_data_type
         WHERE id=NEW.data_type_id;
+
+        /*If data type is text, convert it to case insensitive text*/
+        IF (v_data_type = 'text') THEN
+            v_data_type = 'citext';
+        END IF;
 
         /*Create column*/
         v_alter_statement = v_alter_table || format('ADD COLUMN %I ', NEW.column_name);

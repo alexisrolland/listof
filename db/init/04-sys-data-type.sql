@@ -6,7 +6,7 @@
 /*Create table data type*/
 CREATE TABLE base.sys_data_type (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL UNIQUE
+  , name CITEXT NOT NULL UNIQUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)

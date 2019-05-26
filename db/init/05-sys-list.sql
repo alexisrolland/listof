@@ -6,8 +6,8 @@
 /*Create metadata table of lists*/
 CREATE TABLE base.sys_list (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL UNIQUE
-  , description TEXT NOT NULL
+  , name CITEXT NOT NULL UNIQUE
+  , description CITEXT NOT NULL
   , table_name TEXT
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
