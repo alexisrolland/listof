@@ -1,5 +1,5 @@
-export const queryGetAllLists = `query getAllLists($first: Int $offset: Int){
-    allSysLists(first: $first offset: $offset orderBy: NAME_ASC) {
+export const queryGetAllLists = `query getAllLists($first: Int $offset: Int $orderBy: [SysListsOrderBy!]){
+    allSysLists(first: $first offset: $offset orderBy: $orderBy) {
         nodes {
             id
             name
@@ -101,8 +101,8 @@ export const mutationDeleteList = `mutation deleteList($id: Int!) {
     }
 }`;
 
-export const mutationSearchList = `mutation searchList($keyword: String) {
-    searchList(input: {keyword: $keyword}) {
+export const mutationSearchList = `mutation searchList($searchKeyword: String, $sortAttribute: String, $sortOrder: String) {
+    searchList(input: {searchKeyword: $searchKeyword, sortAttribute: $sortAttribute, sortOrder: $sortOrder}) {
         sysLists {
             id
             name

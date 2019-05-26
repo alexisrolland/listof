@@ -22,13 +22,21 @@ COMMENT ON TABLE base.sys_list IS
 
 
 /*Create function to search metadata table of lists*/
-CREATE OR REPLACE FUNCTION base.search_list(keyword TEXT)
+CREATE OR REPLACE FUNCTION base.search_list(search_keyword TEXT, sort_attribute TEXT, sort_order TEXT)
 RETURNS SETOF base.sys_list AS $$
-    SELECT a.*
-    FROM base.sys_list a
-    WHERE a.name ILIKE ('%' || keyword || '%') OR a.description ILIKE ('%' || keyword || '%')
-    ORDER BY a.name ASC
-$$ language sql;
+BEGIN
+    RETURN QUERY
+    EXECUTE format(
+        'SELECT a.*
+        FROM base.sys_list a
+        WHERE a.name ILIKE (''%%%I%%'') OR a.description ILIKE (''%%%I%%'')
+        ORDER BY a.%I %s',
+        search_keyword,
+        search_keyword,
+        sort_attribute,
+        sort_order);
+END;
+$$ language plpgsql;
 
 COMMENT ON FUNCTION base.search_list IS
 'Function used to search lists based on keywords contained in their name and description.';
