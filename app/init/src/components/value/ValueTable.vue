@@ -5,11 +5,25 @@
                 <tr>
                     <th>
                         Id
+                        <span v-if="showSortAsc"
+                            class="sort"
+                            v-bind:class="{ active: sortAttribute.columnName == 'id' && sortAttribute.sortOrder == 'asc' }"
+                            v-on:click="sort('id', 'asc')">▲</span>
+                        <span v-if="showSortDesc"
+                            class="sort"
+                            v-bind:class="{ active: sortAttribute.columnName == 'id' && sortAttribute.sortOrder == 'desc' }"
+                            v-on:click="sort('id', 'desc')">▼</span>
                     </th>
                     <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
                         {{ attribute.name }}
-                        <a v-if="showSortAsc" style="cursor: pointer;" v-on:click="sort(attribute.graphQlAttributeName, 'asc')">▲</a>
-                        <a v-if="showSortDesc" style="cursor: pointer;" v-on:click="sort(attribute.graphQlAttributeName, 'desc')">▼</a>
+                        <span v-if="showSortAsc"
+                            class="sort"
+                            v-bind:class="{ active: sortAttribute.columnName == attribute.columnName && sortAttribute.sortOrder == 'asc' }"
+                            v-on:click="sort(attribute.columnName, 'asc')">▲</span>
+                        <span v-if="showSortDesc"
+                            class="sort"
+                            v-bind:class="{ active: sortAttribute.columnName == attribute.columnName && sortAttribute.sortOrder == 'desc' }"
+                            v-on:click="sort(attribute.columnName, 'desc')">▼</span>
                     </th>
                     <th scope="col">
                         Actions
@@ -52,6 +66,14 @@ export default {
         attributes: Array,
         values: Array
     },
+    data: function () {
+        return {
+            'sortAttribute': {
+                'columnName': 'id',
+                'sortOrder': 'asc'
+            }
+        }
+    },
     computed: {
         showEditValue(){
             let roles = ['admin', 'advanced', 'standard']
@@ -69,13 +91,33 @@ export default {
         }
     },
     methods :{
-        sort(attribute, order) {
-            let payload = {
-                'attribute': attribute,
-                'sortOrder': order
+        sort(columnName, sortOrder) {
+            this.sortAttribute = {
+                'columnName': columnName,
+                'sortOrder': sortOrder
             }
-            this.$emit('sortList', payload);
+            let payload = {
+                'columnName': columnName,
+                'sortOrder': sortOrder
+            }
+            this.$emit('sortAttribute', payload);
         }
     }
 }
 </script>
+
+<style>
+span.sort {
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: #6c757d;
+    background-color: transparent;
+}
+span.sort:hover {
+    color: white;
+    background-color: transparent;
+}
+span.active {
+    color: white;
+}
+</style>
