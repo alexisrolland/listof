@@ -5,11 +5,13 @@
             type="search"
             aria-label="Search"
             placeholder="Search user groups"
-            v-model="keyword"
+            v-model="searchKeyword"
             v-on:keyup.enter="search">
 
         <!-- User group table -->
-        <user-group-table v-bind:userGroups="userGroups"></user-group-table>
+        <user-group-table v-bind:userGroups="userGroups"
+            v-bind:sortAttribute="sortAttribute"
+            v-on:sortAttribute="setSortAttribute"></user-group-table>
 
         <!-- User group pagination -->
         <user-group-pagination
@@ -34,7 +36,7 @@ export default {
     },
     data: function () {
         return {
-            'keyword': null,
+            'searchKeyword': null,
             'userGroups': [],
             'nbUserGroups': null,
             'showPagination': true,
@@ -43,16 +45,22 @@ export default {
                 'offset': 0,
                 'nbItems': 10,
                 'isActive': true
+            },
+            'sortAttribute': {
+                'columnName': 'name',
+                'sortOrder': 'asc'
             }
         }
     },
     methods: {
         getAllUserGroups(page) {
+            let lodash = require('lodash');
             let payload = {
                 'query': this.$store.state.queryGetAllUserGroups,
                 'variables': {
                     'first': page.nbItems,
-                    'offset': page.offset
+                    'offset': page.offset,
+                    'orderBy': [ lodash.toUpper(this.sortAttribute.columnName + '_' + this.sortAttribute.sortOrder) ]
                 }
             };
             let headers = {};
@@ -85,7 +93,7 @@ export default {
         search() {
             // Search user groups based on keywords
             // If keyword is empty, use GraphQL native query to benefit from pagination
-            if (this.keyword == "") {
+            if (this.searchKeyword == "" || this.searchKeyword == null) {
                 // Show pagination since regular query provide pagination feature
                 this.showPagination = true;
                 this.getAllUserGroups(this.currentPage);
@@ -95,7 +103,9 @@ export default {
                 let payload = {
                     'query': this.$store.state.mutationSearchUserGroup,
                     'variables': {
-                        'keyword': this.keyword
+                        'searchKeyword': this.searchKeyword,
+                        'sortAttribute': this.sortAttribute.columnName,
+                        'sortOrder': this.sortAttribute.sortOrder
                     }
                 };
                 let headers = {};
@@ -116,6 +126,13 @@ export default {
                     }
                 );
             }
+        },
+        setSortAttribute(attribute) {
+            this.sortAttribute = {
+                'columnName': attribute.columnName,
+                'sortOrder': attribute.sortOrder
+            }
+            this.search();
         }
     },
     created: function () {
