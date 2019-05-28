@@ -16,10 +16,8 @@
 
 <script>
 import ModalBoxDelete from '../utils/ModalBoxDelete.vue';
-import Mixins from '../utils/Mixins.vue';
 
 export default {
-    mixins: [Mixins],
     components: {
         'modal-box-delete': ModalBoxDelete
     },

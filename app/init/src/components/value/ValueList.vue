@@ -15,6 +15,10 @@
                 v-bind:list="list">
             </value-button-download>
 
+            <value-button-upload
+                v-bind:list="list">
+            </value-button-upload>
+
             <value-button-edit-list
                 v-bind:listId="list.id">
             </value-button-edit-list>
@@ -31,6 +35,7 @@
 import Mixins from '../utils/Mixins.vue';
 import ValueButtonAddValue from './ValueButtonAddValue.vue';
 import ValueButtonDownload from './ValueButtonDownload.vue';
+import ValueButtonUpload from './ValueButtonUpload.vue';
 import ValueButtonEditList from './ValueButtonEditList.vue';
 import ValueSearch from './ValueSearch.vue';
 
@@ -39,6 +44,7 @@ export default {
     components: {
         'value-button-add-value': ValueButtonAddValue,
         'value-button-download': ValueButtonDownload,
+        'value-button-upload': ValueButtonUpload,
         'value-button-edit-list': ValueButtonEditList,
         'value-search': ValueSearch
     },
