@@ -23,7 +23,7 @@ RUN npm install \
     && npm install --save inflection \
     && npm install --save vue-session \
     && npm install --save @riophae/vue-treeselect \
-    && npm install --save papaparse
+    && npm install --save papaparse@5.0.0-beta.0
 
 # Copy project files and folders to the current working directory
 COPY ./entrypoint.sh ./
