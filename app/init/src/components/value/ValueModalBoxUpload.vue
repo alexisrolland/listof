@@ -13,7 +13,9 @@
                     <input type="file" id="selectedFiles" multiple="">
                     <div class="mt-3" v-show="uploadedFiles.length > 0">Number of files processed: {{ uploadedFiles.length }}
                         <ul>
-                            <li v-for="uploadedFile in uploadedFiles" v-bind:key="uploadedFile">{{ uploadedFile }}</li>
+                            <li v-for="uploadedFile in uploadedFiles" v-bind:key="uploadedFile">
+                                {{ uploadedFile.fileName }} - {{ uploadedFile.fileSize }} - Number of records uploaded
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -47,9 +49,9 @@ export default {
                 config: {
                     header: true,
                     transformHeader: this.getGraphQlName,
-                    complete: this.getData
+                    complete: this.startUpload
                 },
-                before: function(file, inputElement) {
+                before: function(file, inputElement, ) {
                     // executed before parsing each file begins
                     // what you return here controls the flow
                 },
@@ -62,24 +64,22 @@ export default {
                 }
             });
         },
-        getData(results, file){
-            // Get valid attributes GraphQL names from list
-            let graphQlAttributeNames = this.list.sysAttributesByListId.nodes.map(function (obj) {
-                return obj.graphQlAttributeName;
+        startUpload(results, file) {
+            // Update list of uploaded files
+            let uploadedFile = {
+                'fileName': file.name,
+                'fileSize': this.formatSize(file.size),
+                'fileStatus': 'Uploading'
+            }
+            console.log(uploadedFile);
+            //this.uploadedFiles.push(uploadedFile);
+
+            // Prepare GraphQL attributes names for the list
+            let graphQlAttributeNames = [{ 'graphQlAttributeName': 'id', 'dataTypeId': 5 }];
+            this.list.sysAttributesByListId.nodes.map(function (obj) {
+                graphQlAttributeNames.push({ 'graphQlAttributeName': obj.graphQlAttributeName, 'dataTypeId': obj.dataTypeId });
             });
-            graphQlAttributeNames = graphQlAttributeNames + [ 'id', 'createdDate', 'updatedDate', 'createdById', 'updatedById' ];
-
-            // Drop invalid attributes
-            results.data.map(
-                function(row) {
-                    for (let key in row) {
-                        if (!graphQlAttributeNames.includes(key)) { delete row[key]; }
-                    }
-                    return row;
-                }
-            );
-            console.log(results.data);
-
+            
             // Build GraphQL update mutation
             let graphQlListName = this.getGraphQlName(this.list.tableName, 'singular')
             let graphQlListNameUpperCase = this.getGraphQlName(this.list.tableName, 'singular', true)
@@ -96,27 +96,59 @@ export default {
                 headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
             };
 
-            // Execute http request for each record in the file
-            for (let i = 0; i < results.data.length; i++) {
-                // Verify if it's a new or existing value
-                let existingValue = false;
-                for (let key in results.data[i]) {
-                    if (key == 'id' && results.data[i][key] != '' && results.data[i][key] != null) { existingValue = true; }
+            // Loop over each record of the data set
+            let lodash = require('lodash');
+            results.data.forEach(function(row) {
+                // Loop over each column of the record
+                for (let key in row) {
+                    // Drop invalid column if it's not in graphQlAttributeNames
+                    let i = lodash.findIndex(graphQlAttributeNames, function(obj) { return obj.graphQlAttributeName == key; });
+                    if (i == -1) { delete row[key]; }
+
+                    // Format column value according to attribute data type
+                    else {
+                        let dataTypeId = graphQlAttributeNames[i]['dataTypeId'];
+                        // Format to boolean
+                        if ([2].includes(dataTypeId)) {
+                            row[key] = (row[key] == 'true');
+                        }
+                        // Format to bigint, integer, smallint 
+                        else if ([1, 5, 7].includes(dataTypeId)) {
+                            row[key] = parseInt(row[key]);
+                        }
+                        // Format to real
+                        else if ([6].includes(dataTypeId)) {
+                            row[key] = parseFloat(row[key]);
+                        }
+                    }
                 }
-                
+
+                // Verify if it is a new or existing record
+                let recordExists = false;
+                if (row['id'] != '' && row['id'] != null) { recordExists = true; }
+
                 // Build mutation payload
                 let payload = {};
                 let variables = {};
-                if (existingValue) {
-                    variables[graphQlListName] = results.data[i];
+                if (recordExists) {
+                    variables = { 'id': row['id'] };
+                    let patch = Object.assign({}, row); // Clone object
+                    variables[graphQlListName + 'Patch'] = patch;
+                    payload = {
+                        'query': graphQlUpdateMutation,
+                        'variables': variables
+                    };
+                }
+                else {
+                    variables = {};
+                    variables[graphQlListName] = row;
                     payload = {
                         'query': graphQlCreateMutation,
                         'variables': variables
-                    }
-                    console.log(payload);
+                    };
                 }
 
-                // Execute request
+                // Execute http request
                 this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
                     function(response){
                         if(response.data.errors){
@@ -130,14 +162,24 @@ export default {
                         this.displayError(response);
                     }
                 );
-            }
-
-            // Update list of uploaded files
-            this.uploadedFiles.push(file.name);
+                
+            }.bind(this));
         },
         resetModalBox() {
             this.uploadedFiles = [];
             document.getElementById('selectedFiles').value = "";
+        },
+        formatSize(size) {
+            if (size > 1024 * 1024 * 1024 * 1024) {
+                return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + 'Tb'
+            } else if (size > 1024 * 1024 * 1024) {
+                return (size / 1024 / 1024 / 1024).toFixed(2) + 'Gb'
+            } else if (size > 1024 * 1024) {
+                return (size / 1024 / 1024).toFixed(2) + 'Mb'
+            } else if (size > 1024) {
+                return (size / 1024).toFixed(2) + 'Kb'
+            }
+            return size.toString() + ' bytes'
         }
     },
 }
