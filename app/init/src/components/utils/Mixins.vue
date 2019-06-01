@@ -5,7 +5,11 @@ export default {
         displayError(response) {
             // Method to display error message
             this.$store.state.errorObject.flag = true;
-            this.$store.state.errorObject.message = response.data.errors[0].message;
+            if (response.status == 200) {
+                this.$store.state.errorObject.message = response.data.errors[0].message;
+            } else {
+                this.$store.state.errorObject.message = response.bodyText;
+            }
         },
         getGraphQlName(name, number = null, upperFirst = false) {
             // Method to compute GraphQL queries, mutations and fields names based on tables and columns names
