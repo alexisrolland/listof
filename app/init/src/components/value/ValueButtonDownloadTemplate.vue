@@ -17,9 +17,7 @@ export default {
         downloadTemplate(){
             // Convert data to CSV format
             let papa = require('papaparse');
-            console.log('hello');
             let text = papa.unparse(this.columnNames);
-            console.log(text);
 
             // Create CSV file
             let file = new Blob([text], {type: 'text/csv;charset=utf-8;'});
