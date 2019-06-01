@@ -5,8 +5,7 @@
         </button>
 
         <!-- Modal box to upload file -->
-        <value-modal-box-upload
-            v-bind:list="list"></value-modal-box-upload>
+        <value-modal-box-upload v-bind:list="list"></value-modal-box-upload>
     </span>
 </template>
 

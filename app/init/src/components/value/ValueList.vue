@@ -16,7 +16,8 @@
             </value-button-download>
 
             <value-button-upload
-                v-bind:list="list">
+                v-bind:list="list"
+                v-on:fileUploaded="getList">
             </value-button-upload>
 
             <value-button-edit-list
@@ -58,31 +59,36 @@ export default {
             return this.$route.params.listId;
         }
     },
+    methods: {
+        getList() {
+            let payload = {
+                'query': this.$store.state.queryGetList,
+                'variables': {
+                    'id': parseInt(this.listId)
+                }
+            };
+            let headers = {};
+            if (this.$session.exists()) {
+                headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
+            };
+            this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
+                function(response){
+                    if(response.data.errors){
+                        this.displayError(response);
+                    } else {
+                        this.list = response.data.data.sysListById;
+                    }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
+                }
+            );
+        }
+    },
     created: function () {
         // Get list details
-        let payload = {
-            'query': this.$store.state.queryGetList,
-            'variables': {
-                'id': parseInt(this.listId)
-            }
-        };
-        let headers = {};
-        if (this.$session.exists()) {
-            headers = { 'Authorization': 'Bearer ' + this.$session.get('jwt') };
-        };
-        this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
-            function(response){
-                if(response.data.errors){
-                    this.displayError(response);
-                } else {
-                    this.list = response.data.data.sysListById;
-                }
-            },
-            // Error callback
-            function(response){
-                this.displayError(response);
-            }
-        );
+        this.getList();
     }
 }
 </script>

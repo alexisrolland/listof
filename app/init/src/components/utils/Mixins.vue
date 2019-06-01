@@ -2,14 +2,18 @@
 
 export default {
     methods: {
-        displayError(response) {
+        displayError(response, batchErrors = null) {
             // Method to display error message
             this.$store.state.errorObject.flag = true;
+            // PostGraphile errors return status 200 with error message
             if (response.status == 200) {
-                this.$store.state.errorObject.message = response.data.errors[0].message;
-            } else {
-                this.$store.state.errorObject.message = response.bodyText;
+                // Batch queries
+                if (batchErrors) { this.$store.state.errorObject.message = batchErrors; }
+                // Single query
+                else { this.$store.state.errorObject.message = response.data.errors[0].message; }
             }
+            // Nginx errors return a proper error status code
+            else { this.$store.state.errorObject.message = response.bodyText; }
         },
         getGraphQlName(name, number = null, upperFirst = false) {
             // Method to compute GraphQL queries, mutations and fields names based on tables and columns names

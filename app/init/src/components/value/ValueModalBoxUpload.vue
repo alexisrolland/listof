@@ -11,30 +11,30 @@
 
                 <div class="modal-body bg-secondary text-light">
                     <ul>
-                        <li>Use file template provided below to ensure headers are correct.</li>
-                        <li>Columns which are not in the template will be ignored.</li>
-                        <li>If column <b>id</b> contains a value, the corresponding entry will be updated, else a new entry will be created.</li>
+                        <li>Maximum file size allowed is <b>3 Mb</b>. Split your files in smaller ones if they are too big.</li>
+                        <li>Use template below to ensure headers are correct. Columns not in the template will be ignored.</li>
+                        <li>If the column <b>id</b> contains a valid id, the corresponding entry will be updated, else a new entry will be created.</li>
                     </ul>
 
                     <!-- Input of type file -->
                     <div class="input-group">
                         <div class="custom-file">
-                            <input type="file" id="selectedFiles" class="custom-file-input" ref="selectedFiles" v-on:change="previewFiles" multiple>
+                            <input type="file" id="selectedFiles" class="custom-file-input" accept=".csv" ref="selectedFiles" v-on:change="previewFiles" multiple>
                             <label class="custom-file-label" for="selectedFiles">Choose files...</label>
                         </div>
                     </div>
                 </div>
 
-                <!-- Uploaded files -->
+                <!-- Files -->
                 <table class="table table-striped table-dark table-hover table-borderless">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>File</th>
                             <th>Size</th>
+                            <th>Nb Rows Success</th>
+                            <th>Nb Rows Error</th>
                             <th>Status</th>
-                            <th>Nb Rows Parsed</th>
-                            <th>Nb Rows Uploaded</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,13 +42,19 @@
                             <td>{{ file.id + 1 }}</td>
                             <td>{{ file.name }}</td>
                             <td>{{ file.size }}</td>
-                            <td><span class="badge" v-bind:class="[ file.statusClass ]">{{ file.status }}</span></td>
-                            <td>{{ file.nbRowsParsed }}</td>
-                            <td>{{ file.nbRowsUploaded }}</td>
+                            <td>{{ file.nbRows }}</td>
+                            <td>{{ file.nbRowsError }}</td>
+                            <td>
+                                <span class="badge" v-bind:class="[ file.statusClass ]">
+                                    {{ file.status }}
+                                    <span v-show="(file.status == 'Uploading')" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
 
+                <!-- Footer -->
                 <div class="modal-footer">
                     <value-button-download-template
                         v-if="list.id"
@@ -115,13 +121,13 @@ export default {
         },
         formatSize(size) {
             if (size > 1024 * 1024 * 1024 * 1024) {
-                return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + 'Tb'
+                return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' Tb'
             } else if (size > 1024 * 1024 * 1024) {
-                return (size / 1024 / 1024 / 1024).toFixed(2) + 'Gb'
+                return (size / 1024 / 1024 / 1024).toFixed(2) + ' Gb'
             } else if (size > 1024 * 1024) {
-                return (size / 1024 / 1024).toFixed(2) + 'Mb'
+                return (size / 1024 / 1024).toFixed(2) + ' Mb'
             } else if (size > 1024) {
-                return (size / 1024).toFixed(2) + 'Kb'
+                return (size / 1024).toFixed(2) + ' Kb'
             }
             return size.toString() + ' bytes'
         },
@@ -150,10 +156,9 @@ export default {
             //Find file index in files list
             let lodash = require('lodash');
             let fileIndex = lodash.findIndex(this.files, function(obj) { return obj.name == file.name; });
-            this.files[fileIndex]['status'] = 'Uploading...';
+            this.files[fileIndex]['status'] = 'Uploading';
             this.files[fileIndex]['statusClass'] = 'badge-info';
-            this.files[fileIndex]['nbRowsParsed'] = results.data.length;
-            this.files[fileIndex]['nbRowsUploaded'] = 0;
+            this.files[fileIndex]['nbRows'] = '';
             
             // Build GraphQL update mutation
             let graphQlListName = this.getGraphQlName(this.list.tableName, 'singular')
@@ -172,7 +177,7 @@ export default {
             };
 
             // Loop over each record of the data set
-            results.data.forEach(function(row) {
+            let payloadBatch = results.data.map(function(row) {
                 // Loop over each column of the record
                 for (let key in row) {
                     // Drop invalid column if it's not in graphQlAttributeNames
@@ -221,27 +226,35 @@ export default {
                     };
                 }
 
-                // Execute http request
-                this.$http.post(this.$store.state.graphqlUrl, payload, {headers}).then (
-                    function(response){
-                        if(response.data.errors){
-                            this.displayError(response);
-                        } else {
-                            // Update number of rows uploaded and file status
-                            this.files[fileIndex]['nbRowsUploaded'] = this.files[fileIndex]['nbRowsUploaded'] + 1;
-                            if(this.files[fileIndex]['nbRowsParsed'] == this.files[fileIndex]['nbRowsUploaded']) {
-                                this.files[fileIndex]['status'] = 'Complete';
-                                this.files[fileIndex]['statusClass'] = 'badge-success';
-                            }
-                        }
-                    },
-                    // Error callback
-                    function(response){
-                        this.displayError(response);
-                    }
-                );
-                
+                return payload;
             }.bind(this));
+
+            // Execute http request
+            this.$http.post(this.$store.state.graphqlUrl, payloadBatch, {headers}).then (
+                function(response){
+                    // Get queries which returned an error
+                    let errors = response.data.filter(function(obj) {return obj.hasOwnProperty('errors'); });
+                    if (errors.length > 0) {
+                        this.files[fileIndex]['status'] = 'Error';
+                        this.files[fileIndex]['statusClass'] = 'badge-danger';
+                        this.files[fileIndex]['nbRows'] = response.data.length - errors.length;
+                        this.files[fileIndex]['nbRowsError'] = errors.length;
+                        this.displayError(response, errors);
+                        this.$root.$emit('fileUploaded', {}); // Send event to root to be accessed by sibling component ValueSearch to refresh table
+                    } else {
+                        // Update file status
+                        this.files[fileIndex]['status'] = 'Complete';
+                        this.files[fileIndex]['statusClass'] = 'badge-success';
+                        this.files[fileIndex]['nbRows'] = response.data.length;
+                        this.files[fileIndex]['nbRowsError'] = 0;
+                        this.$root.$emit('fileUploaded', {}); // Send event to root to be accessed by sibling component ValueSearch to refresh table
+                    }
+                },
+                // Error callback
+                function(response){
+                    this.displayError(response);
+                }
+            );
         },
         resetModalBox() {
             this.files = [];
