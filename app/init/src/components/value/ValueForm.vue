@@ -224,7 +224,11 @@ export default {
                                 // Format default value according to data type
                                 // Data types boolean (id: 2)
                                 if ([2].includes(this.list.attributes[i].dataTypeId)) {
-                                    this.value[this.list.attributes[i].graphQlAttributeName] = (this.list.attributes[i].defaultValue == 'true');
+                                    if (this.list.attributes[i].defaultValue == 'true') {
+                                        this.value[this.list.attributes[i].graphQlAttributeName] = true;
+                                    } else if (this.list.attributes[i].defaultValue == 'false') {
+                                        this.value[this.list.attributes[i].graphQlAttributeName] = false;
+                                    }
                                 }
                                 // Data types bigint (id: 1), integer (id: 5), smallint (id: 7)
                                 else if ([1, 5, 7].includes(this.list.attributes[i].dataTypeId)) {

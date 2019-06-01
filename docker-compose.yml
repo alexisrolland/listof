@@ -37,7 +37,9 @@ services:
       "--default-role", "anonymous",
       "--jwt-secret", "${SECRET_KEY}",
       "--jwt-token-identifier", "base.sys_token",
+      "--body-size-limit", "6MB", # Needed to allow batch request for files up to 3Mb (2*3MB=6MB)
       "--cors",
+      "--enable-query-batching",
       "--watch"]
 
   app:
