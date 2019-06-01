@@ -6,7 +6,7 @@
 /*Create table user group*/
 CREATE TABLE base.sys_user_group (
     id SERIAL PRIMARY KEY
-  , name TEXT NOT NULL UNIQUE
+  , "name" CITEXT NOT NULL UNIQUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
@@ -26,7 +26,7 @@ BEGIN
     EXECUTE format(
         'SELECT a.*
         FROM base.sys_user_group a
-        WHERE a.name ILIKE (''%%%I%%'')
+        WHERE a.name ILIKE (''%%%s%%'')
         ORDER BY a.%I %s',
         search_keyword,
         sort_attribute,

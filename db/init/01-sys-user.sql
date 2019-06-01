@@ -7,8 +7,8 @@
 CREATE TABLE base.sys_user (
     id SERIAL PRIMARY KEY
   , email CITEXT NOT NULL UNIQUE
-  , password TEXT
-  , role CITEXT NOT NULL DEFAULT 'standard'
+  , "password" TEXT
+  , "role" CITEXT NOT NULL DEFAULT 'standard'
   , flag_active BOOLEAN DEFAULT TRUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -35,7 +35,7 @@ BEGIN
     EXECUTE format(
         'SELECT a.*
         FROM base.sys_user a
-        WHERE a.email ILIKE (''%%%I%%'') OR a.role ILIKE (''%%%I%%'')
+        WHERE a.email ILIKE (''%%%s%%'') OR a.role ILIKE (''%%%s%%'')
         ORDER BY a.%I %s',
         search_keyword,
         search_keyword,

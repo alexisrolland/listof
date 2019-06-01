@@ -6,8 +6,8 @@
 /*Create metadata table of lists*/
 CREATE TABLE base.sys_list (
     id SERIAL PRIMARY KEY
-  , name CITEXT NOT NULL UNIQUE
-  , description CITEXT NOT NULL
+  , "name" CITEXT NOT NULL UNIQUE
+  , "description" CITEXT NOT NULL
   , table_name TEXT
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -29,7 +29,7 @@ BEGIN
     EXECUTE format(
         'SELECT a.*
         FROM base.sys_list a
-        WHERE a.name ILIKE (''%%%I%%'') OR a.description ILIKE (''%%%I%%'')
+        WHERE a.name ILIKE (''%%%s%%'') OR a.description ILIKE (''%%%s%%'')
         ORDER BY a.%I %s',
         search_keyword,
         search_keyword,
@@ -150,10 +150,10 @@ BEGIN
         v_counter = v_counter + 1;
         IF v_attribute.linked_column_name IS NULL THEN
             v_select = v_select || format(', "0".%I', v_attribute.column_name);
-            v_search_all_column = v_search_all_column || format(' || '' '' || CAST("0".%I AS TEXT)', v_attribute.column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || COALESCE(CAST("0".%I AS TEXT),'''')', v_attribute.column_name);
         ELSE
             v_select = v_select || format(', %I.%I AS %I', v_counter, v_attribute.linked_column_name, v_attribute.column_name);
-            v_search_all_column = v_search_all_column || format(' || '' '' || CAST(%I.%I AS TEXT)', v_counter, v_attribute.linked_column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || COALESCE(CAST(%I.%I AS TEXT),'''')', v_counter, v_attribute.linked_column_name);
             v_join = v_join || format(' LEFT JOIN public.%I %I ON "0".%I=%I.id', v_attribute.linked_table_name, v_counter, v_attribute.column_name, v_counter);
         END IF;
     END LOOP;
