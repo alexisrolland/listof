@@ -205,6 +205,12 @@ export default {
             this.search();
         }
     },
+    mounted() {
+        // Refresh table when a CSV file is uploaded
+        this.$root.$on('fileUploaded', function() {
+            this.search();
+        }.bind(this));
+    },
     created: function () {
         // Compute GraphQL names for the list and attributes
         this.graphQlListName = this.getGraphQlName(this.list.tableName, 'plural', true);  // Example table_name > TableNames

@@ -12,11 +12,6 @@ export default {
     props: {
         list: Object
     },
-    data: function () {
-        return {
-            'test': ''
-        }
-    },
     methods: {
         buildGraphQlQuery(){
             // Method to build GraphQL query

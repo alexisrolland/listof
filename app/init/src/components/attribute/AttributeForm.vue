@@ -270,7 +270,8 @@ export default {
             }
         },
         setDefaultValue(value) {
-            this.attribute['defaultValue'] = value;
+            if (value) { this.attribute['defaultValue'] = value; }
+            else { this.attribute['defaultValue'] = null; }
         }
     },
     created: function () {

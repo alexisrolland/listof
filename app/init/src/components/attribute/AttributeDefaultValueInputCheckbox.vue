@@ -1,26 +1,28 @@
 <template>
-    <!-- Checkbox input, used for data types boolean (id: 2) -->
-    <div class="custom-control custom-switch">
-        <input class="custom-control-input"
+    <div>
+        <!-- Label -->
+        <label for="userRole" class="col-form-label">
+            Default Value:
+        </label>
+        
+        <!-- Checkbox input, used for data types boolean (id: 2) -->
+        <select class="form-control col-sm"
             id="defaultValue"
-            type="checkbox"
-            value=""
             v-bind:disabled="isReadOnly"
             v-bind:readonly="isReadOnly"
             v-model="inputValue"
-            v-on:change="change" />
-        
-        <!-- Label -->
-        <label class="custom-control-label" for="defaultValue">
-            Default Value
-        </label>
+            v-on:change="change">
+                <option value=""></option>
+                <option value="true">true</option>
+                <option value="false">false</option>
+        </select>
     </div>
 </template>
 
 <script>
 export default {
     props: {
-        value: Boolean
+        value: String
     },
     data: function () {
         return {
@@ -40,7 +42,7 @@ export default {
     },
     methods: {
         change() {
-            this.$emit('setDefaultValue', String(this.inputValue));
+            this.$emit('setDefaultValue', this.inputValue);
         }
     }
 }

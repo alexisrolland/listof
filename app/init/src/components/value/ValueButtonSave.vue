@@ -27,7 +27,7 @@ export default {
 
                 // Set undefined properties to null to ensure GraphQL keep them in the payload
                 for (let property in this.value) {
-                    if (this.value.hasOwnProperty(property) && !this.value[property]) {
+                    if (this.value.hasOwnProperty(property) && this.value[property] == undefined) {
                         this.value[property] = null;
                     }
                 }
