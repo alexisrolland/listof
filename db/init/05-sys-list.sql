@@ -150,10 +150,10 @@ BEGIN
         v_counter = v_counter + 1;
         IF v_attribute.linked_column_name IS NULL THEN
             v_select = v_select || format(', "0".%I', v_attribute.column_name);
-            v_search_all_column = v_search_all_column || format(' || '' '' || CAST("0".%I AS TEXT)', v_attribute.column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || COALESCE(CAST("0".%I AS TEXT),'''')', v_attribute.column_name);
         ELSE
             v_select = v_select || format(', %I.%I AS %I', v_counter, v_attribute.linked_column_name, v_attribute.column_name);
-            v_search_all_column = v_search_all_column || format(' || '' '' || CAST(%I.%I AS TEXT)', v_counter, v_attribute.linked_column_name);
+            v_search_all_column = v_search_all_column || format(' || '' '' || COALESCE(CAST(%I.%I AS TEXT),'''')', v_counter, v_attribute.linked_column_name);
             v_join = v_join || format(' LEFT JOIN public.%I %I ON "0".%I=%I.id', v_attribute.linked_table_name, v_counter, v_attribute.column_name, v_counter);
         END IF;
     END LOOP;
