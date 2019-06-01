@@ -1,6 +1,6 @@
 <template>
     <div class="modal fade" id="ModalBoxUpload" tabindex="-1" role="dialog" aria-labelledby="Upload" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header">
                     <h5 class="modal-title">Upload CSV</h5>
@@ -10,18 +10,52 @@
                 </div>
 
                 <div class="modal-body bg-secondary text-light">
-                    <input type="file" id="selectedFiles" multiple="">
-                    <div class="mt-3" v-show="uploadedFiles.length > 0">Number of files processed: {{ uploadedFiles.length }}
-                        <ul>
-                            <li v-for="uploadedFile in uploadedFiles" v-bind:key="uploadedFile">
-                                {{ uploadedFile.fileName }} - {{ uploadedFile.fileSize }} - Number of records uploaded
-                            </li>
-                        </ul>
+                    <ul>
+                        <li>Use file template provided below to ensure headers are correct.</li>
+                        <li>Columns which are not in the template will be ignored.</li>
+                        <li>If column <b>id</b> contains a value, the corresponding entry will be updated, else a new entry will be created.</li>
+                    </ul>
+
+                    <!-- Input of type file -->
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" id="selectedFiles" class="custom-file-input" ref="selectedFiles" v-on:change="previewFiles" multiple>
+                            <label class="custom-file-label" for="selectedFiles">Choose files...</label>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Uploaded files -->
+                <table class="table table-striped table-dark table-hover table-borderless">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>File</th>
+                            <th>Size</th>
+                            <th>Status</th>
+                            <th>Nb Rows Parsed</th>
+                            <th>Nb Rows Uploaded</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="file in files" v-bind:key="file.id">
+                            <td>{{ file.id + 1 }}</td>
+                            <td>{{ file.name }}</td>
+                            <td>{{ file.size }}</td>
+                            <td><span class="badge" v-bind:class="[ file.statusClass ]">{{ file.status }}</span></td>
+                            <td>{{ file.nbRowsParsed }}</td>
+                            <td>{{ file.nbRowsUploaded }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" v-on:click="uploadFiles">Upload</button>
+                    <value-button-download-template
+                        v-if="list.id"
+                        v-bind:listName="this.list.name"
+                        v-bind:columnNames="columnNames"
+                    ></value-button-download-template>
+                    <button type="button" class="btn btn-success" v-on:click="parseFiles">Upload</button>
                     <button type="button" class="btn btn-secondary" v-on:click="resetModalBox" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -31,25 +65,73 @@
 
 <script>
 import Mixins from '../utils/Mixins.vue';
+import ValueButtonDownloadTemplate from './ValueButtonDownloadTemplate';
 
 export default {
     mixins: [Mixins],
+    components: {
+        'value-button-download-template': ValueButtonDownloadTemplate
+    },
     props: {
         list: Object
     },
     data: function () {
         return {
-            'uploadedFiles': []
+            'files': []
+        }
+    },
+    computed:{
+        graphQlAttributeNames() {
+            // Prepare GraphQL attributes names to filter out invalid columns from CSV
+            let graphQlAttributeNames = [{ 'graphQlAttributeName': 'id', 'dataTypeId': 5 }];
+            this.list.sysAttributesByListId.nodes.map(function (obj) {
+                graphQlAttributeNames.push({ 'graphQlAttributeName': obj.graphQlAttributeName, 'dataTypeId': obj.dataTypeId });
+            });
+            return graphQlAttributeNames;
+        },
+        columnNames() {
+            // Prepare column names to download CSV template
+            let columnNames = { 'id': '' };
+            this.list.sysAttributesByListId.nodes.map(function (obj) {
+                columnNames[obj.columnName] = '';
+            });
+            return [ columnNames ];
         }
     },
     methods: {
-        uploadFiles() {
+        previewFiles() {
+            this.files = [];
+            let files = this.$refs.selectedFiles.files;
+            for (let i = 0; i < files.length; i++) {
+                let file = {
+                    'id': i,
+                    'name': files[i]['name'],
+                    'size': this.formatSize(files[i]['size']),
+                    'status': 'Ready',
+                    'statusClass': 'badge-secondary'
+                }
+                this.files.push(file);
+            }
+        },
+        formatSize(size) {
+            if (size > 1024 * 1024 * 1024 * 1024) {
+                return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + 'Tb'
+            } else if (size > 1024 * 1024 * 1024) {
+                return (size / 1024 / 1024 / 1024).toFixed(2) + 'Gb'
+            } else if (size > 1024 * 1024) {
+                return (size / 1024 / 1024).toFixed(2) + 'Mb'
+            } else if (size > 1024) {
+                return (size / 1024).toFixed(2) + 'Kb'
+            }
+            return size.toString() + ' bytes'
+        },
+        parseFiles() {
             let papa = require('papaparse');
             $('input[type=file]').parse({
                 config: {
                     header: true,
                     transformHeader: this.getGraphQlName,
-                    complete: this.startUpload
+                    complete: this.uploadFiles
                 },
                 before: function(file, inputElement, ) {
                     // executed before parsing each file begins
@@ -64,21 +146,14 @@ export default {
                 }
             });
         },
-        startUpload(results, file) {
-            // Update list of uploaded files
-            let uploadedFile = {
-                'fileName': file.name,
-                'fileSize': this.formatSize(file.size),
-                'fileStatus': 'Uploading'
-            }
-            console.log(uploadedFile);
-            //this.uploadedFiles.push(uploadedFile);
-
-            // Prepare GraphQL attributes names for the list
-            let graphQlAttributeNames = [{ 'graphQlAttributeName': 'id', 'dataTypeId': 5 }];
-            this.list.sysAttributesByListId.nodes.map(function (obj) {
-                graphQlAttributeNames.push({ 'graphQlAttributeName': obj.graphQlAttributeName, 'dataTypeId': obj.dataTypeId });
-            });
+        uploadFiles(results, file) {
+            //Find file index in files list
+            let lodash = require('lodash');
+            let fileIndex = lodash.findIndex(this.files, function(obj) { return obj.name == file.name; });
+            this.files[fileIndex]['status'] = 'Uploading...';
+            this.files[fileIndex]['statusClass'] = 'badge-info';
+            this.files[fileIndex]['nbRowsParsed'] = results.data.length;
+            this.files[fileIndex]['nbRowsUploaded'] = 0;
             
             // Build GraphQL update mutation
             let graphQlListName = this.getGraphQlName(this.list.tableName, 'singular')
@@ -97,17 +172,16 @@ export default {
             };
 
             // Loop over each record of the data set
-            let lodash = require('lodash');
             results.data.forEach(function(row) {
                 // Loop over each column of the record
                 for (let key in row) {
                     // Drop invalid column if it's not in graphQlAttributeNames
-                    let i = lodash.findIndex(graphQlAttributeNames, function(obj) { return obj.graphQlAttributeName == key; });
+                    let i = lodash.findIndex(this.graphQlAttributeNames, function(obj) { return obj.graphQlAttributeName == key; });
                     if (i == -1) { delete row[key]; }
 
                     // Format column value according to attribute data type
                     else {
-                        let dataTypeId = graphQlAttributeNames[i]['dataTypeId'];
+                        let dataTypeId = this.graphQlAttributeNames[i]['dataTypeId'];
                         // Format to boolean
                         if ([2].includes(dataTypeId)) {
                             row[key] = (row[key] == 'true');
@@ -123,14 +197,13 @@ export default {
                     }
                 }
 
-                // Verify if it is a new or existing record
-                let recordExists = false;
-                if (row['id'] != '' && row['id'] != null) { recordExists = true; }
+                // Drop id column if it is empty
+                if (isNaN(row['id'])) { delete row['id']; }
 
-                // Build mutation payload
+                // Build update or create mutation payload
                 let payload = {};
                 let variables = {};
-                if (recordExists) {
+                if (row.hasOwnProperty('id')) {
                     variables = { 'id': row['id'] };
                     let patch = Object.assign({}, row); // Clone object
                     variables[graphQlListName + 'Patch'] = patch;
@@ -154,7 +227,12 @@ export default {
                         if(response.data.errors){
                             this.displayError(response);
                         } else {
-                            
+                            // Update number of rows uploaded and file status
+                            this.files[fileIndex]['nbRowsUploaded'] = this.files[fileIndex]['nbRowsUploaded'] + 1;
+                            if(this.files[fileIndex]['nbRowsParsed'] == this.files[fileIndex]['nbRowsUploaded']) {
+                                this.files[fileIndex]['status'] = 'Complete';
+                                this.files[fileIndex]['statusClass'] = 'badge-success';
+                            }
                         }
                     },
                     // Error callback
@@ -166,22 +244,10 @@ export default {
             }.bind(this));
         },
         resetModalBox() {
-            this.uploadedFiles = [];
+            this.files = [];
             document.getElementById('selectedFiles').value = "";
-        },
-        formatSize(size) {
-            if (size > 1024 * 1024 * 1024 * 1024) {
-                return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + 'Tb'
-            } else if (size > 1024 * 1024 * 1024) {
-                return (size / 1024 / 1024 / 1024).toFixed(2) + 'Gb'
-            } else if (size > 1024 * 1024) {
-                return (size / 1024 / 1024).toFixed(2) + 'Mb'
-            } else if (size > 1024) {
-                return (size / 1024).toFixed(2) + 'Kb'
-            }
-            return size.toString() + ' bytes'
         }
-    },
+    }
 }
 </script>
 
