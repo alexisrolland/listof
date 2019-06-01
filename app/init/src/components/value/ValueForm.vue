@@ -231,7 +231,7 @@ export default {
                                     }
                                 }
                                 // Data types bigint (id: 1), integer (id: 5), smallint (id: 7)
-                                else if ([1, 5, 7].includes(this.list.attributes[i].dataTypeId)) {
+                                else if ([1, 5, 7].includes(this.list.attributes[i].dataTypeId) && this.list.attributes[i].defaultValue != null) {
                                     this.value[this.list.attributes[i].graphQlAttributeName] = parseInt(this.list.attributes[i].defaultValue);
                                 }
                                 // Data types real (id: 6)
