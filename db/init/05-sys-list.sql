@@ -29,7 +29,7 @@ BEGIN
     EXECUTE format(
         'SELECT a.*
         FROM base.sys_list a
-        WHERE a.name ILIKE (''%%%I%%'') OR a.description ILIKE (''%%%I%%'')
+        WHERE a.name ILIKE (''%%%s%%'') OR a.description ILIKE (''%%%s%%'')
         ORDER BY a.%I %s',
         search_keyword,
         search_keyword,

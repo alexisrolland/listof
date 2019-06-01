@@ -26,7 +26,7 @@ BEGIN
     EXECUTE format(
         'SELECT a.*
         FROM base.sys_user_group a
-        WHERE a.name ILIKE (''%%%I%%'')
+        WHERE a.name ILIKE (''%%%s%%'')
         ORDER BY a.%I %s',
         search_keyword,
         sort_attribute,

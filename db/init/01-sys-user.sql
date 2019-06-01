@@ -35,7 +35,7 @@ BEGIN
     EXECUTE format(
         'SELECT a.*
         FROM base.sys_user a
-        WHERE a.email ILIKE (''%%%I%%'') OR a.role ILIKE (''%%%I%%'')
+        WHERE a.email ILIKE (''%%%s%%'') OR a.role ILIKE (''%%%s%%'')
         ORDER BY a.%I %s',
         search_keyword,
         search_keyword,
