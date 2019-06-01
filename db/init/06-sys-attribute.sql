@@ -6,8 +6,8 @@
 /*Create table for list attributes*/
 CREATE TABLE base.sys_attribute (
     id SERIAL PRIMARY KEY
-  , name CITEXT NOT NULL
-  , description CITEXT
+  , "name" CITEXT NOT NULL
+  , "description" CITEXT
   , "order" INTEGER NOT NULL DEFAULT 1
   , column_name TEXT
   , flag_unique BOOLEAN DEFAULT FALSE

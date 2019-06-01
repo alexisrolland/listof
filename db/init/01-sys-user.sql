@@ -7,8 +7,8 @@
 CREATE TABLE base.sys_user (
     id SERIAL PRIMARY KEY
   , email CITEXT NOT NULL UNIQUE
-  , password TEXT
-  , role CITEXT NOT NULL DEFAULT 'standard'
+  , "password" TEXT
+  , "role" CITEXT NOT NULL DEFAULT 'standard'
   , flag_active BOOLEAN DEFAULT TRUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
