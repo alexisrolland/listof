@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="mt-5">Edit list</h1>
+        <h1 class="mt-5">Edit List</h1>
 
         <form>
             <div class="form-row">
