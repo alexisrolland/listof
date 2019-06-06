@@ -8,9 +8,7 @@ then
     # Delete all unnecessary files except dist folder and index.html
     rm -rf ./libs
     rm -rf ./node_modules
-    rm -rf ./package*.json
     rm -rf ./src
-    rm -rf ./webpack.config.js
 
     # Serve files from current folder /srv/app
     http-server .
