@@ -2,4 +2,4 @@ language: node_js
 node_js: node
 before_install: cd app/init
 install: npm install
-script: npm run prettier -- --check
+script: npm run lint
