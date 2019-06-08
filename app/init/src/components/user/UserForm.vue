@@ -137,9 +137,9 @@ export default {
       this.user.sysUserGroupMembershipsByUserId.nodes.push(userGroupMembership);
     },
     removeUserGroupMembership(id) {
-      let relationships = this.user.sysUserGroupMembershipsByUserId.nodes;
+      let memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
       for (let i = 0; i < relationships.length; i++) {
-        if (relationships[i]["id"] == id) {
+        if (memberships[i]["id"] == id) {
           this.user.sysUserGroupMembershipsByUserId.nodes.splice(i, 1);
         }
       }

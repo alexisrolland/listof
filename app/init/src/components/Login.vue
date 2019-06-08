@@ -97,13 +97,13 @@ export default {
             this.displayError(response);
           } else {
             // Prepare list of current user groups
-            let rawUserGroups =
+            let memberships =
               response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId
                 .nodes;
             let currentUserGroups = [];
-            for (let i = 0; i < rawUserGroups.length; i++) {
+            for (let i = 0; i < memberships.length; i++) {
               currentUserGroups.push(
-                rawUserGroups[i]["sysUserGroupByUserGroupId"]
+                memberships[i]["sysUserGroupByUserGroupId"]
               );
             }
 
