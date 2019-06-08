@@ -289,7 +289,6 @@ export default {
           }
 
           // Build update or create mutation payload if row is not empty
-          console.log(row);
           if (!lodash.isEmpty(row)) {
             console.log('in if');
             let payload = {};
