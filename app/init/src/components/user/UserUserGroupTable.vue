@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="userGroup in user.sysUserGroupUsersByUserId.nodes"
+          v-for="userGroup in user.sysUserGroupMembershipsByUserId.nodes"
           v-bind:key="userGroup.id"
         >
           <td>
@@ -46,7 +46,7 @@ export default {
     removeUserGroup(id) {
       // Method to delete a relationship between a user and a user group
       let payload = {
-        query: this.$store.state.mutationDeleteUserGroupUser,
+        query: this.$store.state.mutationDeleteUserGroupMembership,
         variables: { id: id }
       };
       let headers = {};
@@ -58,7 +58,7 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            this.$emit("removeUserGroupUser", id);
+            this.$emit("removeUserGroupMembership", id);
           }
         },
         // Error callback

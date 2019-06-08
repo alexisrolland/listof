@@ -8,7 +8,7 @@ export const queryGetCurrentUser = `query getCurrentUser($email: String!) {
     sysUserByEmail(email: $email) {
         email
         role
-        sysUserGroupUsersByUserId{
+        sysUserGroupMembershipsByUserId{
             nodes {
                 sysUserGroupByUserGroupId {
                     id

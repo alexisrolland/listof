@@ -4,17 +4,17 @@
 
 
 /*Create table user group*/
-CREATE TABLE base.sys_user_group_user (
+CREATE TABLE base.sys_user_group_membership (
     id SERIAL PRIMARY KEY
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
   , user_group_id INTEGER NOT NULL DEFAULT 1 REFERENCES base.sys_user_group(id)
   , user_id INTEGER NOT NULL REFERENCES base.sys_user(id)
-  , CONSTRAINT user_group_user_uniqueness UNIQUE (user_group_id, user_id)
+  , CONSTRAINT user_group_membership_uniqueness UNIQUE (user_group_id, user_id)
 );
 
-COMMENT ON TABLE base.sys_user_group IS
-'User groups users show which groups users are members of.';
+COMMENT ON TABLE base.sys_user_group_membership IS
+'User group memberships connect users to user groups.';
 
 
 
@@ -47,18 +47,18 @@ COMMENT ON FUNCTION base.revoke_user_group IS
 
 
 /*Triggers on insert*/
-CREATE TRIGGER user_group_user_grant_user_group AFTER INSERT
-ON base.sys_user_group_user FOR EACH ROW EXECUTE PROCEDURE
+CREATE TRIGGER user_group_membership_grant_user_group AFTER INSERT
+ON base.sys_user_group_membership FOR EACH ROW EXECUTE PROCEDURE
 base.grant_user_group();
 
 
 
 /*Triggers on delete*/
-CREATE TRIGGER user_group_user_revoke_user_group BEFORE DELETE
-ON base.sys_user_group_user FOR EACH ROW EXECUTE PROCEDURE
+CREATE TRIGGER user_group_membership_revoke_user_group BEFORE DELETE
+ON base.sys_user_group_membership FOR EACH ROW EXECUTE PROCEDURE
 base.revoke_user_group();
 
 
 
 /*Create default user group user*/
-INSERT INTO base.sys_user_group_user (user_group_id, user_id) VALUES (1, 1);
+INSERT INTO base.sys_user_group_membership (user_group_id, user_id) VALUES (1, 1);

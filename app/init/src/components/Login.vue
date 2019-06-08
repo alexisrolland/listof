@@ -98,7 +98,8 @@ export default {
           } else {
             // Prepare list of current user groups
             let rawUserGroups =
-              response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
+              response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId
+                .nodes;
             let currentUserGroups = [];
             for (let i = 0; i < rawUserGroups.length; i++) {
               currentUserGroups.push(
