@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import snakeCase from "lodash/snakeCase";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -22,14 +23,9 @@ export default {
         true
       ); // Example table_name > TableNames
       let attributes = this.list.sysAttributesByListId.nodes;
-      let graphQLAttributeName = "";
-      for (let i = 0; i < attributes.length; i++) {
-        attributes[i]["graphQlAttributeName"] = this.getGraphQlName(
-          attributes[i].columnName
-        ); // Example colum_name > columnName
-        graphQLAttributeName =
-          graphQLAttributeName + " " + attributes[i]["graphQlAttributeName"];
-      }
+      const graphQLAttributeName = attributes
+        .map(attribute => this.getGraphQlName(attribute.columnName))
+        .join(" ");
 
       // Build GraphQL query
       let graphQlQuery = this.$store.state.queryDownloadAllValues.replace(
@@ -64,11 +60,7 @@ export default {
 
             // Change header to snake_case
             let rows = text.split(/\r\n|\r|\n/);
-            let headers = rows[0].split(",");
-            let lodash = require("lodash");
-            for (let i = 0; i < headers.length; i++) {
-              headers[i] = lodash.snakeCase(headers[i]);
-            }
+            const headers = rows[0].split(",").map(header => snakeCase(header));
             rows[0] = headers.join(",");
             text = rows.join("\r\n");
 

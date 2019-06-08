@@ -7,9 +7,7 @@
         <div class="col-md-8">
           <!-- User Form -->
           <div class="form-group required">
-            <label for="userEmail" class="col-form-label">
-              E-mail:
-            </label>
+            <label for="userEmail" class="col-form-label">E-mail:</label>
             <input
               class="form-control col-sm"
               id="userEmail"
@@ -20,9 +18,7 @@
             />
           </div>
           <div v-if="showPasswordField" class="form-group required">
-            <label for="userPassword" class="col-form-label">
-              Password:
-            </label>
+            <label for="userPassword" class="col-form-label">Password:</label>
             <input
               class="form-control col-sm"
               id="userPassword"
@@ -33,16 +29,14 @@
             />
           </div>
           <div class="form-group required">
-            <label for="userRole" class="col-form-label">
-              Role:
-            </label>
+            <label for="userRole" class="col-form-label">Role:</label>
             <select
               class="form-control"
               id="userRole"
               required="true"
               v-model="user.role"
             >
-              <option disabled value="">Select user role</option>
+              <option disabled value>Select user role</option>
               <option value="standard">standard</option>
               <option value="advanced">advanced</option>
               <option value="admin">admin</option>
@@ -53,12 +47,10 @@
               class="custom-control-input"
               id="active"
               type="checkbox"
-              value=""
+              value
               v-model="user.flagActive"
             />
-            <label for="active" class="custom-control-label">
-              Active
-            </label>
+            <label for="active" class="custom-control-label">Active</label>
           </div>
 
           <!-- Button Menu -->
@@ -66,16 +58,14 @@
             <user-button-save
               v-bind:user="user"
               v-bind:showPasswordField="showPasswordField"
-            >
-            </user-button-save>
+            ></user-button-save>
 
             <user-button-reset-password
               v-on:resetPassword="resetPassword"
               v-bind:userId="userId"
-            >
-            </user-button-reset-password>
+            ></user-button-reset-password>
 
-            <user-button-close> </user-button-close>
+            <user-button-close></user-button-close>
           </div>
         </div>
         <div class="col-md-4">
@@ -97,14 +87,14 @@
           v-bind:user="user"
           v-on:addUserGroupMembership="addUserGroupMembership"
           v-on:removeUserGroupMembership="removeUserGroupMembership"
-        >
-        </user-user-group>
+        ></user-user-group>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import remove from "lodash/remove";
 import UserButtonSave from "./UserButtonSave.vue";
 import UserButtonResetPassword from "./UserButtonResetPassword.vue";
 import UserButtonClose from "./UserButtonClose.vue";
@@ -137,12 +127,10 @@ export default {
       this.user.sysUserGroupMembershipsByUserId.nodes.push(userGroupMembership);
     },
     removeUserGroupMembership(id) {
-      let memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
-      for (let i = 0; i < relationships.length; i++) {
-        if (memberships[i]["id"] == id) {
-          this.user.sysUserGroupMembershipsByUserId.nodes.splice(i, 1);
-        }
-      }
+      this.user.sysUserGroupMembershipsByUserId.nodes = remove(
+        this.user.sysUserGroupMembershipsByUserId.nodes,
+        membership => membership.id == id
+      );
     },
     resetPassword(value) {
       this.showPasswordField = value;

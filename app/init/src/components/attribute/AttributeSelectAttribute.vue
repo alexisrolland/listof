@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import omit from "lodash/omit";
 import Mixins from "../utils/Mixins.vue";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -73,13 +74,11 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            this.options = response.data.data.allSysLists.nodes;
-            for (let i = 0; i < this.options.length; i++) {
-              this.options[i]["children"] = this.options[i]["attributes"][
-                "children"
-              ];
-              delete this.options[i]["attributes"];
-            }
+            const options = response.data.data.allSysLists.nodes;
+            this.options = options.map(option => ({
+              ...omit(option, ["attributes"]),
+              children: option.attributes.children,
+            })
           }
         },
         // Error callback
