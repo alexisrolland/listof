@@ -159,6 +159,7 @@ export default {
   },
   methods: {
     previewFiles() {
+      // Fetch files metadata
       this.files = [];
       let files = this.$refs.selectedFiles.files;
       for (let i = 0; i < files.length; i++) {
@@ -173,6 +174,7 @@ export default {
       }
     },
     formatSize(size) {
+      // Format file size to human readable format
       if (size > 1024 * 1024 * 1024 * 1024) {
         return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + " Tb";
       } else if (size > 1024 * 1024 * 1024) {
@@ -192,7 +194,7 @@ export default {
           transformHeader: this.getGraphQlName,
           complete: this.uploadFiles
         },
-        before: function(file, inputElement) {
+        /*before: function(file, inputElement) {
           // executed before parsing each file begins
           // what you return here controls the flow
         },
@@ -202,7 +204,7 @@ export default {
         },
         complete: function() {
           // executed after all files are complete
-        }
+        }*/
       });
     },
     uploadFiles(results, file) {
@@ -259,10 +261,10 @@ export default {
             let i = lodash.findIndex(this.graphQlAttributeNames, function(obj) {
               return obj.graphQlAttributeName == key;
             });
+
             if (i == -1) {
               delete row[key];
             }
-
             // Format column value according to attribute data type
             else {
               let dataTypeId = this.graphQlAttributeNames[i]["dataTypeId"];
@@ -286,27 +288,32 @@ export default {
             delete row["id"];
           }
 
-          // Build update or create mutation payload
-          let payload = {};
-          let variables = {};
-          if (row.hasOwnProperty("id")) {
-            variables = { id: row["id"] };
-            let patch = Object.assign({}, row); // Clone object
-            variables[graphQlListName + "Patch"] = patch;
-            payload = {
-              query: graphQlUpdateMutation,
-              variables: variables
-            };
-          } else {
-            variables = {};
-            variables[graphQlListName] = row;
-            payload = {
-              query: graphQlCreateMutation,
-              variables: variables
-            };
-          }
+          // Build update or create mutation payload if row is not empty
+          console.log(row);
+          if (!lodash.isEmpty(row)) {
+            console.log('in if');
+            let payload = {};
+            let variables = {};
+            if (row.hasOwnProperty("id")) {
+              variables = { id: row["id"] };
+              let patch = Object.assign({}, row); // Clone object
+              variables[graphQlListName + "Patch"] = patch;
+              payload = {
+                query: graphQlUpdateMutation,
+                variables: variables
+              }
+            } else {
+              variables = {};
+              variables[graphQlListName] = row;
+              payload = {
+                query: graphQlCreateMutation,
+                variables: variables
+              }
+            }
 
-          return payload;
+            return payload;
+          }
+          console.log('after if');
         }.bind(this)
       );
 
