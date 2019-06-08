@@ -72,8 +72,10 @@ export const store = new Vuex.Store({
     mutationCreateUser: UserPayload.mutationCreateUser,
     mutationUpdateUser: UserPayload.mutationUpdateUser,
     mutationSearchUser: UserPayload.mutationSearchUser,
-    mutationCreateUserGroupUser: UserPayload.mutationCreateUserGroupUser,
-    mutationDeleteUserGroupUser: UserPayload.mutationDeleteUserGroupUser,
+    mutationCreateUserGroupMembership:
+      UserPayload.mutationCreateUserGroupMembership,
+    mutationDeleteUserGroupMembership:
+      UserPayload.mutationDeleteUserGroupMembership,
 
     // User groups queries and mutations
     queryGetAllUserGroups: UserGroupPayload.queryGetAllUserGroups,

@@ -16,7 +16,7 @@ export const queryGetUser = `query getUser($id: Int!) {
         email
         role
         flagActive
-        sysUserGroupUsersByUserId {
+        sysUserGroupMembershipsByUserId {
             nodes {
                 id
                 userGroupId
@@ -59,9 +59,9 @@ export const mutationSearchUser = `mutation searchUser($searchKeyword: String, $
     }
 }`;
 
-export const mutationCreateUserGroupUser = `mutation createUserGroupUser($sysUserGroupUser: SysUserGroupUserInput!) {
-    createSysUserGroupUser(input: {sysUserGroupUser: $sysUserGroupUser}) {
-        sysUserGroupUser {
+export const mutationCreateUserGroupMembership = `mutation createUserGroupMembership($sysUserGroupMembership: SysUserGroupMembershipInput!) {
+    createSysUserGroupMembership(input: {sysUserGroupMembership: $sysUserGroupMembership}) {
+        sysUserGroupMembership {
             id
             userGroupId
             sysUserGroupByUserGroupId { name }
@@ -69,9 +69,9 @@ export const mutationCreateUserGroupUser = `mutation createUserGroupUser($sysUse
     }
 }`;
 
-export const mutationDeleteUserGroupUser = `mutation deleteUserGroupUser($id: Int!) {
-    deleteSysUserGroupUserById(input: {id: $id}){
-        sysUserGroupUser {
+export const mutationDeleteUserGroupMembership = `mutation deleteUserGroupMembership($id: Int!) {
+    deleteSysUserGroupMembershipById(input: {id: $id}){
+        sysUserGroupMembership {
             id
         }
     }

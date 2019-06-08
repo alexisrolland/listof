@@ -9,9 +9,8 @@ services:
 
   app:
     volumes:
-      - ./app/init/libs:/srv/app/libs
+      - ./app/init/public:/srv/app/public
       - ./app/init/src:/srv/app/src
-      - ./app/init/index.html:/srv/app/index.html
     command: ["dev"]
 
   nginx:

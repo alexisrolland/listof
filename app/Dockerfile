@@ -12,18 +12,10 @@ COPY ./init/package*.json ./
 RUN npm install -g http-server
 
 # Install Vue CLI
-RUN npm install -g vue-cli
+RUN npm install -g @vue/cli
 
 # Install project dependencies
-RUN npm install \
-    && npm install --save vue-router \
-    && npm install --save vue-resource \
-    && npm install --save vuex \
-    && npm install --save lodash \
-    && npm install --save inflection \
-    && npm install --save vue-session \
-    && npm install --save @riophae/vue-treeselect \
-    && npm install --save papaparse@5.0.0-beta.0
+RUN npm install
 
 # Copy project files and folders to the current working directory
 COPY ./entrypoint.sh ./
