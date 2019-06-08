@@ -12,7 +12,7 @@ COPY ./init/package*.json ./
 RUN npm install -g http-server
 
 # Install Vue CLI
-RUN npm install -g vue-cli
+RUN npm install -g @vue/cli
 
 # Install project dependencies
 RUN npm install \
