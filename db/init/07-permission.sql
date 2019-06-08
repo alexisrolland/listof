@@ -63,7 +63,7 @@ GRANT advanced TO admin;
 /*base schema*/
 GRANT INSERT, UPDATE, DELETE ON base.sys_user TO admin;
 GRANT INSERT, UPDATE, DELETE ON base.sys_user_group TO admin;
-GRANT INSERT, UPDATE, DELETE ON base.sys_user_group_user TO admin;
+GRANT INSERT, UPDATE, DELETE ON base.sys_user_group_membership TO admin;
 GRANT INSERT, UPDATE, DELETE ON base.sys_data_type TO admin;
 
 /*Grant admin role to default user*/

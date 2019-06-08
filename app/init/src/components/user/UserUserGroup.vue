@@ -16,15 +16,15 @@
         class="float-left"
         v-bind:user="user"
         v-bind:userGroups="userGroups"
-        v-on:addUserGroupUser="addUserGroupUser"
+        v-on:addUserGroupMembership="addUserGroupMembership"
       >
       </user-button-add-user-group>
     </div>
 
     <user-user-group-table
-      v-if="user.sysUserGroupUsersByUserId"
+      v-if="user.sysUserGroupMembershipsByUserId"
       v-bind:user="user"
-      v-on:removeUserGroupUser="removeUserGroupUser"
+      v-on:removeUserGroupMembership="removeUserGroupMembership"
     >
     </user-user-group-table>
   </div>
@@ -54,11 +54,11 @@ export default {
     };
   },
   methods: {
-    addUserGroupUser(userGroupUser) {
-      this.$emit("addUserGroupUser", userGroupUser);
+    addUserGroupMembership(userGroupMembership) {
+      this.$emit("addUserGroupMembership", userGroupMembership);
     },
-    removeUserGroupUser(id) {
-      this.$emit("removeUserGroupUser", id);
+    removeUserGroupMembership(id) {
+      this.$emit("removeUserGroupMembership", id);
     }
   },
   created: function() {

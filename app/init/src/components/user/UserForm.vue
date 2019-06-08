@@ -95,8 +95,8 @@
         <user-user-group
           v-if="user.id"
           v-bind:user="user"
-          v-on:addUserGroupUser="addUserGroupUser"
-          v-on:removeUserGroupUser="removeUserGroupUser"
+          v-on:addUserGroupMembership="addUserGroupMembership"
+          v-on:removeUserGroupMembership="removeUserGroupMembership"
         >
         </user-user-group>
       </div>
@@ -133,14 +133,14 @@ export default {
     }
   },
   methods: {
-    addUserGroupUser(userGroupUser) {
-      this.user.sysUserGroupUsersByUserId.nodes.push(userGroupUser);
+    addUserGroupMembership(userGroupMembership) {
+      this.user.sysUserGroupMembershipsByUserId.nodes.push(userGroupMembership);
     },
-    removeUserGroupUser(id) {
-      let relationships = this.user.sysUserGroupUsersByUserId.nodes;
+    removeUserGroupMembership(id) {
+      let memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
       for (let i = 0; i < relationships.length; i++) {
-        if (relationships[i]["id"] == id) {
-          this.user.sysUserGroupUsersByUserId.nodes.splice(i, 1);
+        if (memberships[i]["id"] == id) {
+          this.user.sysUserGroupMembershipsByUserId.nodes.splice(i, 1);
         }
       }
     },

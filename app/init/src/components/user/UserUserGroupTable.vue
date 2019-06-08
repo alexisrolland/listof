@@ -13,17 +13,17 @@
       </thead>
       <tbody>
         <tr
-          v-for="userGroup in user.sysUserGroupUsersByUserId.nodes"
-          v-bind:key="userGroup.id"
+          v-for="membership in user.sysUserGroupMembershipsByUserId.nodes"
+          v-bind:key="membership.id"
         >
           <td>
-            {{ userGroup.sysUserGroupByUserGroupId.name }}
+            {{ membership.sysUserGroupByUserGroupId.name }}
           </td>
           <td>
             <span
               v-if="showRemoveUserGroup"
               class="badge badge-secondary"
-              v-on:click="removeUserGroup(userGroup.id)"
+              v-on:click="removeUserGroupMembership(membership.id)"
             >
               Remove
             </span>
@@ -43,10 +43,10 @@ export default {
     user: Object
   },
   methods: {
-    removeUserGroup(id) {
+    removeUserGroupMembership(id) {
       // Method to delete a relationship between a user and a user group
       let payload = {
-        query: this.$store.state.mutationDeleteUserGroupUser,
+        query: this.$store.state.mutationDeleteUserGroupMembership,
         variables: { id: id }
       };
       let headers = {};
@@ -58,7 +58,7 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            this.$emit("removeUserGroupUser", id);
+            this.$emit("removeUserGroupMembership", id);
           }
         },
         // Error callback

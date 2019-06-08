@@ -94,9 +94,9 @@ ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
 base.delete_user_group();
 
 
-CREATE TRIGGER user_group_delete_user_group_user BEFORE DELETE
+CREATE TRIGGER user_group_delete_user_group_membership BEFORE DELETE
 ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
-base.delete_children('user_group_user', 'user_group_id');
+base.delete_children('user_group_membership', 'user_group_id');
 */
 
 

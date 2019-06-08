@@ -25,11 +25,11 @@ export default {
       let currentUserGroups = [];
       for (
         let i = 0;
-        i < this.user.sysUserGroupUsersByUserId.nodes.length;
+        i < this.user.sysUserGroupMembershipsByUserId.nodes.length;
         i++
       ) {
         currentUserGroups.push(
-          this.user.sysUserGroupUsersByUserId.nodes[i]["userGroupId"]
+          this.user.sysUserGroupMembershipsByUserId.nodes[i]["userGroupId"]
         );
       }
 
@@ -39,9 +39,9 @@ export default {
         if (currentUserGroups.includes(this.userGroups[i]) == false) {
           // Method to insert a relationship between a user and a user group
           let payload = {
-            query: this.$store.state.mutationCreateUserGroupUser,
+            query: this.$store.state.mutationCreateUserGroupMembership,
             variables: {
-              sysUserGroupUser: {
+              sysUserGroupMembership: {
                 userId: this.user.id,
                 userGroupId: this.userGroups[i]
               }
@@ -58,9 +58,10 @@ export default {
                 if (response.data.errors) {
                   this.displayError(response);
                 } else {
-                  let userGroupUser =
-                    response.data.data.createSysUserGroupUser.sysUserGroupUser;
-                  this.$emit("addUserGroupUser", userGroupUser);
+                  let userGroupMembership =
+                    response.data.data.createSysUserGroupMembership
+                      .sysUserGroupMembership;
+                  this.$emit("addUserGroupMembership", userGroupMembership);
                 }
               },
               // Error callback
@@ -92,12 +93,13 @@ export default {
             this.displayError(response);
           } else {
             // Prepare list of current user groups
-            let rawUserGroups =
-              response.data.data.sysUserByEmail.sysUserGroupUsersByUserId.nodes;
+            let memberships =
+              response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId
+                .nodes;
             let currentUserGroups = [];
-            for (let i = 0; i < rawUserGroups.length; i++) {
+            for (let i = 0; i < memberships.length; i++) {
               currentUserGroups.push(
-                rawUserGroups[i]["sysUserGroupByUserGroupId"]
+                memberships[i]["sysUserGroupByUserGroupId"]
               );
             }
 
