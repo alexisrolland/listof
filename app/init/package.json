@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --disableHostCheck=true --hot --host 0.0.0.0",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "prettier": "prettier --write \"src/**/*.{js,vue}\""
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.0.38",
@@ -31,6 +32,7 @@
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
+    "prettier": "1.18.2",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",

@@ -1,40 +1,42 @@
 <template>
-    <nav class="navbar text-light justify-content-between">
-        <span class="navbar-brand">
-            <router-link to="/">
-                ListOf...
-            </router-link>
-        </span>
+  <nav class="navbar text-light justify-content-between">
+    <span class="navbar-brand">
+      <router-link to="/">
+        ListOf...
+      </router-link>
+    </span>
 
-        <form class="form-inline">
-            <!-- User group is picked when creating lists instead of at session level -->
-            <!-- <header-select-user-group></header-select-user-group> -->
-            <list-button-create></list-button-create>
-            <header-button-admin></header-button-admin>
-            <header-button-login></header-button-login>
-            <header-button-logout></header-button-logout>
-        </form>
-    </nav>
+    <form class="form-inline">
+      <!-- User group is picked when creating lists instead of at session level -->
+      <!-- <header-select-user-group></header-select-user-group> -->
+      <list-button-create></list-button-create>
+      <header-button-admin></header-button-admin>
+      <header-button-login></header-button-login>
+      <header-button-logout></header-button-logout>
+    </form>
+  </nav>
 </template>
 
 <script>
 /*import HeaderSelectUserGroup from './HeaderSelectUserGroup.vue';*/
-import ListButtonCreate from '../list/ListButtonCreate.vue';
-import HeaderButtonAdmin from './HeaderButtonAdmin.vue';
-import HeaderButtonLogin from './HeaderButtonLogin.vue';
-import HeaderButtonLogout from './HeaderButtonLogout.vue';
+import ListButtonCreate from "../list/ListButtonCreate.vue";
+import HeaderButtonAdmin from "./HeaderButtonAdmin.vue";
+import HeaderButtonLogin from "./HeaderButtonLogin.vue";
+import HeaderButtonLogout from "./HeaderButtonLogout.vue";
 
 export default {
-    components: {
-        /*'header-select-user-group': HeaderSelectUserGroup,*/
-        'list-button-create': ListButtonCreate,
-        'header-button-admin': HeaderButtonAdmin,
-        'header-button-login': HeaderButtonLogin,
-        'header-button-logout': HeaderButtonLogout
-    }
-}
+  components: {
+    /*'header-select-user-group': HeaderSelectUserGroup,*/
+    "list-button-create": ListButtonCreate,
+    "header-button-admin": HeaderButtonAdmin,
+    "header-button-login": HeaderButtonLogin,
+    "header-button-logout": HeaderButtonLogout
+  }
+};
 </script>
 
 <style>
-.navbar { background-color: #2C3034; }
+.navbar {
+  background-color: #2c3034;
+}
 </style>
