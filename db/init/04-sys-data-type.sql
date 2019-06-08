@@ -40,13 +40,13 @@ base.update_updated_by_id();
 
 /*Initialize supported data types*/
 INSERT INTO base.sys_data_type (id, popularity, name, display_name) VALUES
-  (1, 1, 'text',      'Text')
-, (2, 2, 'integer',   'Integer')
-, (3, 3, 'boolean',   'Boolean')
-, (4, 4, 'date',      'Date')
-, (5, 5, 'timestamp', 'Timestamp')
+  (1, 8, 'bigint',    'Big Integer')
+, (2, 3, 'boolean',   'Boolean')
+, (3, 4, 'date',      'Date')
+, (4, 7, 'decimal',   'Decimal')
+, (5, 2, 'integer',   'Integer')
 , (6, 6, 'real',      'Float')
-, (7, 7, 'decimal',   'Decimal')
-, (8, 8, 'bigint',    'Big Integer')
-, (9, 9, 'smallint',  'Small Integer')
+, (7, 9, 'smallint',  'Small Integer')
+, (8, 1, 'text',      'Text')
+, (9, 5, 'timestamp', 'Timestamp')
 ;
