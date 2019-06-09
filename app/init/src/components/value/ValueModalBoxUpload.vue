@@ -193,7 +193,7 @@ export default {
           header: true,
           transformHeader: this.getGraphQlName,
           complete: this.uploadFiles
-        },
+        }
         /*before: function(file, inputElement) {
           // executed before parsing each file begins
           // what you return here controls the flow
@@ -290,7 +290,7 @@ export default {
 
           // Build update or create mutation payload if row is not empty
           if (!lodash.isEmpty(row)) {
-            console.log('in if');
+            console.log("in if");
             let payload = {};
             let variables = {};
             if (row.hasOwnProperty("id")) {
@@ -300,19 +300,19 @@ export default {
               payload = {
                 query: graphQlUpdateMutation,
                 variables: variables
-              }
+              };
             } else {
               variables = {};
               variables[graphQlListName] = row;
               payload = {
                 query: graphQlCreateMutation,
                 variables: variables
-              }
+              };
             }
 
             return payload;
           }
-          console.log('after if');
+          console.log("after if");
         }.bind(this)
       );
 
