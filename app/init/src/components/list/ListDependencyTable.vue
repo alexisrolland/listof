@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import flatten from "lodash/flatten";
+
 export default {
   props: {
     list: {}
@@ -47,34 +49,18 @@ export default {
   created: function() {},
   computed: {
     dependencies() {
-      let dependencies = [];
-      for (let i = 0; i < this.list.sysAttributesByListId.nodes.length; i++) {
-        for (
-          let j = 0;
-          j <
-          this.list.sysAttributesByListId.nodes[i][
-            "sysAttributesByLinkedAttributeId"
-          ]["nodes"].length;
-          j++
-        ) {
-          let dependency = {
-            attributeId: this.list.sysAttributesByListId.nodes[i][
-              "sysAttributesByLinkedAttributeId"
-            ]["nodes"][j]["id"],
-            attributeName: this.list.sysAttributesByListId.nodes[i][
-              "sysAttributesByLinkedAttributeId"
-            ]["nodes"][j]["name"],
-            listId: this.list.sysAttributesByListId.nodes[i][
-              "sysAttributesByLinkedAttributeId"
-            ]["nodes"][j]["sysListByListId"]["id"],
-            listName: this.list.sysAttributesByListId.nodes[i][
-              "sysAttributesByLinkedAttributeId"
-            ]["nodes"][j]["sysListByListId"]["name"]
-          };
-          dependencies.push(dependency);
-        }
-      }
-      return dependencies;
+      const attributes = this.list.sysAttributesByListId.nodes;
+      const nestedList = attributes.map(attribute => {
+        const linkedAttributes =
+          attribute.sysAttributesByLinkedAttributeId.nodes;
+        return linkedAttributes.map(linkedAttribute => ({
+          attributeId: linkedAttribute.id,
+          attributeName: linkedAttribute.name,
+          listId: linkedAttribute.sysListByListId.id,
+          listName: linkedAttribute.sysListByListId.name
+        }));
+      });
+      return flatten(nestedList);
     }
   }
 };

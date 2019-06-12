@@ -4,9 +4,7 @@
 
     <!-- User Form -->
     <div class="form-group w-25">
-      <label for="userEmail" class="col-form-label">
-        E-mail:
-      </label>
+      <label for="userEmail" class="col-form-label">E-mail:</label>
       <input
         class="form-control col-sm"
         id="userEmail"
@@ -17,9 +15,7 @@
       />
     </div>
     <div class="form-group w-25">
-      <label for="userPassword" class="col-form-label">
-        Password:
-      </label>
+      <label for="userPassword" class="col-form-label">Password:</label>
       <input
         class="form-control col-sm"
         id="userPassword"
@@ -97,15 +93,12 @@ export default {
             this.displayError(response);
           } else {
             // Prepare list of current user groups
-            let memberships =
+            const memberships =
               response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId
                 .nodes;
-            let currentUserGroups = [];
-            for (let i = 0; i < memberships.length; i++) {
-              currentUserGroups.push(
-                memberships[i]["sysUserGroupByUserGroupId"]
-              );
-            }
+            const currentUserGroups = memberships.map(
+              membership => membership.sysUserGroupByUserGroupId
+            );
 
             // Set current user, role, user groups in session object
             this.$session.set("email", response.data.data.sysUserByEmail.email);

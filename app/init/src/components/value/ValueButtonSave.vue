@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import mapValues from "lodash/mapValues";
+import omit from "lodash/omit";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -39,22 +41,16 @@ export default {
         );
 
         // Set undefined properties to null to ensure GraphQL keep them in the payload
-        for (let property in this.value) {
-          if (
-            this.value.hasOwnProperty(property) &&
-            this.value[property] == undefined
-          ) {
-            this.value[property] = null;
-          }
-        }
+        this.value = mapValues(this.value, v => v || null);
 
         // Build mutation payload
         let variables = { id: this.value.id };
-        let patch = Object.assign({}, this.value); // Clone object
-        delete patch["createdDate"];
-        delete patch["sysUserByCreatedById"];
-        delete patch["updatedDate"];
-        delete patch["sysUserByUpdatedById"];
+        const patch = omit(this.value, [
+          "createdDate",
+          "sysUserByCreatedById",
+          "updatedDate",
+          "sysUserByUpdatedById"
+        ]);
         variables[this.graphQlListName + "Patch"] = patch;
         let payload = {
           query: graphQlMutation,

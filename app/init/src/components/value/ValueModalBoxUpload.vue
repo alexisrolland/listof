@@ -25,16 +25,17 @@
         <div class="modal-body bg-secondary text-light">
           <ul>
             <li>
-              Maximum file size allowed is <b>3 Mb</b>. Split your files in
-              smaller ones if they are too big.
+              Maximum file size allowed is
+              <b>3 Mb</b>. Split your files in smaller ones if they are too big.
             </li>
             <li>
               Use template below to ensure headers are correct. Columns not in
               the template will be ignored.
             </li>
             <li>
-              If the column <b>id</b> contains a valid id, the corresponding
-              entry will be updated, else a new entry will be created.
+              If the column
+              <b>id</b> contains a valid id, the corresponding entry will be
+              updated, else a new entry will be created.
             </li>
           </ul>
 
@@ -118,6 +119,9 @@
 </template>
 
 <script>
+import findIndex from "lodash/findIndex";
+import isEmpty from "lodash/isEmpty";
+
 import Mixins from "../utils/Mixins.vue";
 import ValueButtonDownloadTemplate from "./ValueButtonDownloadTemplate";
 
@@ -160,18 +164,14 @@ export default {
   methods: {
     previewFiles() {
       // Fetch files metadata
-      this.files = [];
-      let files = this.$refs.selectedFiles.files;
-      for (let i = 0; i < files.length; i++) {
-        let file = {
-          id: i,
-          name: files[i]["name"],
-          size: this.formatSize(files[i]["size"]),
-          status: "Ready",
-          statusClass: "badge-secondary"
-        };
-        this.files.push(file);
-      }
+      const files = this.$refs.selectedFiles.files;
+      this.files = files.map((file, i) => ({
+        id: i,
+        name: file.name,
+        size: this.formatSize(file.size),
+        status: "Ready",
+        statusClass: "badge-secondary"
+      }));
     },
     formatSize(size) {
       // Format file size to human readable format
@@ -193,7 +193,7 @@ export default {
           header: true,
           transformHeader: this.getGraphQlName,
           complete: this.uploadFiles
-        },
+        }
         /*before: function(file, inputElement) {
           // executed before parsing each file begins
           // what you return here controls the flow
@@ -209,8 +209,7 @@ export default {
     },
     uploadFiles(results, file) {
       //Find file index in files list
-      let lodash = require("lodash");
-      let fileIndex = lodash.findIndex(this.files, function(obj) {
+      let fileIndex = findIndex(this.files, function(obj) {
         return obj.name == file.name;
       });
       this.files[fileIndex]["status"] = "Uploading";
@@ -258,7 +257,7 @@ export default {
           // Loop over each column of the record
           for (let key in row) {
             // Drop invalid column if it's not in graphQlAttributeNames
-            let i = lodash.findIndex(this.graphQlAttributeNames, function(obj) {
+            let i = findIndex(this.graphQlAttributeNames, function(obj) {
               return obj.graphQlAttributeName == key;
             });
 
@@ -289,8 +288,8 @@ export default {
           }
 
           // Build update or create mutation payload if row is not empty
-          if (!lodash.isEmpty(row)) {
-            console.log('in if');
+          if (!isEmpty(row)) {
+            console.log("in if");
             let payload = {};
             let variables = {};
             if (row.hasOwnProperty("id")) {
@@ -300,19 +299,19 @@ export default {
               payload = {
                 query: graphQlUpdateMutation,
                 variables: variables
-              }
+              };
             } else {
               variables = {};
               variables[graphQlListName] = row;
               payload = {
                 query: graphQlCreateMutation,
                 variables: variables
-              }
+              };
             }
 
             return payload;
           }
-          console.log('after if');
+          console.log("after if");
         }.bind(this)
       );
 

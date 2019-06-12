@@ -26,9 +26,9 @@
               <div class="col-md-12">
                 <!-- New List Name -->
                 <div class="form-group required">
-                  <label for="listName" class="col-form-label">
-                    New List Name:
-                  </label>
+                  <label for="listName" class="col-form-label"
+                    >New List Name:</label
+                  >
                   <input
                     class="form-control"
                     id="listName"
@@ -45,12 +45,12 @@
                     class="custom-control-input"
                     id="duplicateData"
                     type="checkbox"
-                    value=""
+                    value
                     v-model="duplicateData"
                   />
-                  <label for="duplicateData" class="custom-control-label">
-                    Duplicate Data
-                  </label>
+                  <label for="duplicateData" class="custom-control-label"
+                    >Duplicate Data</label
+                  >
                 </div>
               </div>
             </div>
@@ -138,23 +138,23 @@ export default {
       );
     },
     duplicateAttributes(headers, attributes) {
-      for (let i = 0; i < attributes.length; i++) {
-        let payload = {
-          query: this.$store.state.mutationCreateAttribute,
-          variables: {
-            sysAttribute: {
-              name: attributes[i].name,
-              description: attributes[i].description,
-              order: attributes[i].order,
-              flagUnique: attributes[i].flagUnique,
-              flagMandatory: attributes[i].flagMandatory,
-              linkedAttributeId: attributes[i].linkedAttributeId,
-              dataTypeId: attributes[i].dataTypeId,
-              defaultValue: attributes[i].defaultValue,
-              listId: this.listId
-            }
+      const payloads = attributes.map(attribute => ({
+        query: this.$store.state.mutationCreateAttribute,
+        variables: {
+          sysAttribute: {
+            name: attribute.name,
+            description: attribute.description,
+            order: attribute.order,
+            flagUnique: attribute.flagUnique,
+            flagMandatory: attribute.flagMandatory,
+            linkedAttributeId: attribute.linkedAttributeId,
+            dataTypeId: attribute.dataTypeId,
+            defaultValue: attribute.defaultValue,
+            listId: this.listId
           }
-        };
+        }
+      }));
+      payloads.forEach(payload => {
         this.$http
           .post(this.$store.state.graphqlUrl, payload, { headers })
           .then(
@@ -183,7 +183,7 @@ export default {
               this.displayError(response);
             }
           );
-      }
+      });
     },
     duplicateValues(headers) {
       let payload = {

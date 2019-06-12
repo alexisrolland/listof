@@ -47,11 +47,12 @@ export default {
     }
   },
   created: function() {
+    const userGroups = this.$store.state.currentUser.userGroups;
     // Rename dictionary key to match treeselect requirements
-    this.options = this.$store.state.currentUser.userGroups;
-    for (let i = 0; i < this.options.length; i++) {
-      this.options[i]["label"] = this.options[i]["name"];
-    }
+    this.options = userGroups.map(userGroup => ({
+      ...userGroup,
+      label: userGroup.name
+    }));
   }
 };
 </script>

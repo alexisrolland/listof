@@ -6,9 +6,8 @@
           class="page-link text-light"
           v-bind:class="{ active: page.isActive }"
           v-on:click="goToPage(page)"
+          >{{ page.pageNum }}</a
         >
-          {{ page.pageNum }}
-        </a>
       </li>
     </ul>
   </nav>
@@ -28,19 +27,17 @@ export default {
   computed: {
     pages() {
       let nbPages = Math.ceil(this.totalCount / this.nbItems);
-      let pages = [];
-      for (let i = 0; i < nbPages; i++) {
-        let page = {
-          pageNum: i + 1,
-          offset: i * this.nbItems,
+      return Array.from({ length: nbPages }).map((_, index) => {
+        const page = {
+          pageNum: index + 1,
+          offset: index * this.nbItems,
           nbItems: this.nbItems
         };
-        if (this.currentPage.pageNum == i + 1) {
+        if (this.currentPage.pageNum == index + 1) {
           page["isActive"] = true;
         }
-        pages.push(page);
-      }
-      return pages;
+        return page;
+      });
     }
   },
   methods: {
