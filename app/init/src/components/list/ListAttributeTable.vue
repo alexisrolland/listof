@@ -63,14 +63,14 @@
             </router-link>
             <a
               v-if="showEditAttribute"
-              class="badge badge-secondary"
+              class="badge badge-secondary ml-1"
               style="cursor: pointer;"
               v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'up')"
               >▲</a
             >
             <a
               v-if="showEditAttribute"
-              class="badge badge-secondary"
+              class="badge badge-secondary ml-1"
               style="cursor: pointer;"
               v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'down')"
               >▼</a

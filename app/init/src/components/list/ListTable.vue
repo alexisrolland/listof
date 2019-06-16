@@ -35,7 +35,7 @@
           <router-link v-if="showEditValues" class="badge badge-secondary" v-bind:to="'lists/' + list.id + '/values'">
             Edit Values
           </router-link>
-          <router-link v-if="showEditList" class="badge badge-secondary" v-bind:to="'lists/' + list.id">
+          <router-link v-if="showEditList" class="badge badge-secondary ml-1" v-bind:to="'lists/' + list.id">
             Edit List
           </router-link>
         </td>

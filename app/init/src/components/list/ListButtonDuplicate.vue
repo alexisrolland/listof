@@ -1,6 +1,6 @@
 <template>
   <span>
-    <button v-if="show" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ListModalBoxDuplicate">
+    <button v-if="show" type="button" class="btn btn-secondary ml-1" data-toggle="modal" data-target="#ListModalBoxDuplicate">
       Duplicate List
     </button>
 

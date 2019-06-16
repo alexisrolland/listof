@@ -43,13 +43,9 @@
           <!-- Button Menu -->
           <div>
             <list-button-save v-bind:list="list"> </list-button-save>
-
             <list-button-duplicate v-if="list.id" v-bind:list="list"> </list-button-duplicate>
-
             <list-button-view-value v-if="list.id" v-bind:listId="list.id"> </list-button-view-value>
-
             <list-button-close> </list-button-close>
-
             <list-button-delete v-if="list.id" v-bind:listId="list.id"> </list-button-delete>
           </div>
         </div>

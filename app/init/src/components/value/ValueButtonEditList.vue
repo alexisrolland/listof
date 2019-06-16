@@ -1,7 +1,7 @@
 <template>
   <!-- Use router-link rather than v-on:click to allow user to open page in new window -->
   <router-link v-if="show" v-bind:to="'/lists/' + listId">
-    <button type="button" class="btn btn-secondary">
+    <button type="button" class="btn btn-secondary ml-1">
       Edit List
     </button>
   </router-link>
