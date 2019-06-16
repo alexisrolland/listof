@@ -4,35 +4,16 @@
     <div class="input-group mb-4">
       <!-- Selected attribute to search -->
       <div id="inputGroupPrepend" class="dropdown input-group-prepend">
-        <button
-          class="btn btn-secondary dropdown-toggle"
-          type="button"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{ searchAttribute.attributeName }}
         </button>
 
         <!-- Attributes to search -->
-        <div
-          class="dropdown-menu dropdown-menu-lg-right"
-          aria-labelledby="admin"
-        >
-          <a
-            class="dropdown-item"
-            href="#"
-            v-on:click="setSearchAttribute('all')"
-          >
+        <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="admin">
+          <a class="dropdown-item" href="#" v-on:click="setSearchAttribute('all')">
             Search all
           </a>
-          <a
-            class="dropdown-item"
-            href="#"
-            v-for="attribute in attributes"
-            v-bind:key="attribute.id"
-            v-on:click="setSearchAttribute(attribute)"
-          >
+          <a class="dropdown-item" href="#" v-for="attribute in attributes" v-bind:key="attribute.id" v-on:click="setSearchAttribute(attribute)">
             {{ attribute.name }}
           </a>
         </div>
@@ -50,20 +31,10 @@
     </div>
 
     <!-- List of Values -->
-    <value-table
-      v-bind:attributes="attributes"
-      v-bind:values="values"
-      v-bind:sortAttribute="sortAttribute"
-      v-on:sortAttribute="setSortAttribute"
-    ></value-table>
+    <value-table v-bind:attributes="attributes" v-bind:values="values" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></value-table>
 
     <!-- Values pagination -->
-    <value-pagination
-      v-if="showPagination"
-      v-bind:totalCount="nbValues"
-      v-bind:currentPage="currentPage"
-      v-on:goToPage="getAllValues"
-    ></value-pagination>
+    <value-pagination v-if="showPagination" v-bind:totalCount="nbValues" v-bind:currentPage="currentPage" v-on:goToPage="getAllValues"></value-pagination>
   </div>
 </template>
 
@@ -117,11 +88,7 @@ export default {
         variables: {
           first: page.nbItems,
           offset: page.offset,
-          orderBy: [
-            lodash.toUpper(
-              this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder
-            )
-          ]
+          orderBy: [lodash.toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
         }
       };
       let headers = {};
@@ -133,10 +100,8 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            this.values =
-              response.data.data["all" + this.graphQlListName].nodes;
-            this.nbValues =
-              response.data.data["all" + this.graphQlListName].totalCount;
+            this.values = response.data.data["all" + this.graphQlListName].nodes;
+            this.nbValues = response.data.data["all" + this.graphQlListName].totalCount;
 
             // Set current page
             this.currentPage = {
@@ -165,28 +130,12 @@ export default {
         this.showPagination = false;
 
         // Build GraphQL mutation
-        let graphQlMutationName = this.getGraphQlName(
-          this.list.tableName,
-          null,
-          true
-        ); // Example table_name > TableName
-        let graphQlMutationListName = this.getGraphQlName(
-          this.list.tableName,
-          "plural"
-        ); // Example table_name > tableNames
+        let graphQlMutationName = this.getGraphQlName(this.list.tableName, null, true); // Example table_name > TableName
+        let graphQlMutationListName = this.getGraphQlName(this.list.tableName, "plural"); // Example table_name > tableNames
 
-        this.graphQlMutation = this.$store.state.mutationSearchValue.replace(
-          /<GraphQlMutationName>/g,
-          graphQlMutationName
-        );
-        this.graphQlMutation = this.graphQlMutation.replace(
-          /<graphQlMutationListName>/g,
-          graphQlMutationListName
-        );
-        this.graphQlMutation = this.graphQlMutation.replace(
-          /<graphQlAttributeName>/g,
-          this.graphQLAttributeName
-        );
+        this.graphQlMutation = this.$store.state.mutationSearchValue.replace(/<GraphQlMutationName>/g, graphQlMutationName);
+        this.graphQlMutation = this.graphQlMutation.replace(/<graphQlMutationListName>/g, graphQlMutationListName);
+        this.graphQlMutation = this.graphQlMutation.replace(/<graphQlAttributeName>/g, this.graphQLAttributeName);
 
         let payload = {
           query: this.graphQlMutation,
@@ -201,24 +150,19 @@ export default {
         if (this.$session.exists()) {
           headers = { Authorization: "Bearer " + this.$session.get("jwt") };
         }
-        this.$http
-          .post(this.$store.state.graphqlUrl, payload, { headers })
-          .then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              } else {
-                this.values =
-                  response.data.data["search" + graphQlMutationName][
-                    graphQlMutationListName
-                  ];
-              }
-            },
-            // Error callback
-            function(response) {
+        this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          function(response) {
+            if (response.data.errors) {
               this.displayError(response);
+            } else {
+              this.values = response.data.data["search" + graphQlMutationName][graphQlMutationListName];
             }
-          );
+          },
+          // Error callback
+          function(response) {
+            this.displayError(response);
+          }
+        );
       }
     },
     setSearchAttribute(attribute) {
@@ -253,63 +197,36 @@ export default {
   },
   created: function() {
     // Compute GraphQL names for the list and attributes
-    this.graphQlListName = this.getGraphQlName(
-      this.list.tableName,
-      "plural",
-      true
-    ); // Example table_name > TableNames
+    this.graphQlListName = this.getGraphQlName(this.list.tableName, "plural", true); // Example table_name > TableNames
 
     // GraphQL attributes name
     let attributes = this.list.sysAttributesByListId.nodes;
     this.graphQLAttributeName = "";
     for (let i = 0; i < attributes.length; i++) {
-      attributes[i]["graphQlAttributeName"] = this.getGraphQlName(
-        attributes[i].columnName
-      ); // Example colum_name > columnName
-      this.graphQLAttributeName =
-        this.graphQLAttributeName + " " + attributes[i]["graphQlAttributeName"];
+      attributes[i]["graphQlAttributeName"] = this.getGraphQlName(attributes[i].columnName); // Example colum_name > columnName
+      this.graphQLAttributeName = this.graphQLAttributeName + " " + attributes[i]["graphQlAttributeName"];
 
       // If attribute is linked to another list attribute, adjust query to fetch linked attribute value
       if (attributes[i].linkedAttributeId) {
         // Build GraphQL attribute path for the linked attribute
-        let attributePath =
-          attributes[i]["sysAttributeByLinkedAttributeId"]["sysListByListId"][
-            "tableName"
-          ];
+        let attributePath = attributes[i]["sysAttributeByLinkedAttributeId"]["sysListByListId"]["tableName"];
         attributePath = this.getGraphQlName(attributePath, "singular"); // Example column_name > columnName
-        attributePath =
-          attributePath +
-          "By" +
-          this.getGraphQlName(attributes[i].columnName, null, true); // Example column_name > ColumnName
+        attributePath = attributePath + "By" + this.getGraphQlName(attributes[i].columnName, null, true); // Example column_name > ColumnName
         attributes[i]["graphQlAttributePath"] = attributePath;
 
         // Build GraphQL attribute name for the linked attribute
-        let attributeName = this.getGraphQlName(
-          attributes[i]["sysAttributeByLinkedAttributeId"]["columnName"]
-        ); // Example column_name > columnName
+        let attributeName = this.getGraphQlName(attributes[i]["sysAttributeByLinkedAttributeId"]["columnName"]); // Example column_name > columnName
         attributes[i]["graphQlLinkedAttributeName"] = attributeName;
 
         // Add attribute path and name to the query
-        this.graphQLAttributeName =
-          this.graphQLAttributeName +
-          " " +
-          attributePath +
-          "{" +
-          attributeName +
-          "}";
+        this.graphQLAttributeName = this.graphQLAttributeName + " " + attributePath + "{" + attributeName + "}";
       }
     }
     this.attributes = attributes;
 
     // Build GraphQL query
-    this.graphQlQuery = this.$store.state.queryGetAllValues.replace(
-      /<GraphQlListName>/g,
-      this.graphQlListName
-    );
-    this.graphQlQuery = this.graphQlQuery.replace(
-      /<graphQlAttributeName>/g,
-      this.graphQLAttributeName
-    );
+    this.graphQlQuery = this.$store.state.queryGetAllValues.replace(/<GraphQlListName>/g, this.graphQlListName);
+    this.graphQlQuery = this.graphQlQuery.replace(/<graphQlAttributeName>/g, this.graphQLAttributeName);
     this.getAllValues(this.currentPage);
   }
 };

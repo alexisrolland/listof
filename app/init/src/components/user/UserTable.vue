@@ -5,19 +5,11 @@
         <tr>
           <th scope="col">
             E-mail
-            <table-sort
-              v-bind:columnName="'email'"
-              v-bind:sortAttribute="sortAttribute"
-              v-on:sortAttribute="setSortAttribute"
-            ></table-sort>
+            <table-sort v-bind:columnName="'email'" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></table-sort>
           </th>
           <th scope="col">
             Role
-            <table-sort
-              v-bind:columnName="'role'"
-              v-bind:sortAttribute="sortAttribute"
-              v-on:sortAttribute="setSortAttribute"
-            ></table-sort>
+            <table-sort v-bind:columnName="'role'" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></table-sort>
           </th>
           <th scope="col">
             Active
@@ -39,11 +31,7 @@
             {{ user.flagActive }}
           </td>
           <td>
-            <router-link
-              v-if="showEditUser"
-              class="badge badge-secondary"
-              v-bind:to="'/admin/users/' + user.id"
-            >
+            <router-link v-if="showEditUser" class="badge badge-secondary" v-bind:to="'/admin/users/' + user.id">
               Edit User
             </router-link>
           </td>

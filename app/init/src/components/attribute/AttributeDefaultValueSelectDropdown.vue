@@ -7,9 +7,7 @@
 
     <!-- Select input, used for attributes which are linked to another list -->
     <treeselect
-      v-bind:placeholder="
-        'Select value from ' + linkedList.sysListByListId.name
-      "
+      v-bind:placeholder="'Select value from ' + linkedList.sysListByListId.name"
       v-model="selectedValue"
       v-bind:options="options"
       v-bind:multiple="false"
@@ -75,46 +73,31 @@ export default {
           this.linkedList = response.data.data.sysAttributeById;
 
           // Compute GraphQL names for the list and attributes
-          let graphQlListName = this.getGraphQlName(
-            this.linkedList.sysListByListId.tableName,
-            "plural",
-            true
-          ); // Example table_name > TableNames
-          let graphQlAttributeName = this.getGraphQlName(
-            this.linkedList.columnName
-          ); // Example colum_name > columnName
+          let graphQlListName = this.getGraphQlName(this.linkedList.sysListByListId.tableName, "plural", true); // Example table_name > TableNames
+          let graphQlAttributeName = this.getGraphQlName(this.linkedList.columnName); // Example colum_name > columnName
 
           // Build GraphQL query
-          let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(
-            /<GraphQlListName>/g,
-            graphQlListName
-          );
-          graphQlQuery = graphQlQuery.replace(
-            /<graphQlAttributeName>/g,
-            graphQlAttributeName
-          );
+          let graphQlQuery = this.$store.state.queryGetLinkedListValues.replace(/<GraphQlListName>/g, graphQlListName);
+          graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQlAttributeName);
 
           let payload = { query: graphQlQuery };
           let headers = {};
           if (this.$session.exists()) {
             headers = { Authorization: "Bearer " + this.$session.get("jwt") };
           }
-          this.$http
-            .post(this.$store.state.graphqlUrl, payload, { headers })
-            .then(
-              function(response) {
-                if (response.data.errors) {
-                  this.displayError(response);
-                } else {
-                  this.options =
-                    response.data.data["all" + graphQlListName].nodes;
-                }
-              },
-              // Error callback
-              function(response) {
+          this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+            function(response) {
+              if (response.data.errors) {
                 this.displayError(response);
+              } else {
+                this.options = response.data.data["all" + graphQlListName].nodes;
               }
-            );
+            },
+            // Error callback
+            function(response) {
+              this.displayError(response);
+            }
+          );
         }
       },
       // Error callback

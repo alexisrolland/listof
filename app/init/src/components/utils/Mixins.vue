@@ -12,8 +12,7 @@ export default {
         }
         // Single query
         else {
-          this.$store.state.errorObject.message =
-            response.data.errors[0].message;
+          this.$store.state.errorObject.message = response.data.errors[0].message;
         }
       }
       // Nginx errors return a proper error status code

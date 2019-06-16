@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "prettier": "prettier --write \"src/**/*.{js,vue}\""
+    "prettier": "prettier --write \"src/**/*.{js,vue}\" --tab-width 4 --print-width 160 --jsx-bracket-same-line"
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.0.38",
@@ -48,6 +48,11 @@
     "plugins": {
       "autoprefixer": {}
     }
+  },
+  "prettier": {
+    "jsxBracketSameLine": true,
+    "printWidth": 160,
+    "tabWidth": 2
   },
   "browserslist": [
     "> 1%",

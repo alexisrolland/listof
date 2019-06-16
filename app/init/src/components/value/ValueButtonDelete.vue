@@ -1,23 +1,11 @@
 <template>
   <span>
-    <button
-      v-if="show"
-      type="button"
-      class="btn btn-danger float-right"
-      data-toggle="modal"
-      data-target="#ModalBoxDelete"
-    >
+    <button v-if="show" type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#ModalBoxDelete">
       Delete
     </button>
 
     <!-- Modal box to confirm deletion -->
-    <modal-box-delete
-      v-bind:objectType="'value'"
-      v-bind:valueId="valueId"
-      v-bind:listId="listId"
-      v-bind:graphQlListName="graphQlListName"
-    >
-    </modal-box-delete>
+    <modal-box-delete v-bind:objectType="'value'" v-bind:valueId="valueId" v-bind:listId="listId" v-bind:graphQlListName="graphQlListName"> </modal-box-delete>
   </span>
 </template>
 

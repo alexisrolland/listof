@@ -18,12 +18,7 @@
           <!-- Value Form -->
           <div v-if="list.attributes">
             <!-- Loop for each attribute of the list -->
-            <div
-              class="form-group"
-              v-for="attribute in list.attributes"
-              v-bind:key="attribute.id"
-              v-bind:class="{ required: attribute.flagMandatory }"
-            >
+            <div class="form-group" v-for="attribute in list.attributes" v-bind:key="attribute.id" v-bind:class="{ required: attribute.flagMandatory }">
               <!-- Checkbox input, used for data types boolean (id: 2) -->
               <value-input-checkbox
                 v-if="[2].includes(attribute.dataTypeId)"
@@ -62,10 +57,7 @@
 
               <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
               <value-input-integer
-                v-if="
-                  [1, 5, 7].includes(attribute.dataTypeId) &&
-                    !attribute.linkedAttributeId
-                "
+                v-if="[1, 5, 7].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
@@ -92,10 +84,7 @@
 
               <!-- Select input, used for attributes which are linked to another list -->
               <value-select-dropdown
-                v-if="
-                  [5].includes(attribute.dataTypeId) &&
-                    attribute.linkedAttributeId
-                "
+                v-if="[5].includes(attribute.dataTypeId) && attribute.linkedAttributeId"
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
@@ -106,21 +95,11 @@
 
           <!-- Button Menu -->
           <div>
-            <value-button-save
-              v-bind:graphQlListName="list.graphQlListName"
-              v-bind:value="value"
-              v-on:updatedValue="updateMetaData"
-            >
-            </value-button-save>
+            <value-button-save v-bind:graphQlListName="list.graphQlListName" v-bind:value="value" v-on:updatedValue="updateMetaData"> </value-button-save>
 
             <value-button-close v-bind:listId="list.id"> </value-button-close>
 
-            <value-button-delete
-              v-if="value.id"
-              v-bind:graphQlListName="list.graphQlListName"
-              v-bind:valueId="value.id"
-              v-bind:listId="list.id"
-            >
+            <value-button-delete v-if="value.id" v-bind:graphQlListName="list.graphQlListName" v-bind:valueId="value.id" v-bind:listId="list.id">
             </value-button-delete>
           </div>
         </div>
@@ -208,132 +187,98 @@ export default {
     if (this.$session.exists()) {
       headers = { Authorization: "Bearer " + this.$session.get("jwt") };
     }
-    this.$http
-      .post(this.$store.state.graphqlUrl, payloadList, { headers })
-      .then(
-        function(response) {
-          if (response.data.errors) {
-            this.displayError(response);
-          } else {
-            this.list = response.data.data.sysListById;
+    this.$http.post(this.$store.state.graphqlUrl, payloadList, { headers }).then(
+      function(response) {
+        if (response.data.errors) {
+          this.displayError(response);
+        } else {
+          this.list = response.data.data.sysListById;
 
-            // Compute GraphQL names for the list and attributes
-            let graphQlListName = this.getGraphQlName(
-              this.list.tableName,
-              "singular"
-            ); // Example table_names > tableName
-            this.list["graphQlListName"] = graphQlListName;
+          // Compute GraphQL names for the list and attributes
+          let graphQlListName = this.getGraphQlName(this.list.tableName, "singular"); // Example table_names > tableName
+          this.list["graphQlListName"] = graphQlListName;
 
-            // GraphQL attributes name
-            let attributeName = "";
-            if (this.list.sysAttributesByListId) {
-              let attributes = this.list.sysAttributesByListId.nodes;
-              for (let i = 0; i < attributes.length; i++) {
-                attributes[i]["graphQlAttributeName"] = this.getGraphQlName(
-                  attributes[i].columnName
-                ); // Example colum_name > columnName
-                attributeName =
-                  attributes[i]["graphQlAttributeName"] + " " + attributeName;
-              }
+          // GraphQL attributes name
+          let attributeName = "";
+          if (this.list.sysAttributesByListId) {
+            let attributes = this.list.sysAttributesByListId.nodes;
+            for (let i = 0; i < attributes.length; i++) {
+              attributes[i]["graphQlAttributeName"] = this.getGraphQlName(attributes[i].columnName); // Example colum_name > columnName
+              attributeName = attributes[i]["graphQlAttributeName"] + " " + attributeName;
+            }
 
-              // Sort attributes
-              let lodash = require("lodash");
-              this.list["attributes"] = lodash.sortBy(attributes, "order");
-              delete this.list.sysAttributesByListId;
+            // Sort attributes
+            let lodash = require("lodash");
+            this.list["attributes"] = lodash.sortBy(attributes, "order");
+            delete this.list.sysAttributesByListId;
 
-              // If valueId == new then default attributes in form
-              if (this.valueId == "new") {
-                for (let i = 0; i < this.list.attributes.length; i++) {
-                  // Format default value according to data type
-                  // Data types boolean (id: 2)
-                  if ([2].includes(this.list.attributes[i].dataTypeId)) {
-                    if (this.list.attributes[i].defaultValue == "true") {
-                      this.value[
-                        this.list.attributes[i].graphQlAttributeName
-                      ] = true;
-                    } else if (
-                      this.list.attributes[i].defaultValue == "false"
-                    ) {
-                      this.value[
-                        this.list.attributes[i].graphQlAttributeName
-                      ] = false;
-                    }
-                  }
-                  // Data types bigint (id: 1), integer (id: 5), smallint (id: 7)
-                  else if (
-                    [1, 5, 7].includes(this.list.attributes[i].dataTypeId) &&
-                    this.list.attributes[i].defaultValue != null
-                  ) {
-                    this.value[
-                      this.list.attributes[i].graphQlAttributeName
-                    ] = parseInt(this.list.attributes[i].defaultValue);
-                  }
-                  // Data types real (id: 6)
-                  else if ([6].includes(this.list.attributes[i].dataTypeId)) {
-                    this.value[
-                      this.list.attributes[i].graphQlAttributeName
-                    ] = parseFloat(this.list.attributes[i].defaultValue);
-                  }
-                  // Other data types accept strings
-                  else {
-                    this.value[
-                      this.list.attributes[i].graphQlAttributeName
-                    ] = this.list.attributes[i].defaultValue;
+            // If valueId == new then default attributes in form
+            if (this.valueId == "new") {
+              for (let i = 0; i < this.list.attributes.length; i++) {
+                // Format default value according to data type
+                // Data types boolean (id: 2)
+                if ([2].includes(this.list.attributes[i].dataTypeId)) {
+                  if (this.list.attributes[i].defaultValue == "true") {
+                    this.value[this.list.attributes[i].graphQlAttributeName] = true;
+                  } else if (this.list.attributes[i].defaultValue == "false") {
+                    this.value[this.list.attributes[i].graphQlAttributeName] = false;
                   }
                 }
-              }
-              // If valueId != new then get data for existing value
-              else {
-                // Build GraphQL query
-                let graphQlQuery = this.$store.state.queryGetValue.replace(
-                  /<graphQlListName>/g,
-                  this.list.graphQlListName
-                );
-                graphQlQuery = graphQlQuery.replace(
-                  /<graphQlAttributeName>/g,
-                  attributeName
-                );
-
-                // Execute GraphQL query to get value
-                let payloadValue = {
-                  query: graphQlQuery,
-                  variables: {
-                    id: parseInt(this.valueId)
-                  }
-                };
-                let headers = {};
-                if (this.$session.exists()) {
-                  headers = {
-                    Authorization: "Bearer " + this.$session.get("jwt")
-                  };
+                // Data types bigint (id: 1), integer (id: 5), smallint (id: 7)
+                else if ([1, 5, 7].includes(this.list.attributes[i].dataTypeId) && this.list.attributes[i].defaultValue != null) {
+                  this.value[this.list.attributes[i].graphQlAttributeName] = parseInt(this.list.attributes[i].defaultValue);
                 }
-                this.$http
-                  .post(this.$store.state.graphqlUrl, payloadValue, { headers })
-                  .then(
-                    function(response) {
-                      if (response.data.errors) {
-                        this.displayError(response);
-                      } else {
-                        this.value =
-                          response.data.data[
-                            this.list.graphQlListName + "ById"
-                          ];
-                      }
-                    },
-                    // Error callback
-                    function(response) {
-                      this.displayError(response);
-                    }
-                  );
+                // Data types real (id: 6)
+                else if ([6].includes(this.list.attributes[i].dataTypeId)) {
+                  this.value[this.list.attributes[i].graphQlAttributeName] = parseFloat(this.list.attributes[i].defaultValue);
+                }
+                // Other data types accept strings
+                else {
+                  this.value[this.list.attributes[i].graphQlAttributeName] = this.list.attributes[i].defaultValue;
+                }
               }
             }
+            // If valueId != new then get data for existing value
+            else {
+              // Build GraphQL query
+              let graphQlQuery = this.$store.state.queryGetValue.replace(/<graphQlListName>/g, this.list.graphQlListName);
+              graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, attributeName);
+
+              // Execute GraphQL query to get value
+              let payloadValue = {
+                query: graphQlQuery,
+                variables: {
+                  id: parseInt(this.valueId)
+                }
+              };
+              let headers = {};
+              if (this.$session.exists()) {
+                headers = {
+                  Authorization: "Bearer " + this.$session.get("jwt")
+                };
+              }
+              this.$http.post(this.$store.state.graphqlUrl, payloadValue, { headers }).then(
+                function(response) {
+                  if (response.data.errors) {
+                    this.displayError(response);
+                  } else {
+                    this.value = response.data.data[this.list.graphQlListName + "ById"];
+                  }
+                },
+                // Error callback
+                function(response) {
+                  this.displayError(response);
+                }
+              );
+            }
           }
-        },
-        // Error callback
-        function(response) {
-          this.displayError(response);
         }
-      );
+      },
+      // Error callback
+      function(response) {
+        this.displayError(response);
+      }
+    );
   }
 };
 </script>

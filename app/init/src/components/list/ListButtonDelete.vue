@@ -1,18 +1,11 @@
 <template>
   <span>
-    <button
-      v-if="show"
-      type="button"
-      class="btn btn-danger float-right"
-      data-toggle="modal"
-      data-target="#ModalBoxDelete"
-    >
+    <button v-if="show" type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#ModalBoxDelete">
       Delete
     </button>
 
     <!-- Modal box to confirm deletion -->
-    <modal-box-delete v-bind:objectType="'list'" v-bind:listId="listId">
-    </modal-box-delete>
+    <modal-box-delete v-bind:objectType="'list'" v-bind:listId="listId"> </modal-box-delete>
   </span>
 </template>
 

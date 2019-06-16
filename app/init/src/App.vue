@@ -27,12 +27,8 @@ export default {
       if (this.$session.exists()) {
         this.$store.state.currentUser.isAuthenticated = true;
         this.$store.state.currentUser.role = this.$session.get("role");
-        this.$store.state.currentUser.userGroups = this.$session.get(
-          "userGroups"
-        );
-        this.$store.state.currentUser.selectedUserGroup = this.$session.get(
-          "selectedUserGroup"
-        );
+        this.$store.state.currentUser.userGroups = this.$session.get("userGroups");
+        this.$store.state.currentUser.selectedUserGroup = this.$session.get("selectedUserGroup");
       } else {
         this.$store.state.currentUser.isAuthenticated = false;
         this.$store.state.currentUser.role = "anonymous";

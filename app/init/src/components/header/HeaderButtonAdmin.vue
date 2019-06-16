@@ -1,13 +1,6 @@
 <template>
   <div v-if="show" class="dropdown">
-    <button
-      class="btn btn-secondary dropdown-toggle ml-1"
-      id="admin"
-      type="button"
-      data-toggle="dropdown"
-      aria-haspopup="true"
-      aria-expanded="false"
-    >
+    <button class="btn btn-secondary dropdown-toggle ml-1" id="admin" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Admin
     </button>
     <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="admin">

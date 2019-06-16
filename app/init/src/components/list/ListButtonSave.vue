@@ -1,10 +1,5 @@
 <template>
-  <button
-    v-if="show"
-    type="button"
-    class="btn btn-success"
-    v-on:click="saveList"
-  >
+  <button v-if="show" type="button" class="btn btn-success" v-on:click="saveList">
     Save
   </button>
 </template>
@@ -37,24 +32,20 @@ export default {
         if (this.$session.exists()) {
           headers = { Authorization: "Bearer " + this.$session.get("jwt") };
         }
-        this.$http
-          .post(this.$store.state.graphqlUrl, payload, { headers })
-          .then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              } else {
-                this.list.updatedDate =
-                  response.data.data.updateSysListById.sysList.updatedDate;
-                this.list.sysUserByUpdatedById.email =
-                  response.data.data.updateSysListById.sysList.sysUserByUpdatedById.email;
-              }
-            },
-            // Error callback
-            function(response) {
+        this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          function(response) {
+            if (response.data.errors) {
               this.displayError(response);
+            } else {
+              this.list.updatedDate = response.data.data.updateSysListById.sysList.updatedDate;
+              this.list.sysUserByUpdatedById.email = response.data.data.updateSysListById.sysList.sysUserByUpdatedById.email;
             }
-          );
+          },
+          // Error callback
+          function(response) {
+            this.displayError(response);
+          }
+        );
       }
       // If list.id does not exist, create a new list
       else {
@@ -72,28 +63,26 @@ export default {
         if (this.$session.exists()) {
           headers = { Authorization: "Bearer " + this.$session.get("jwt") };
         }
-        this.$http
-          .post(this.$store.state.graphqlUrl, payload, { headers })
-          .then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              } else {
-                // Capture new list Id in case user wants to delete or update it
-                this.list.id = response.data.data.createSysList.sysList.id;
-                this.$router.push({
-                  name: "edit-list",
-                  params: {
-                    listId: this.list.id
-                  }
-                });
-              }
-            },
-            // Error callback
-            function(response) {
+        this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          function(response) {
+            if (response.data.errors) {
               this.displayError(response);
+            } else {
+              // Capture new list Id in case user wants to delete or update it
+              this.list.id = response.data.data.createSysList.sysList.id;
+              this.$router.push({
+                name: "edit-list",
+                params: {
+                  listId: this.list.id
+                }
+              });
             }
-          );
+          },
+          // Error callback
+          function(response) {
+            this.displayError(response);
+          }
+        );
       }
     }
   },

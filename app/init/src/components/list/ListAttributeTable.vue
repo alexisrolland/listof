@@ -4,8 +4,7 @@
     <p>Attributes of {{ list.name }}.</p>
 
     <p>
-      <list-attribute-button-add v-if="list.id" v-bind:listId="list.id">
-      </list-attribute-button-add>
+      <list-attribute-button-add v-if="list.id" v-bind:listId="list.id"> </list-attribute-button-add>
     </p>
 
     <table class="table table-striped table-dark table-hover table-borderless">
@@ -49,14 +48,8 @@
             {{ attribute.flagUnique }}
           </td>
           <td v-if="attribute.linkedAttributeId">
-            <router-link
-              v-bind:to="
-                '/lists/' + attribute.sysAttributeByLinkedAttributeId.listId
-              "
-            >
-              {{
-                attribute.sysAttributeByLinkedAttributeId.sysListByListId.name
-              }}
+            <router-link v-bind:to="'/lists/' + attribute.sysAttributeByLinkedAttributeId.listId">
+              {{ attribute.sysAttributeByLinkedAttributeId.sysListByListId.name }}
               ({{ attribute.sysAttributeByLinkedAttributeId.name }})
             </router-link>
           </td>
@@ -65,29 +58,21 @@
             {{ attribute.sysDataTypeByDataTypeId.name }}
           </td>
           <td>
-            <router-link
-              v-if="showEditAttribute"
-              class="badge badge-secondary"
-              v-bind:to="list.id + '/attributes/' + attribute.id"
-            >
+            <router-link v-if="showEditAttribute" class="badge badge-secondary" v-bind:to="list.id + '/attributes/' + attribute.id">
               Edit Attribute
             </router-link>
             <a
               v-if="showEditAttribute"
               class="badge badge-secondary"
               style="cursor: pointer;"
-              v-on:click="
-                changeAttributeOrder(attribute.id, attribute.order, 'up')
-              "
+              v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'up')"
               >▲</a
             >
             <a
               v-if="showEditAttribute"
               class="badge badge-secondary"
               style="cursor: pointer;"
-              v-on:click="
-                changeAttributeOrder(attribute.id, attribute.order, 'down')
-              "
+              v-on:click="changeAttributeOrder(attribute.id, attribute.order, 'down')"
               >▼</a
             >
           </td>
@@ -161,10 +146,7 @@ export default {
 
             // Update order in frontend
             let lodash = require("lodash");
-            let attributeIndex = lodash.findIndex(
-              this.list.sysAttributesByListId.nodes,
-              ["id", id]
-            );
+            let attributeIndex = lodash.findIndex(this.list.sysAttributesByListId.nodes, ["id", id]);
             this.list.sysAttributesByListId.nodes[attributeIndex].order = order;
           }
         },

@@ -1,22 +1,10 @@
 <template>
-  <div
-    class="modal fade"
-    id="ModalBoxDelete"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="Delete"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="ModalBoxDelete" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
       <div class="modal-content bg-dark text-light">
         <div class="modal-header">
           <h5 class="modal-title">Watch Out!</h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -25,12 +13,7 @@
           Are you sure you want to delete this?
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-danger"
-            v-on:click="deleteObject"
-            data-dismiss="modal"
-          >
+          <button type="button" class="btn btn-danger" v-on:click="deleteObject" data-dismiss="modal">
             Delete
           </button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -71,13 +54,8 @@ export default {
         };
       } else if (this.objectType == "value") {
         // Build GraphQL delete mutation
-        let graphQlListNameUpperCase =
-          this.graphQlListName.charAt(0).toUpperCase() +
-          this.graphQlListName.slice(1);
-        mutation = this.$store.state.mutationDeleteValue.replace(
-          /<GraphQlListName>/g,
-          graphQlListNameUpperCase
-        );
+        let graphQlListNameUpperCase = this.graphQlListName.charAt(0).toUpperCase() + this.graphQlListName.slice(1);
+        mutation = this.$store.state.mutationDeleteValue.replace(/<GraphQlListName>/g, graphQlListNameUpperCase);
         mutation = mutation.replace(/<graphQlListName>/g, this.graphQlListName);
         objectId = this.valueId;
         route = {
