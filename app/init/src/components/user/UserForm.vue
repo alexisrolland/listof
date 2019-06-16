@@ -10,38 +10,19 @@
             <label for="userEmail" class="col-form-label">
               E-mail:
             </label>
-            <input
-              class="form-control col-sm"
-              id="userEmail"
-              type="email"
-              required="required"
-              placeholder="Type user e-mail"
-              v-model="user.email"
-            />
+            <input class="form-control col-sm" id="userEmail" type="email" required="required" placeholder="Type user e-mail" v-model="user.email" />
           </div>
           <div v-if="showPasswordField" class="form-group required">
             <label for="userPassword" class="col-form-label">
               Password:
             </label>
-            <input
-              class="form-control col-sm"
-              id="userPassword"
-              type="password"
-              required="true"
-              placeholder="Type user password"
-              v-model="user.password"
-            />
+            <input class="form-control col-sm" id="userPassword" type="password" required="true" placeholder="Type user password" v-model="user.password" />
           </div>
           <div class="form-group required">
             <label for="userRole" class="col-form-label">
               Role:
             </label>
-            <select
-              class="form-control"
-              id="userRole"
-              required="true"
-              v-model="user.role"
-            >
+            <select class="form-control" id="userRole" required="true" v-model="user.role">
               <option disabled value="">Select user role</option>
               <option value="standard">standard</option>
               <option value="advanced">advanced</option>
@@ -49,13 +30,7 @@
             </select>
           </div>
           <div class="custom-control custom-switch mr-4 mt-1 mb-2">
-            <input
-              class="custom-control-input"
-              id="active"
-              type="checkbox"
-              value=""
-              v-model="user.flagActive"
-            />
+            <input class="custom-control-input" id="active" type="checkbox" value="" v-model="user.flagActive" />
             <label for="active" class="custom-control-label">
               Active
             </label>
@@ -63,17 +38,9 @@
 
           <!-- Button Menu -->
           <div>
-            <user-button-save
-              v-bind:user="user"
-              v-bind:showPasswordField="showPasswordField"
-            >
-            </user-button-save>
+            <user-button-save v-bind:user="user" v-bind:showPasswordField="showPasswordField"> </user-button-save>
 
-            <user-button-reset-password
-              v-on:resetPassword="resetPassword"
-              v-bind:userId="userId"
-            >
-            </user-button-reset-password>
+            <user-button-reset-password v-on:resetPassword="resetPassword" v-bind:userId="userId"> </user-button-reset-password>
 
             <user-button-close> </user-button-close>
           </div>

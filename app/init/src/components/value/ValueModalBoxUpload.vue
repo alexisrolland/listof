@@ -1,66 +1,34 @@
 <template>
-  <div
-    class="modal fade"
-    id="ModalBoxUpload"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="Upload"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="ModalBoxUpload" tabindex="-1" role="dialog" aria-labelledby="Upload" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content bg-dark text-light">
         <div class="modal-header">
           <h5 class="modal-title">Upload CSV</h5>
-          <button
-            type="button"
-            class="close"
-            v-on:click="resetModalBox"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" v-on:click="resetModalBox" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
         <div class="modal-body bg-secondary text-light">
           <ul>
+            <li>Maximum file size allowed is <b>3 Mb</b>. Split your files in smaller ones if they are too big.</li>
             <li>
-              Maximum file size allowed is <b>3 Mb</b>. Split your files in
-              smaller ones if they are too big.
+              Use template below to ensure headers are correct. Columns not in the template will be ignored.
             </li>
-            <li>
-              Use template below to ensure headers are correct. Columns not in
-              the template will be ignored.
-            </li>
-            <li>
-              If the column <b>id</b> contains a valid id, the corresponding
-              entry will be updated, else a new entry will be created.
-            </li>
+            <li>If the column <b>id</b> contains a valid id, the corresponding entry will be updated, else a new entry will be created.</li>
           </ul>
 
           <!-- Input of type file -->
           <div class="input-group">
             <div class="custom-file">
-              <input
-                type="file"
-                id="selectedFiles"
-                class="custom-file-input"
-                accept=".csv"
-                ref="selectedFiles"
-                v-on:change="previewFiles"
-                multiple
-              />
-              <label class="custom-file-label" for="selectedFiles"
-                >Choose files...</label
-              >
+              <input type="file" id="selectedFiles" class="custom-file-input" accept=".csv" ref="selectedFiles" v-on:change="previewFiles" multiple />
+              <label class="custom-file-label" for="selectedFiles">Choose files...</label>
             </div>
           </div>
         </div>
 
         <!-- Files -->
-        <table
-          class="table table-striped table-dark table-hover table-borderless"
-        >
+        <table class="table table-striped table-dark table-hover table-borderless">
           <thead>
             <tr>
               <th>#</th>
@@ -81,12 +49,7 @@
               <td>
                 <span class="badge" v-bind:class="[file.statusClass]">
                   {{ file.status }}
-                  <span
-                    v-show="file.status == 'Uploading'"
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
+                  <span v-show="file.status == 'Uploading'" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 </span>
               </td>
             </tr>
@@ -95,20 +58,11 @@
 
         <!-- Footer -->
         <div class="modal-footer">
-          <value-button-download-template
-            v-if="list.id"
-            v-bind:listName="this.list.name"
-            v-bind:columnNames="columnNames"
-          ></value-button-download-template>
+          <value-button-download-template v-if="list.id" v-bind:listName="this.list.name" v-bind:columnNames="columnNames"></value-button-download-template>
           <button type="button" class="btn btn-success" v-on:click="parseFiles">
             Upload
           </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            v-on:click="resetModalBox"
-            data-dismiss="modal"
-          >
+          <button type="button" class="btn btn-secondary" v-on:click="resetModalBox" data-dismiss="modal">
             Close
           </button>
         </div>
@@ -137,9 +91,7 @@ export default {
   computed: {
     graphQlAttributeNames() {
       // Prepare GraphQL attributes names to filter out invalid columns from CSV
-      let graphQlAttributeNames = [
-        { graphQlAttributeName: "id", dataTypeId: 5 }
-      ];
+      let graphQlAttributeNames = [{ graphQlAttributeName: "id", dataTypeId: 5 }];
       this.list.sysAttributesByListId.nodes.map(function(obj) {
         graphQlAttributeNames.push({
           graphQlAttributeName: obj.graphQlAttributeName,
@@ -218,33 +170,14 @@ export default {
       this.files[fileIndex]["nbRows"] = "";
 
       // Build GraphQL update mutation
-      let graphQlListName = this.getGraphQlName(
-        this.list.tableName,
-        "singular"
-      );
-      let graphQlListNameUpperCase = this.getGraphQlName(
-        this.list.tableName,
-        "singular",
-        true
-      );
-      let graphQlUpdateMutation = this.$store.state.mutationUpdateValue.replace(
-        /<GraphQlListName>/g,
-        graphQlListNameUpperCase
-      );
-      graphQlUpdateMutation = graphQlUpdateMutation.replace(
-        /<graphQlListName>/g,
-        graphQlListName
-      );
+      let graphQlListName = this.getGraphQlName(this.list.tableName, "singular");
+      let graphQlListNameUpperCase = this.getGraphQlName(this.list.tableName, "singular", true);
+      let graphQlUpdateMutation = this.$store.state.mutationUpdateValue.replace(/<GraphQlListName>/g, graphQlListNameUpperCase);
+      graphQlUpdateMutation = graphQlUpdateMutation.replace(/<graphQlListName>/g, graphQlListName);
 
       // Build GraphQL create mutation
-      let graphQlCreateMutation = this.$store.state.mutationCreateValue.replace(
-        /<GraphQlListName>/g,
-        graphQlListNameUpperCase
-      );
-      graphQlCreateMutation = graphQlCreateMutation.replace(
-        /<graphQlListName>/g,
-        graphQlListName
-      );
+      let graphQlCreateMutation = this.$store.state.mutationCreateValue.replace(/<GraphQlListName>/g, graphQlListNameUpperCase);
+      graphQlCreateMutation = graphQlCreateMutation.replace(/<graphQlListName>/g, graphQlListName);
 
       // Prepare http requests
       let headers = {};
@@ -317,36 +250,33 @@ export default {
       );
 
       // Execute http request
-      this.$http
-        .post(this.$store.state.graphqlUrl, payloadBatch, { headers })
-        .then(
-          function(response) {
-            // Get queries which returned an error
-            let errors = response.data.filter(function(obj) {
-              return obj.hasOwnProperty("errors");
-            });
-            if (errors.length > 0) {
-              this.files[fileIndex]["status"] = "Error";
-              this.files[fileIndex]["statusClass"] = "badge-danger";
-              this.files[fileIndex]["nbRows"] =
-                response.data.length - errors.length;
-              this.files[fileIndex]["nbRowsError"] = errors.length;
-              this.displayError(response, errors);
-              this.$root.$emit("fileUploaded", {}); // Send event to root to be accessed by sibling component ValueSearch to refresh table
-            } else {
-              // Update file status
-              this.files[fileIndex]["status"] = "Complete";
-              this.files[fileIndex]["statusClass"] = "badge-success";
-              this.files[fileIndex]["nbRows"] = response.data.length;
-              this.files[fileIndex]["nbRowsError"] = 0;
-              this.$root.$emit("fileUploaded", {}); // Send event to root to be accessed by sibling component ValueSearch to refresh table
-            }
-          },
-          // Error callback
-          function(response) {
-            this.displayError(response);
+      this.$http.post(this.$store.state.graphqlUrl, payloadBatch, { headers }).then(
+        function(response) {
+          // Get queries which returned an error
+          let errors = response.data.filter(function(obj) {
+            return obj.hasOwnProperty("errors");
+          });
+          if (errors.length > 0) {
+            this.files[fileIndex]["status"] = "Error";
+            this.files[fileIndex]["statusClass"] = "badge-danger";
+            this.files[fileIndex]["nbRows"] = response.data.length - errors.length;
+            this.files[fileIndex]["nbRowsError"] = errors.length;
+            this.displayError(response, errors);
+            this.$root.$emit("fileUploaded", {}); // Send event to root to be accessed by sibling component ValueSearch to refresh table
+          } else {
+            // Update file status
+            this.files[fileIndex]["status"] = "Complete";
+            this.files[fileIndex]["statusClass"] = "badge-success";
+            this.files[fileIndex]["nbRows"] = response.data.length;
+            this.files[fileIndex]["nbRowsError"] = 0;
+            this.$root.$emit("fileUploaded", {}); // Send event to root to be accessed by sibling component ValueSearch to refresh table
           }
-        );
+        },
+        // Error callback
+        function(response) {
+          this.displayError(response);
+        }
+      );
     },
     resetModalBox() {
       this.files = [];

@@ -4,19 +4,11 @@
       <tr>
         <th scope="col">
           Name
-          <table-sort
-            v-bind:columnName="'name'"
-            v-bind:sortAttribute="sortAttribute"
-            v-on:sortAttribute="setSortAttribute"
-          ></table-sort>
+          <table-sort v-bind:columnName="'name'" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></table-sort>
         </th>
         <th scope="col">
           Description
-          <table-sort
-            v-bind:columnName="'description'"
-            v-bind:sortAttribute="sortAttribute"
-            v-on:sortAttribute="setSortAttribute"
-          ></table-sort>
+          <table-sort v-bind:columnName="'description'" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></table-sort>
         </th>
         <th scope="col">
           User Group
@@ -40,18 +32,10 @@
           {{ list.sysUserGroupByUserGroupId.name }}
         </td>
         <td>
-          <router-link
-            v-if="showEditValues"
-            class="badge badge-secondary"
-            v-bind:to="'lists/' + list.id + '/values'"
-          >
+          <router-link v-if="showEditValues" class="badge badge-secondary" v-bind:to="'lists/' + list.id + '/values'">
             Edit Values
           </router-link>
-          <router-link
-            v-if="showEditList"
-            class="badge badge-secondary"
-            v-bind:to="'lists/' + list.id"
-          >
+          <router-link v-if="showEditList" class="badge badge-secondary" v-bind:to="'lists/' + list.id">
             Edit List
           </router-link>
         </td>

@@ -16,30 +16,17 @@ export default {
     buildGraphQlQuery() {
       // Method to build GraphQL query
       // Compute GraphQL names for the list and attributes
-      let graphQlListName = this.getGraphQlName(
-        this.list.tableName,
-        "plural",
-        true
-      ); // Example table_name > TableNames
+      let graphQlListName = this.getGraphQlName(this.list.tableName, "plural", true); // Example table_name > TableNames
       let attributes = this.list.sysAttributesByListId.nodes;
       let graphQLAttributeName = "";
       for (let i = 0; i < attributes.length; i++) {
-        attributes[i]["graphQlAttributeName"] = this.getGraphQlName(
-          attributes[i].columnName
-        ); // Example colum_name > columnName
-        graphQLAttributeName =
-          graphQLAttributeName + " " + attributes[i]["graphQlAttributeName"];
+        attributes[i]["graphQlAttributeName"] = this.getGraphQlName(attributes[i].columnName); // Example colum_name > columnName
+        graphQLAttributeName = graphQLAttributeName + " " + attributes[i]["graphQlAttributeName"];
       }
 
       // Build GraphQL query
-      let graphQlQuery = this.$store.state.queryDownloadAllValues.replace(
-        /<GraphQlListName>/g,
-        graphQlListName
-      );
-      graphQlQuery = graphQlQuery.replace(
-        /<graphQlAttributeName>/g,
-        graphQLAttributeName
-      );
+      let graphQlQuery = this.$store.state.queryDownloadAllValues.replace(/<GraphQlListName>/g, graphQlListName);
+      graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQLAttributeName);
       return { listName: graphQlListName, query: graphQlQuery };
     },
     downloadCsv() {

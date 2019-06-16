@@ -5,17 +5,9 @@
         <tr>
           <th>
             Id
-            <table-sort
-              v-bind:columnName="'id'"
-              v-bind:sortAttribute="sortAttribute"
-              v-on:sortAttribute="setSortAttribute"
-            ></table-sort>
+            <table-sort v-bind:columnName="'id'" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></table-sort>
           </th>
-          <th
-            v-for="attribute in sortedAttributes"
-            v-bind:key="attribute.id"
-            scope="col"
-          >
+          <th v-for="attribute in sortedAttributes" v-bind:key="attribute.id" scope="col">
             {{ attribute.name }}
             <table-sort
               v-if="showTableSort(attribute.linkedAttributeId)"
@@ -39,18 +31,9 @@
             <span v-if="attribute.linkedAttributeId">
               <router-link
                 v-if="value[attribute.graphQlAttributeName]"
-                v-bind:to="
-                  '/lists/' +
-                    attribute.sysAttributeByLinkedAttributeId.listId +
-                    '/values/' +
-                    value[attribute.graphQlAttributeName]
-                "
+                v-bind:to="'/lists/' + attribute.sysAttributeByLinkedAttributeId.listId + '/values/' + value[attribute.graphQlAttributeName]"
               >
-                {{
-                  value[attribute.graphQlAttributePath][
-                    attribute.graphQlLinkedAttributeName
-                  ]
-                }}
+                {{ value[attribute.graphQlAttributePath][attribute.graphQlLinkedAttributeName] }}
               </router-link>
             </span>
             <span v-else>
@@ -58,11 +41,7 @@
             </span>
           </td>
           <td>
-            <router-link
-              v-if="showEditValue"
-              class="badge badge-secondary"
-              v-bind:to="'values/' + value.id"
-            >
+            <router-link v-if="showEditValue" class="badge badge-secondary" v-bind:to="'values/' + value.id">
               Edit Value
             </router-link>
           </td>

@@ -6,14 +6,7 @@
     </label>
 
     <!-- Checkbox input, used for data types boolean (id: 2) -->
-    <select
-      class="form-control col-sm"
-      id="defaultValue"
-      v-bind:disabled="isReadOnly"
-      v-bind:readonly="isReadOnly"
-      v-model="inputValue"
-      v-on:change="change"
-    >
+    <select class="form-control col-sm" id="defaultValue" v-bind:disabled="isReadOnly" v-bind:readonly="isReadOnly" v-model="inputValue" v-on:change="change">
       <option value=""></option>
       <option value="true">true</option>
       <option value="false">false</option>

@@ -2,11 +2,7 @@
   <nav class="bg-dark text-light" aria-label="Pages">
     <ul class="pagination">
       <li v-for="page in pages" v-bind:key="page.pageNum" class="page-item">
-        <a
-          class="page-link text-light"
-          v-bind:class="{ active: page.isActive }"
-          v-on:click="goToPage(page)"
-        >
+        <a class="page-link text-light" v-bind:class="{ active: page.isActive }" v-on:click="goToPage(page)">
           {{ page.pageNum }}
         </a>
       </li>

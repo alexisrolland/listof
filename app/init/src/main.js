@@ -28,33 +28,13 @@ const routes = [
   { name: "login", path: "/login", component: Login },
   { name: "view-list", path: "/lists", component: ViewList },
   { name: "edit-list", path: "/lists/:listId", component: EditList },
-  {
-    name: "edit-list-attribute",
-    path: "/lists/:listId/attributes/:attributeId",
-    component: EditListAttribute
-  },
-  {
-    name: "view-list-value",
-    path: "/lists/:listId/values",
-    component: ViewListValue
-  },
-  {
-    name: "edit-list-value",
-    path: "/lists/:listId/values/:valueId",
-    component: EditListValue
-  },
+  { name: "edit-list-attribute", path: "/lists/:listId/attributes/:attributeId", component: EditListAttribute },
+  { name: "view-list-value", path: "/lists/:listId/values", component: ViewListValue },
+  { name: "edit-list-value", path: "/lists/:listId/values/:valueId", component: EditListValue },
   { name: "view-user", path: "/admin/users", component: ViewUser },
   { name: "edit-user", path: "/admin/users/:userId", component: EditUser },
-  {
-    name: "view-user-group",
-    path: "/admin/usergroups",
-    component: ViewUserGroup
-  },
-  {
-    name: "edit-user-group",
-    path: "/admin/usergroups/:userGroupId",
-    component: EditUserGroup
-  }
+  { name: "view-user-group", path: "/admin/usergroups", component: ViewUserGroup },
+  { name: "edit-user-group", path: "/admin/usergroups/:userGroupId", component: EditUserGroup }
 ];
 
 // Configure router

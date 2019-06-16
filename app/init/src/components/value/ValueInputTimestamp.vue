@@ -1,9 +1,7 @@
 <template>
   <div>
     <!-- Label -->
-    <label class="col-form-label" v-bind:for="attribute.id">
-      {{ attribute.name }}:
-    </label>
+    <label class="col-form-label" v-bind:for="attribute.id"> {{ attribute.name }}: </label>
 
     <!-- Timestamp input, used for data types timestamp (id: 9) -->
     <input

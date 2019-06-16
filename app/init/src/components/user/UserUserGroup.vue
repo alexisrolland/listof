@@ -4,28 +4,13 @@
 
     <div class="form-group">
       <div class="w-50 float-left mr-2 mb-4">
-        <treeselect
-          placeholder="Select user groups"
-          v-model="userGroups"
-          v-bind:options="options"
-          v-bind:multiple="true"
-          v-bind:disable-branch-nodes="true"
-        />
+        <treeselect placeholder="Select user groups" v-model="userGroups" v-bind:options="options" v-bind:multiple="true" v-bind:disable-branch-nodes="true" />
       </div>
-      <user-button-add-user-group
-        class="float-left"
-        v-bind:user="user"
-        v-bind:userGroups="userGroups"
-        v-on:addUserGroupMembership="addUserGroupMembership"
-      >
+      <user-button-add-user-group class="float-left" v-bind:user="user" v-bind:userGroups="userGroups" v-on:addUserGroupMembership="addUserGroupMembership">
       </user-button-add-user-group>
     </div>
 
-    <user-user-group-table
-      v-if="user.sysUserGroupMembershipsByUserId"
-      v-bind:user="user"
-      v-on:removeUserGroupMembership="removeUserGroupMembership"
-    >
+    <user-user-group-table v-if="user.sysUserGroupMembershipsByUserId" v-bind:user="user" v-on:removeUserGroupMembership="removeUserGroupMembership">
     </user-user-group-table>
   </div>
 </template>

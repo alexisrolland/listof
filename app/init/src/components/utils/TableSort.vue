@@ -2,21 +2,13 @@
   <span class="ml-1">
     <span
       class="sort"
-      v-bind:class="{
-        active:
-          columnName == sortAttribute.columnName &&
-          sortAttribute.sortOrder == 'asc'
-      }"
+      v-bind:class="{ active: columnName == sortAttribute.columnName && sortAttribute.sortOrder == 'asc' }"
       v-on:click="sort(columnName, 'asc')"
       >▲</span
     >
     <span
       class="sort"
-      v-bind:class="{
-        active:
-          columnName == sortAttribute.columnName &&
-          sortAttribute.sortOrder == 'desc'
-      }"
+      v-bind:class="{ active: columnName == sortAttribute.columnName && sortAttribute.sortOrder == 'desc' }"
       v-on:click="sort(columnName, 'desc')"
       >▼</span
     >

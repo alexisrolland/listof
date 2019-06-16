@@ -54,14 +54,7 @@
           <div class="form-check form-check-inline">
             <!-- Flag Attribute Mandatory -->
             <div class="custom-control custom-switch mr-4 mt-1 mb-2">
-              <input
-                class="custom-control-input"
-                id="mandatory"
-                type="checkbox"
-                value=""
-                v-bind:disabled="preventUpdate"
-                v-model="attribute.flagMandatory"
-              />
+              <input class="custom-control-input" id="mandatory" type="checkbox" value="" v-bind:disabled="preventUpdate" v-model="attribute.flagMandatory" />
               <label for="mandatory" class="custom-control-label">
                 Mandatory
               </label>
@@ -69,14 +62,7 @@
 
             <!-- Flag Attribute Unique -->
             <div class="custom-control custom-switch mr-4 mt-1 mb-2">
-              <input
-                class="custom-control-input"
-                id="unique"
-                type="checkbox"
-                value=""
-                v-bind:disabled="preventUpdate"
-                v-model="attribute.flagUnique"
-              />
+              <input class="custom-control-input" id="unique" type="checkbox" value="" v-bind:disabled="preventUpdate" v-model="attribute.flagUnique" />
               <label for="unique" class="custom-control-label">
                 Unique
               </label>
@@ -93,12 +79,7 @@
           </attribute-select-attribute>
 
           <!-- Attribute Data Type -->
-          <attribute-select-data-type
-            v-if="showDataType"
-            v-model="attribute.dataTypeId"
-            v-on:changeDataType="getDataType"
-          >
-          </attribute-select-data-type>
+          <attribute-select-data-type v-if="showDataType" v-model="attribute.dataTypeId" v-on:changeDataType="getDataType"> </attribute-select-data-type>
 
           <!-- Attribute Default Value -->
           <div class="form-group">
@@ -136,10 +117,7 @@
 
             <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
             <attribute-default-value-input-integer
-              v-if="
-                [1, 5, 7].includes(attribute.dataTypeId) &&
-                  !attribute.linkedAttributeId
-              "
+              v-if="[1, 5, 7].includes(attribute.dataTypeId) && !attribute.linkedAttributeId"
               v-bind:value="parseInt(attribute.defaultValue)"
               v-on:setDefaultValue="setDefaultValue"
             >
@@ -173,21 +151,11 @@
 
           <!-- Button Menu -->
           <div>
-            <attribute-button-save
-              v-bind:listId="listId"
-              v-bind:attribute="attribute"
-            >
-            </attribute-button-save>
+            <attribute-button-save v-bind:listId="listId" v-bind:attribute="attribute"> </attribute-button-save>
 
-            <attribute-button-close v-bind:listId="listId">
-            </attribute-button-close>
+            <attribute-button-close v-bind:listId="listId"> </attribute-button-close>
 
-            <attribute-button-delete
-              v-bind:listId="listId"
-              v-if="attribute.id"
-              v-bind:attributeId="attribute.id"
-            >
-            </attribute-button-delete>
+            <attribute-button-delete v-bind:listId="listId" v-if="attribute.id" v-bind:attributeId="attribute.id"> </attribute-button-delete>
           </div>
         </div>
         <div class="col-md-4">

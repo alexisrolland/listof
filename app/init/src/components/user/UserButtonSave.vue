@@ -1,10 +1,5 @@
 <template>
-  <button
-    v-if="show"
-    type="button"
-    class="btn btn-success"
-    v-on:click="saveUser"
-  >
+  <button v-if="show" type="button" class="btn btn-success" v-on:click="saveUser">
     Save
   </button>
 </template>
@@ -47,24 +42,20 @@ export default {
         if (this.$session.exists()) {
           headers = { Authorization: "Bearer " + this.$session.get("jwt") };
         }
-        this.$http
-          .post(this.$store.state.graphqlUrl, payload, { headers })
-          .then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              } else {
-                this.user.updatedDate =
-                  response.data.data.updateSysUserById.sysUser.updatedDate;
-                this.user.sysUserByUpdatedById.email =
-                  response.data.data.updateSysUserById.sysUser.sysUserByUpdatedById.email;
-              }
-            },
-            // Error callback
-            function(response) {
+        this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          function(response) {
+            if (response.data.errors) {
               this.displayError(response);
+            } else {
+              this.user.updatedDate = response.data.data.updateSysUserById.sysUser.updatedDate;
+              this.user.sysUserByUpdatedById.email = response.data.data.updateSysUserById.sysUser.sysUserByUpdatedById.email;
             }
-          );
+          },
+          // Error callback
+          function(response) {
+            this.displayError(response);
+          }
+        );
       }
       // If user.id does not exist, create a new user
       else {
@@ -83,28 +74,26 @@ export default {
         if (this.$session.exists()) {
           headers = { Authorization: "Bearer " + this.$session.get("jwt") };
         }
-        this.$http
-          .post(this.$store.state.graphqlUrl, payload, { headers })
-          .then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              } else {
-                // Capture new user Id in case user wants to delete or update it
-                this.user.id = response.data.data.createSysUser.sysUser.id;
-                this.$router.push({
-                  name: "edit-user",
-                  params: {
-                    userId: this.user.id
-                  }
-                });
-              }
-            },
-            // Error callback
-            function(response) {
+        this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          function(response) {
+            if (response.data.errors) {
               this.displayError(response);
+            } else {
+              // Capture new user Id in case user wants to delete or update it
+              this.user.id = response.data.data.createSysUser.sysUser.id;
+              this.$router.push({
+                name: "edit-user",
+                params: {
+                  userId: this.user.id
+                }
+              });
             }
-          );
+          },
+          // Error callback
+          function(response) {
+            this.displayError(response);
+          }
+        );
       }
     }
   },

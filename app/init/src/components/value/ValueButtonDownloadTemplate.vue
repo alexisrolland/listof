@@ -1,9 +1,5 @@
 <template>
-  <button
-    type="button"
-    class="btn btn-secondary mr-auto"
-    v-on:click="downloadTemplate"
-  >
+  <button type="button" class="btn btn-secondary mr-auto" v-on:click="downloadTemplate">
     Download Template
   </button>
 </template>

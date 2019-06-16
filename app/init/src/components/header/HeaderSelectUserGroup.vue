@@ -11,16 +11,8 @@
     >
       {{ selectedUserGroup.name }}
     </button>
-    <div
-      class="dropdown-menu dropdown-menu-lg-right"
-      aria-labelledby="selectedUserGroup"
-    >
-      <a
-        class="dropdown-item"
-        v-for="userGroup in userGroups"
-        v-bind:key="userGroup.name"
-        v-on:click="selectUserGroup(userGroup)"
-      >
+    <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="selectedUserGroup">
+      <a class="dropdown-item" v-for="userGroup in userGroups" v-bind:key="userGroup.name" v-on:click="selectUserGroup(userGroup)">
         {{ userGroup.name }}
       </a>
     </div>

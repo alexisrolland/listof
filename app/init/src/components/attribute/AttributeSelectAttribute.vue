@@ -75,9 +75,7 @@ export default {
           } else {
             this.options = response.data.data.allSysLists.nodes;
             for (let i = 0; i < this.options.length; i++) {
-              this.options[i]["children"] = this.options[i]["attributes"][
-                "children"
-              ];
+              this.options[i]["children"] = this.options[i]["attributes"]["children"];
               delete this.options[i]["attributes"];
             }
           }

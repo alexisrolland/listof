@@ -5,11 +5,7 @@
         <tr>
           <th scope="col">
             Name
-            <table-sort
-              v-bind:columnName="'name'"
-              v-bind:sortAttribute="sortAttribute"
-              v-on:sortAttribute="setSortAttribute"
-            ></table-sort>
+            <table-sort v-bind:columnName="'name'" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></table-sort>
           </th>
           <th scope="col">
             Actions
@@ -22,11 +18,7 @@
             {{ userGroup.name }}
           </td>
           <td>
-            <router-link
-              v-if="showEditUserGroup"
-              class="badge badge-secondary"
-              v-bind:to="'/admin/usergroups/' + userGroup.id"
-            >
+            <router-link v-if="showEditUserGroup" class="badge badge-secondary" v-bind:to="'/admin/usergroups/' + userGroup.id">
               Edit User Group
             </router-link>
           </td>
