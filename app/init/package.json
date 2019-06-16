@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prettier": "prettier --write \"src/**/*.{js,vue}\""
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.0.38",
@@ -13,7 +14,6 @@
     "inflection": "^1.12.0",
     "lodash": "^4.17.11",
     "papaparse": "^5.0.0-beta.0",
-    "querystringify": ">=2.0.0",
     "vue": "^2.6.10",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.6",
@@ -27,7 +27,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "querystringify": ">=2.0.0",
+    "prettier": "1.18.2",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {

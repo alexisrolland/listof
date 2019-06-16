@@ -17,7 +17,7 @@
         v-bind:value="dataType.id"
         v-bind:key="dataType.id"
       >
-        {{ dataType.name }}
+        {{ dataType.displayName }}
       </option>
     </select>
   </div>

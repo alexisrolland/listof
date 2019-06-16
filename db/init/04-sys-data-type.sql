@@ -7,6 +7,8 @@
 CREATE TABLE base.sys_data_type (
     id SERIAL PRIMARY KEY
   , "name" CITEXT NOT NULL UNIQUE
+  , display_name TEXT
+  , popularity INTEGER
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
@@ -37,13 +39,14 @@ base.update_updated_by_id();
 
 
 /*Initialize supported data types*/
-INSERT INTO base.sys_data_type (id, name) VALUES
-  (1, 'bigint')
-, (2, 'boolean')
-, (3, 'date')
-, (4, 'decimal')
-, (5, 'integer')
-, (6, 'real')
-, (7, 'smallint')
-, (8, 'text')
-, (9, 'timestamp')
+INSERT INTO base.sys_data_type (id, popularity, name, display_name) VALUES
+  (1, 8, 'bigint',    'Big Integer')
+, (2, 3, 'boolean',   'Boolean')
+, (3, 4, 'date',      'Date')
+, (4, 7, 'decimal',   'Decimal')
+, (5, 2, 'integer',   'Integer')
+, (6, 6, 'real',      'Float')
+, (7, 9, 'smallint',  'Small Integer')
+, (8, 1, 'text',      'Text')
+, (9, 5, 'timestamp', 'Timestamp')
+;
