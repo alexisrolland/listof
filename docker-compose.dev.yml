@@ -1,18 +1,17 @@
-version: '3.1'
+version: "3.1"
 services:
+    graphql:
+        expose:
+            - 5433
+        ports:
+            - 5433:5433
 
-  graphql:
-    expose:
-      - 5433
-    ports:
-      - 5433:5433
+    app:
+        volumes:
+            - ./app/init/public:/srv/app/public
+            - ./app/init/src:/srv/app/src
+        command: ["dev"]
 
-  app:
-    volumes:
-      - ./app/init/public:/srv/app/public
-      - ./app/init/src:/srv/app/src
-    command: ["dev"]
-
-  nginx:
-    ports:
-      - 8080:8080
+    nginx:
+        ports:
+            - 8080:8080

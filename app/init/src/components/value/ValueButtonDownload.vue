@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-secondary" v-on:click="downloadCsv">
+  <button type="button" class="btn btn-secondary ml-1" v-on:click="downloadCsv">
     Download CSV
   </button>
 </template>
