@@ -223,7 +223,6 @@ export default {
 
           // Build update or create mutation payload if row is not empty
           if (!lodash.isEmpty(row)) {
-            console.log("in if");
             let payload = {};
             let variables = {};
             if (row.hasOwnProperty("id")) {
@@ -245,7 +244,6 @@ export default {
 
             return payload;
           }
-          console.log("after if");
         }.bind(this)
       );
 
