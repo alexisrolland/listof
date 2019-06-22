@@ -1,6 +1,6 @@
 {
   "name": "listof",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,6 +11,8 @@
   "dependencies": {
     "@riophae/vue-treeselect": "0.0.38",
     "core-js": "^2.6.5",
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.1",
     "inflection": "^1.12.0",
     "lodash": "^4.17.11",
     "papaparse": "^5.0.0-beta.0",
