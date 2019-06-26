@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-success mb-4" v-on:click="downloadBackupPackage">
+  <button type="button" class="btn btn-success mb-4 mt-3" v-on:click="downloadBackupPackage">
     Download Backup Package
   </button>
 </template>
@@ -33,7 +33,8 @@ export default {
           } else {
             // Convert data to CSV format
             let userGroupData = response.data.data["allSysUserGroups"].nodes;
-            zip.file("sys_user_group.csv", this.createCsvFile(userGroupData));
+            let userGroupDataCleaned = userGroupData.splice(1, userGroupData.length); // Delete Public user group in first position
+            zip.file("sys_user_group.csv", this.createCsvFile(userGroupDataCleaned));
 
             // Package other files
             if (this.backup.listDefinition) {
@@ -71,7 +72,7 @@ export default {
             zip.file("sys_list.csv", this.createCsvFile(listData));
 
             let attributeData = response.data[1].data["allSysAttributes"].nodes;
-            zip.file("sys_attribute.csv", this.createCsvFile(listData));
+            zip.file("sys_attribute.csv", this.createCsvFile(attributeData));
 
             // Package other files
             if (this.backup.listData) {

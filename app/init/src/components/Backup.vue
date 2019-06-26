@@ -1,21 +1,18 @@
 <template>
   <div class="col-8">
-    <h1 class="mt-5">Backup</h1>
     <backup-option></backup-option>
-
-    <h1 class="mt-5">Restore</h1>
-    <p>
-      In progress
-    </p>
+    <restore-form></restore-form>
   </div>
 </template>
 
 <script>
 import BackupOption from "./backup/BackupOption.vue";
+import RestoreForm from "./backup/RestoreForm.vue";
 
 export default {
   components: {
-    "backup-option": BackupOption
+    "backup-option": BackupOption,
+    "restore-form": RestoreForm
   }
 };
 </script>
