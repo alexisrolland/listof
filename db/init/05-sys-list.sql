@@ -8,7 +8,7 @@ CREATE TABLE base.sys_list (
     id SERIAL PRIMARY KEY
   , "name" CITEXT NOT NULL UNIQUE
   , "description" CITEXT NOT NULL
-  , table_name TEXT
+  , table_name TEXT NOT NULL UNIQUE
   , created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   , created_by_id INTEGER DEFAULT base.get_current_user_id() REFERENCES base.sys_user(id)
