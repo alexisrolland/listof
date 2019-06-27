@@ -1,6 +1,6 @@
 <template>
   <div id="errorMessage" v-bind:class="cssClass">
-    <div class="row justify-content-center alert alert-danger alert-dismissable text-danger">
+    <div class="justify-content-center alert alert-danger alert-dismissable text-danger">
       Error: {{ errorMessage }}
       <button type="button" class="close" v-on:click="close()">
         &times;
