@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import flatten from "lodash/flatten";
+
 export default {
   props: {
     list: {}

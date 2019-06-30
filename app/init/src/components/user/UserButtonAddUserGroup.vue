@@ -24,15 +24,15 @@ export default {
 
       // For selected list of user groups
       // If current user group does not contain the new group, add user to it
-      for (let i = 0; i < this.userGroups.length; i++) {
-        if (currentUserGroups.includes(this.userGroups[i]) == false) {
+      this.userGroups.forEach(userGroup => {
+        if (currentUserGroups.includes(userGroup) == false) {
           // Method to insert a relationship between a user and a user group
           let payload = {
             query: this.$store.state.mutationCreateUserGroupMembership,
             variables: {
               sysUserGroupMembership: {
                 userId: this.user.id,
-                userGroupId: this.userGroups[i]
+                userGroupId: userGroup
               }
             }
           };
@@ -55,7 +55,7 @@ export default {
             }
           );
         }
-      }
+      });
 
       // If modified user is the current user, refresh current user groups
       if (this.$session.get("email") == this.user.email) {
