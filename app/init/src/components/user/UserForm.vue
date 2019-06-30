@@ -39,9 +39,7 @@
           <!-- Button Menu -->
           <div>
             <user-button-save v-bind:user="user" v-bind:showPasswordField="showPasswordField"> </user-button-save>
-
             <user-button-reset-password v-on:resetPassword="resetPassword" v-bind:userId="userId"> </user-button-reset-password>
-
             <user-button-close> </user-button-close>
           </div>
         </div>

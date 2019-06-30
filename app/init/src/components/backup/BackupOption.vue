@@ -2,34 +2,21 @@
   <div>
     <h1 class="mt-5">Backup</h1>
     <p>
-      Select data to be added to the backup package (.zip).
+      Select data to backup. A zip package will be generated for each selected option.
     </p>
-    <!-- User groups -->
-    <div class="custom-control custom-switch">
-      <input
-        id="userGroup"
-        class="custom-control-input"
-        type="checkbox"
-        value="false"
-        v-bind:disabled="isReadOnly"
-        v-bind:readonly="isReadOnly"
-        v-model="backup.userGroup"
-      />
-      <label class="custom-control-label" for="userGroup">User groups (all user groups except the default Public group).</label>
-    </div>
 
-    <!-- Lists definitions -->
+    <!-- Definition data (user groups, lists, attributes)-->
     <div class="custom-control custom-switch">
       <input
-        id="listDefinition"
+        id="definitionData"
         class="custom-control-input"
         type="checkbox"
         value="false"
         v-bind:disabled="isReadOnly"
         v-bind:readonly="isReadOnly"
-        v-model="backup.listDefinition"
+        v-model="backup.definitionData"
       />
-      <label class="custom-control-label" for="listDefinition">Lists definitions (all lists definitions with their attributes).</label>
+      <label class="custom-control-label" for="definitionData">Definition data (user groups, lists definition and their attributes)</label>
     </div>
 
     <!-- Lists data -->
@@ -43,7 +30,7 @@
         v-bind:readonly="isReadOnly"
         v-model="backup.listData"
       />
-      <label class="custom-control-label" for="listData">Lists data (all values of all lists).</label>
+      <label class="custom-control-label" for="listData">Lists data (all values of all lists)</label>
     </div>
 
     <!-- Download package -->
@@ -61,9 +48,8 @@ export default {
   data: function() {
     return {
       backup: {
-        listDefinition: false,
-        listData: false,
-        userGroup: false
+        definitionData: false,
+        listData: false
       }
     };
   },

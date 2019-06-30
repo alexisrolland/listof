@@ -88,6 +88,10 @@ export const store = new Vuex.Store({
     queryBackupAllUserGroups: BackupPayload.queryBackupAllUserGroups,
     queryBackupAllLists: BackupPayload.queryBackupAllLists,
     queryBackupAllAttributes: BackupPayload.queryBackupAllAttributes,
-    queryBackupAllListsValues: BackupPayload.queryBackupAllListsValues
+    queryBackupAllListsValues: BackupPayload.queryBackupAllListsValues,
+
+    // Restore queries
+    queryRestoreGetList: BackupPayload.queryRestoreGetList,
+    mutationResetIdSequence: BackupPayload.mutationResetIdSequence
   }
 });

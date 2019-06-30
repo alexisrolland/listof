@@ -18,46 +18,16 @@ export default {
     };
   },
   methods: {
-    getUserGroup(zip) {
-      let payload = {
-        query: this.$store.state.queryBackupAllUserGroups
-      };
-      let headers = {};
-      if (this.$session.exists()) {
-        headers = { Authorization: "Bearer " + this.$session.get("jwt") };
-      }
-      this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-        function(response) {
-          if (response.data.errors) {
-            this.displayError(response);
-          } else {
-            // Convert data to CSV format
-            let userGroupData = response.data.data["allSysUserGroups"].nodes;
-            let userGroupDataCleaned = userGroupData.splice(1, userGroupData.length); // Delete Public user group in first position
-            zip.file("sys_user_group.csv", this.createCsvFile(userGroupDataCleaned));
+    async getDefinitionData() {
+      // Create package
+      let JSZip = require("jszip");
+      let zip = new JSZip();
 
-            // Package other files
-            if (this.backup.listDefinition) {
-              this.getListDefinition(zip);
-            } else if (this.backup.listData) {
-              this.getListValue(zip);
-            } else {
-              //Download file
-              let fileSaver = require("file-saver");
-              zip.generateAsync({ type: "blob" }).then(function(content) {
-                fileSaver.saveAs(content, "listof-backup.zip");
-              });
-            }
-          }
-        },
-        // Error callback
-        function(response) {
-          this.displayError(response);
-        }
-      );
-    },
-    getListDefinition(zip) {
-      let payload = [{ query: this.$store.state.queryBackupAllLists }, { query: this.$store.state.queryBackupAllAttributes }];
+      let payload = [
+        { query: this.$store.state.queryBackupAllUserGroups },
+        { query: this.$store.state.queryBackupAllLists },
+        { query: this.$store.state.queryBackupAllAttributes }
+      ];
       let headers = {};
       if (this.$session.exists()) {
         headers = { Authorization: "Bearer " + this.$session.get("jwt") };
@@ -67,23 +37,24 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            // Convert data to CSV format
-            let listData = response.data[0].data["allSysLists"].nodes;
+            // Convert user group data to CSV format
+            let userGroupDataRaw = response.data[0].data["allSysUserGroups"].nodes;
+            let userGroupData = userGroupDataRaw.splice(1, userGroupDataRaw.length); // Delete Public user group on first line
+            zip.file("sys_user_group.csv", this.createCsvFile(userGroupData));
+
+            // Convert list definition data to CSV format
+            let listData = response.data[1].data["allSysLists"].nodes;
             zip.file("sys_list.csv", this.createCsvFile(listData));
 
-            let attributeData = response.data[1].data["allSysAttributes"].nodes;
+            // Convert attributes definition data to CSV format
+            let attributeData = response.data[2].data["allSysAttributes"].nodes;
             zip.file("sys_attribute.csv", this.createCsvFile(attributeData));
 
-            // Package other files
-            if (this.backup.listData) {
-              this.getListValue(zip);
-            } else {
-              //Download file
-              let fileSaver = require("file-saver");
-              zip.generateAsync({ type: "blob" }).then(function(content) {
-                fileSaver.saveAs(content, "listof-backup.zip");
-              });
-            }
+            //Download file
+            let fileSaver = require("file-saver");
+            zip.generateAsync({ type: "blob" }).then(function(content) {
+              fileSaver.saveAs(content, "listof-definition-data.zip");
+            });
           }
         },
         // Error callback
@@ -92,7 +63,11 @@ export default {
         }
       );
     },
-    getListValue(zip) {
+    async getListValue() {
+      // Create package
+      let JSZip = require("jszip");
+      let zip = new JSZip();
+
       // Fetch lists table and column names to build GraphQL queries
       let payload = {
         query: this.$store.state.queryBackupAllListsValues
@@ -129,7 +104,7 @@ export default {
                 //Download file
                 let fileSaver = require("file-saver");
                 zip.generateAsync({ type: "blob" }).then(function(content) {
-                  fileSaver.saveAs(content, "listof-backup.zip");
+                  fileSaver.saveAs(content, "listof-lists-data.zip");
                 });
               },
               // Error callback
@@ -177,17 +152,14 @@ export default {
       return { tableName: list.tableName, graphQlListName: graphQlListName, query: graphQlQuery };
     },
     downloadBackupPackage() {
-      // Create package
-      let JSZip = require("jszip");
-      let zip = new JSZip();
-
       // Download user groups, lists definitions, lists values
-      if (this.backup.userGroup) {
-        this.getUserGroup(zip);
-      } else if (this.backup.listDefinition) {
-        this.getListDefinition(zip);
-      } else if (this.backup.listData) {
-        this.getListValue(zip);
+      if (this.backup.definitionData) {
+        this.getDefinitionData();
+      }
+
+      // Download all values of all lists
+      if (this.backup.listData) {
+        this.getListValue();
       }
     }
   }

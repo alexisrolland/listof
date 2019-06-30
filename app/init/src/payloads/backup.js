@@ -56,3 +56,24 @@ export const queryBackupAllListsValues = `query backupAllListsValues{
         }
     }
 }`;
+
+export const queryRestoreGetList = `query getList($tableName: String!) {
+    allSysLists(condition: {tableName: $tableName}) {
+        nodes {
+            sysAttributesByListId {
+                nodes {
+                    columnName
+                    sysDataTypeByDataTypeId {
+                        id
+                    }
+                }
+            }
+        }
+    }
+}`;
+
+export const mutationResetIdSequence = `mutation resetIdSequence($schema: String!, $tableName: String!) {
+    resetIdSequence(input: {schema: $schema, tableName: $tableName}) {
+        boolean
+    }
+}`;
