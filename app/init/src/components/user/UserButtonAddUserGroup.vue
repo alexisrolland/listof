@@ -18,44 +18,48 @@ export default {
       // Method to create a relationship between a user and a user group
       // Get list of current user groups
       let currentUserGroups = [];
-      this.user.sysUserGroupMembershipsByUserId.nodes.forEach(function(userGroupMembership) {
-        currentUserGroups.push(userGroupMembership["userGroupId"]);
-      });
+      this.user.sysUserGroupMembershipsByUserId.nodes.forEach(
+        function(userGroupMembership) {
+          currentUserGroups.push(userGroupMembership["userGroupId"]);
+        }.bind(this)
+      );
 
       // For selected list of user groups
       // If current user group does not contain the new group, add user to it
-      this.userGroups.forEach(function(userGroup) {
-        if (currentUserGroups.includes(userGroup) == false) {
-          // Method to insert a relationship between a user and a user group
-          let payload = {
-            query: this.$store.state.mutationCreateUserGroupMembership,
-            variables: {
-              sysUserGroupMembership: {
-                userId: this.user.id,
-                userGroupId: userGroup
+      this.userGroups.forEach(
+        function(userGroup) {
+          if (currentUserGroups.includes(userGroup) == false) {
+            // Method to insert a relationship between a user and a user group
+            let payload = {
+              query: this.$store.state.mutationCreateUserGroupMembership,
+              variables: {
+                sysUserGroupMembership: {
+                  userId: this.user.id,
+                  userGroupId: userGroup
+                }
               }
+            };
+            let headers = {};
+            if (this.$session.exists()) {
+              headers = { Authorization: "Bearer " + this.$session.get("jwt") };
             }
-          };
-          let headers = {};
-          if (this.$session.exists()) {
-            headers = { Authorization: "Bearer " + this.$session.get("jwt") };
-          }
-          this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-            function(response) {
-              if (response.data.errors) {
+            this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+              function(response) {
+                if (response.data.errors) {
+                  this.displayError(response);
+                } else {
+                  let userGroupMembership = response.data.data.createSysUserGroupMembership.sysUserGroupMembership;
+                  this.$emit("addUserGroupMembership", userGroupMembership);
+                }
+              },
+              // Error callback
+              function(response) {
                 this.displayError(response);
-              } else {
-                let userGroupMembership = response.data.data.createSysUserGroupMembership.sysUserGroupMembership;
-                this.$emit("addUserGroupMembership", userGroupMembership);
               }
-            },
-            // Error callback
-            function(response) {
-              this.displayError(response);
-            }
-          );
-        }
-      });
+            );
+          }
+        }.bind(this)
+      );
 
       // If modified user is the current user, refresh current user groups
       if (this.$session.get("email") == this.user.email) {

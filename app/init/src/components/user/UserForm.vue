@@ -102,9 +102,12 @@ export default {
       this.user.sysUserGroupMembershipsByUserId.nodes.push(userGroupMembership);
     },
     removeUserGroupMembership(id) {
-      this.user.sysUserGroupMembershipsByUserId.nodes = remove(this.user.sysUserGroupMembershipsByUserId.nodes, function(membership) {
-        return membership.id == id;
-      });
+      let memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
+      for (let i = 0; i < memberships.length; i++) {
+        if (memberships[i]["id"] == id) {
+          this.user.sysUserGroupMembershipsByUserId.nodes.splice(i, 1);
+        }
+      }
     },
     resetPassword(value) {
       this.showPasswordField = value;
