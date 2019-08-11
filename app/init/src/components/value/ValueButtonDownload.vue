@@ -53,7 +53,7 @@ export default {
             // Change header to snake_case
             let rows = text.split(/\r\n|\r|\n/);
             let headers = rows[0].split(",").map(function(header) {
-              snakeCase(header);
+              return snakeCase(header);
             });
             rows[0] = headers.join(",");
             text = rows.join("\r\n");
