@@ -15,7 +15,6 @@ export default {
   },
   methods: {
     uploadUserGroup(headers, userGroupIndex, listIndex, attributeIndex) {
-      console.log("uploadUserGroup");
       this.$http.post(this.$store.state.graphqlUrl, this.files[userGroupIndex].payloadBatch, { headers }).then(
         function(response) {
           // Get queries which returned an error
@@ -34,8 +33,6 @@ export default {
             this.files[userGroupIndex]["statusClass"] = "badge-success";
             this.files[userGroupIndex]["nbRows"] = response.data.length;
             this.files[userGroupIndex]["nbRowsError"] = 0;
-
-            console.log("uploadUserGroup Done");
 
             // Reset Id sequence in sys_user_group table
             let payload = {
@@ -74,7 +71,6 @@ export default {
       );
     },
     uploadList(headers, listIndex, attributeIndex) {
-      console.log("uploadList");
       this.$http.post(this.$store.state.graphqlUrl, this.files[listIndex].payloadBatch, { headers }).then(
         function(response) {
           // Get queries which returned an error
@@ -93,8 +89,6 @@ export default {
             this.files[listIndex]["statusClass"] = "badge-success";
             this.files[listIndex]["nbRows"] = response.data.length;
             this.files[listIndex]["nbRowsError"] = 0;
-
-            console.log("uploadList Done");
 
             // Reset Id sequence in sys_user_group table
             let payload = {
@@ -131,39 +125,18 @@ export default {
       );
     },
     uploadAttribute(headers, attributeIndex) {
-      console.log("uploadAttribute");
-      console.log(this.files[attributeIndex].payloadBatch);
       // Use loop instead of query batching to avoid deadlock
       let results = this.files[attributeIndex].payloadBatch.map(
         function(payload) {
-          this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          let row = this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
             function(response) {
               let result = {};
               if (response.data.errors) {
-                result["errorMessage"] = response;
+                result["status"] = "Error";
+                result["errors"] = response.data.errors;
                 return result;
               } else {
-                console.log("uploadAttribute Done");
-
-                // Reset Id sequence in sys_user_group table
-                let payload = {
-                  query: this.$store.state.mutationResetIdSequence,
-                  variables: {
-                    schema: "base",
-                    tableName: "sys_attribute"
-                  }
-                };
-                this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-                  function(response) {
-                    if (response.data.errors) {
-                      this.displayError(response);
-                    }
-                  },
-                  // Error callback
-                  function(response) {
-                    this.displayError(response);
-                  }
-                );
+                result["status"] = "Complete";
                 return result;
               }
             },
@@ -172,28 +145,32 @@ export default {
               this.displayError(response);
             }
           );
-          /*
-          // Update file status
-          console.log(results);
-          let errors = results.filter(function(obj) {
-            return obj.hasOwnProperty("errorMessage");
+          return row;
+        }.bind(this)
+      );
+
+      // Fetch results from promise
+      Promise.all(results).then(
+        function(row) {
+          let errors = row.filter(function(obj) {
+            return obj.hasOwnProperty("errors");
           });
+
           if (errors.length > 0) {
             this.files[attributeIndex]["status"] = "Error";
             this.files[attributeIndex]["statusClass"] = "badge-danger";
-            this.displayError(errors);
+            this.files[attributeIndex]["nbRows"] = row.length - errors.length;
+            this.files[attributeIndex]["nbRowsError"] = errors.length;
           } else {
             this.files[attributeIndex]["status"] = "Complete";
             this.files[attributeIndex]["statusClass"] = "badge-success";
+            this.files[attributeIndex]["nbRows"] = row.length;
+            this.files[attributeIndex]["nbRowsError"] = 0;
           }
-          this.files[attributeIndex]["nbRows"] = results.length - errors.length;
-          this.files[attributeIndex]["nbRowsError"] = errors.length;
-          */
         }.bind(this)
       );
     },
     uploadValue(headers) {
-      console.log("uploadValue");
       this.files.map(
         function(file) {
           this.$http.post(this.$store.state.graphqlUrl, file.payloadBatch, { headers }).then(
@@ -215,7 +192,6 @@ export default {
                 file["nbRows"] = response.data.length;
                 file["nbRowsError"] = 0;
 
-                console.log("uploadValue Done");
                 // Reset Id sequence in sys_user_group table
                 let payload = {
                   query: this.$store.state.mutationResetIdSequence,

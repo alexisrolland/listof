@@ -2,7 +2,18 @@
   <div>
     <h1 class="mt-5">Restore</h1>
     <p>
-      Select a zip package to restore. <b>Note definition data must be imported before lists data.</b>
+      Select a zip package to restore.
+    </p>
+
+    <p id="info" class="card bg-secondary small p-2 mt-3">
+      Remarks:
+      <ul>
+        <li>Definition data must be imported before lists data.</li>
+        <li>Files to import must be at the root of the zip package (not in subfolders).</li>
+        <li>Restore does <b>insert only</b>. Unicity constraints apply and insert fails in case of duplicates.</li>
+        <li>The <b>Created By</b> and <b>Updated By</b> information is replaced by the user doing the restore.</li>
+        <li>Other information remains unchanged and is inserted as defined in the backup files, including meta-data: <b>Id</b>, <b>Created Date</b>, <b>Updated Date</b>.</li>
+      </ul>
     </p>
     
     <div class="form-check">
@@ -27,23 +38,16 @@
         name="packageType"
         id="listData"
         value="listData"
-        v-bind:disabled="isReadOnly"
-        v-bind:readonly="isReadOnly"
+        v-bind:disabled="true"
+        v-bind:readonly="true"
         v-model="packageType"
         v-on:change="files = []">
       <label class="form-check-label" for="listData">
-        Lists data (all values of all lists)
+        Lists data (all values of all lists) - <i>Not implemented yet, use the import feature in lists views instead</i>
       </label>
     </div>
 
-    <p id="info" class="card bg-secondary small p-2 mt-3">
-      The restore process follows the logic below:
-      <ul>
-        <li>Restore does <b>insert only</b>. Unicity constraints apply and insert fails in case of duplicates.</li>
-        <li>The <b>Created By</b> and <b>Updated By</b> information is replaced by the user doing the restore.</li>
-        <li>Other information remains unchanged and is inserted as defined in the backup files, including meta-data: <b>Id</b>, <b>Created Date</b>, <b>Updated Date</b>.</li>
-      </ul>
-    </p>
+    <p></p>
 
     <!-- Input of type file -->
     <div v-if="showFileTable" class="input-group form-group w-25">
@@ -140,7 +144,6 @@ export default {
           // For each file in zip package convert zip object to file object blob
           let i = 0;
           for (let key in zipContent.files) {
-            //for (const [key, value] of Object.entries(zipContent.files)) {
             zipContent
               .file(key)
               .async("blob")
