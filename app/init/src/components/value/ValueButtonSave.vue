@@ -35,7 +35,7 @@ export default {
 
         // Build mutation payload
         let variables = { id: this.value.id };
-        const patch = omit(this.value, ["createdDate", "sysUserByCreatedById", "updatedDate", "sysUserByUpdatedById"]);
+        let patch = omit(this.value, ["createdDate", "sysUserByCreatedById", "updatedDate", "sysUserByUpdatedById"]);
         variables[this.graphQlListName + "Patch"] = patch;
         let payload = {
           query: graphQlMutation,

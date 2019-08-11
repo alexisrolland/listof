@@ -114,14 +114,16 @@ export default {
   methods: {
     previewFiles() {
       // Fetch files metadata
-      const files = this.$refs.selectedFiles.files;
-      this.files = files.map((file, i) => ({
-        id: i,
-        name: file.name,
-        size: this.formatSize(file.size),
-        status: "Ready",
-        statusClass: "badge-secondary"
-      }));
+      let files = this.$refs.selectedFiles.files;
+      this.files = files.map(function(file, i) {
+        return {
+          id: i,
+          name: file.name,
+          size: this.formatSize(file.size),
+          status: "Ready",
+          statusClass: "badge-secondary"
+        };
+      });
     },
     formatSize(size) {
       // Format file size to human readable format
