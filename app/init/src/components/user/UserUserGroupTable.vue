@@ -12,19 +12,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="membership in user.sysUserGroupMembershipsByUserId.nodes"
-          v-bind:key="membership.id"
-        >
+        <tr v-for="membership in user.sysUserGroupMembershipsByUserId.nodes" v-bind:key="membership.id">
           <td>
             {{ membership.sysUserGroupByUserGroupId.name }}
           </td>
           <td>
-            <span
-              v-if="showRemoveUserGroup"
-              class="badge badge-secondary"
-              v-on:click="removeUserGroupMembership(membership.id)"
-            >
+            <span v-if="showRemoveUserGroup" class="badge badge-secondary" v-on:click="removeUserGroupMembership(membership.id)">
               Remove
             </span>
           </td>

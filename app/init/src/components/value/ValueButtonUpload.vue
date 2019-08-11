@@ -1,12 +1,6 @@
 <template>
   <span>
-    <button
-      v-if="show"
-      type="button"
-      class="btn btn-secondary"
-      data-toggle="modal"
-      data-target="#ModalBoxUpload"
-    >
+    <button v-if="show" type="button" class="btn btn-secondary ml-1" data-toggle="modal" data-target="#ModalBoxUpload">
       Upload CSV
     </button>
 

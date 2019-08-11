@@ -74,11 +74,11 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            const options = response.data.data.allSysLists.nodes;
-            this.options = options.map(option => ({
-              ...omit(option, ["attributes"]),
-              children: option.attributes.children,
-            })
+            this.options = response.data.data.allSysLists.nodes;
+            for (let i = 0; i < this.options.length; i++) {
+              this.options[i]["children"] = this.options[i]["attributes"]["children"];
+              delete this.options[i]["attributes"];
+            }
           }
         },
         // Error callback

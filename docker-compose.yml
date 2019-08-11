@@ -1,79 +1,87 @@
-version: '3.1'
+version: "3.1"
 services:
+    db:
+        container_name: listof-db
+        restart: always
+        image: listof-db
+        build:
+            context: ./db
+        volumes:
+            - db:/var/lib/postgresql/data
+        env_file:
+            - ./.env
+        networks:
+            - network
+        expose:
+            - 5432
+        ports:
+            - 5432:5432
 
-  db:
-    container_name: listof-db
-    restart: always
-    image: listof-db
-    build:
-      context: ./db
-    volumes:
-      - db:/var/lib/postgresql/data
-    env_file:
-        - ./.env
-    networks:
-      - network
-    expose:
-      - 5432
-    ports:
-      - 5432:5432
+    graphql:
+        container_name: listof-graphql
+        restart: always
+        image: listof-graphql
+        build:
+            context: ./graphql
+        env_file:
+            - ./.env
+        depends_on:
+            - db
+        networks:
+            - network
+        command: [
+                "postgraphile",
+                "--connection",
+                "${DATABASE_URL}",
+                "--port",
+                "5433",
+                "--schema",
+                "base,public",
+                "--default-role",
+                "anonymous",
+                "--jwt-secret",
+                "${SECRET_KEY}",
+                "--jwt-token-identifier",
+                "base.sys_token",
+                "--body-size-limit",
+                "6MB", # Needed to allow batch request for files up to 3Mb (2*3MB=6MB)
+                "--cors",
+                "--enable-query-batching",
+                "--watch",
+            ]
 
-  graphql:
-    container_name: listof-graphql
-    restart: always
-    image: listof-graphql
-    build:
-      context: ./graphql
-    env_file:
-      - ./.env
-    depends_on:
-      - db
-    networks:
-      - network
-    command: ["postgraphile",
-      "--connection", "${DATABASE_URL}",
-      "--port", "5433",
-      "--schema", "base,public",
-      "--default-role", "anonymous",
-      "--jwt-secret", "${SECRET_KEY}",
-      "--jwt-token-identifier", "base.sys_token",
-      "--body-size-limit", "6MB", # Needed to allow batch request for files up to 3Mb (2*3MB=6MB)
-      "--cors",
-      "--enable-query-batching",
-      "--watch"]
+    app:
+        container_name: listof-app
+        restart: always
+        image: listof-app
+        build:
+            context: ./app
+        env_file:
+            - ./.env
+        depends_on:
+            - graphql
+        networks:
+            - network
+        command: ["prod"]
 
-  app:
-    container_name: listof-app
-    restart: always
-    image: listof-app
-    build:
-      context: ./app
-    env_file:
-      - ./.env
-    depends_on:
-      - graphql
-    networks:
-      - network
-    command: ["prod"]
-
-  nginx:
-    container_name: listof-nginx
-    restart: always
-    image: nginx:alpine
-    volumes:
-      - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/config/cert.pem:/etc/nginx/cert.pem
-      - ./nginx/config/key.pem:/etc/nginx/key.pem
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - app
-    networks:
-      - network
+    nginx:
+        container_name: listof-nginx
+        restart: always
+        image: nginx:alpine
+        volumes:
+            - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/config/cert.pem:/etc/nginx/cert.pem
+            - ./nginx/config/key.pem:/etc/nginx/key.pem
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - app
+        networks:
+            - network
 
 networks:
-  network:
+    network:
 
 volumes:
-  db:
+    db:

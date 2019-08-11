@@ -61,6 +61,8 @@ CREATE ROLE admin;
 GRANT advanced TO admin;
 
 /*base schema*/
+GRANT UPDATE ON ALL SEQUENCES IN SCHEMA base TO admin; /*Required to reset Id sequence during backup and restore*/
+GRANT UPDATE ON ALL SEQUENCES IN SCHEMA public TO admin; /*Required to reset Id sequence during backup and restore*/
 GRANT INSERT, UPDATE, DELETE ON base.sys_user TO admin;
 GRANT INSERT, UPDATE, DELETE ON base.sys_user_group TO admin;
 GRANT INSERT, UPDATE, DELETE ON base.sys_user_group_membership TO admin;

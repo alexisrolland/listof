@@ -4,26 +4,16 @@
 
     <!-- User Form -->
     <div class="form-group w-25">
-      <label for="userEmail" class="col-form-label">E-mail:</label>
-      <input
-        class="form-control col-sm"
-        id="userEmail"
-        type="email"
-        required="required"
-        placeholder="Type user e-mail"
-        v-model="credentials.email"
-      />
+      <label for="userEmail" class="col-form-label">
+        E-mail:
+      </label>
+      <input class="form-control col-sm" id="userEmail" type="email" required="required" placeholder="Type user e-mail" v-model="credentials.email" />
     </div>
     <div class="form-group w-25">
-      <label for="userPassword" class="col-form-label">Password:</label>
-      <input
-        class="form-control col-sm"
-        id="userPassword"
-        type="password"
-        required="true"
-        placeholder="Type user password"
-        v-model="credentials.password"
-      />
+      <label for="userPassword" class="col-form-label">
+        Password:
+      </label>
+      <input class="form-control col-sm" id="userPassword" type="password" required="true" placeholder="Type user password" v-model="credentials.password" />
     </div>
     <button type="button" class="btn btn-success" v-on:click="authenticateUser">
       Login
@@ -66,8 +56,7 @@ export default {
               });
             } else {
               this.$store.state.errorObject.flag = true;
-              this.$store.state.errorObject.message =
-                "Authentication failed. Login or password incorrect or user account has been inactivated.";
+              this.$store.state.errorObject.message = "Authentication failed. Login or password incorrect or user account has been inactivated.";
             }
           }
         },
@@ -93,12 +82,11 @@ export default {
             this.displayError(response);
           } else {
             // Prepare list of current user groups
-            const memberships =
-              response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId
-                .nodes;
-            const currentUserGroups = memberships.map(
-              membership => membership.sysUserGroupByUserGroupId
-            );
+            let memberships = response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId.nodes;
+            let currentUserGroups = [];
+            for (let i = 0; i < memberships.length; i++) {
+              currentUserGroups.push(memberships[i]["sysUserGroupByUserGroupId"]);
+            }
 
             // Set current user, role, user groups in session object
             this.$session.set("email", response.data.data.sysUserByEmail.email);

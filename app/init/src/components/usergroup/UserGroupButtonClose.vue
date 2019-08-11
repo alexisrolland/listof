@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-outline-secondary" v-on:click="close">
+  <button type="button" class="btn btn-outline-secondary ml-1" v-on:click="close">
     Close
   </button>
 </template>

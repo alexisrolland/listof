@@ -1,10 +1,5 @@
 <template>
-  <button
-    v-if="show"
-    type="button"
-    class="btn btn-secondary"
-    v-on:click="resetPassword"
-  >
+  <button v-if="show" type="button" class="btn btn-secondary ml-1" v-on:click="resetPassword">
     Reset Password
   </button>
 </template>

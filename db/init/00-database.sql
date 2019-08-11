@@ -68,3 +68,19 @@ $$ language plpgsql;
 
 COMMENT ON FUNCTION base.delete_children IS
 'Function used to automate cascade delete on children tables.';
+
+
+
+/*Create function to reset the sequence of the primary key in the table provided as argument*/
+/*This is used in particular when inserting records from the backup and restore feature, because restored data enforces ids given in csv files*/
+CREATE OR REPLACE FUNCTION base.reset_id_sequence(schema TEXT, table_name TEXT)
+RETURNS BOOLEAN AS $$
+BEGIN
+    /*Reset sequence to avoid unique constraint error*/
+    EXECUTE format('SELECT SETVAL(''%I.%I_id_seq'', (SELECT MAX(id) FROM %I.%I));', schema, table_name, schema, table_name);
+    RETURN true;
+END;
+$$ language plpgsql strict;
+
+COMMENT ON FUNCTION base.reset_id_sequence IS
+'Function used to reset the sequence of the primary key in the table provided as argument.';

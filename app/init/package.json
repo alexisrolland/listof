@@ -1,16 +1,18 @@
 {
   "name": "listof",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "prettier": "prettier --write \"src/**/*.{js,vue}\""
+    "prettier": "prettier --write \"src/**/*.{js,vue}\" --tab-width 4 --print-width 160 --jsx-bracket-same-line"
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.0.38",
     "core-js": "^2.6.5",
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.1",
     "inflection": "^1.12.0",
     "lodash": "^4.17.11",
     "papaparse": "^5.0.0-beta.0",
@@ -48,6 +50,11 @@
     "plugins": {
       "autoprefixer": {}
     }
+  },
+  "prettier": {
+    "jsxBracketSameLine": true,
+    "printWidth": 160,
+    "tabWidth": 2
   },
   "browserslist": [
     "> 1%",

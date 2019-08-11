@@ -1,9 +1,7 @@
 <template>
   <div>
     <!-- Label -->
-    <label class="col-form-label" v-bind:for="attribute.id">
-      {{ attribute.name }}:
-    </label>
+    <label class="col-form-label" v-bind:for="attribute.id"> {{ attribute.name }}: </label>
 
     <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
     <input

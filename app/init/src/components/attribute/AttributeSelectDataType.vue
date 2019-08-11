@@ -12,11 +12,7 @@
       v-model="dataTypeId"
       v-on:change="change"
     >
-      <option
-        v-for="dataType in dataTypes"
-        v-bind:value="dataType.id"
-        v-bind:key="dataType.id"
-      >
+      <option v-for="dataType in dataTypes" v-bind:value="dataType.id" v-bind:key="dataType.id">
         {{ dataType.displayName }}
       </option>
     </select>

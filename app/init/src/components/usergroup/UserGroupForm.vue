@@ -10,20 +10,12 @@
             <label for="userGroupName" class="col-form-label">
               Name:
             </label>
-            <input
-              class="form-control col-sm"
-              id="userGroupName"
-              type="text"
-              required="required"
-              placeholder="Type user group name"
-              v-model="userGroup.name"
-            />
+            <input class="form-control col-sm" id="userGroupName" type="text" required="required" placeholder="Type user group name" v-model="userGroup.name" />
           </div>
 
           <!-- Button Menu -->
           <div>
-            <user-group-button-save v-bind:userGroup="userGroup">
-            </user-group-button-save>
+            <user-group-button-save v-bind:userGroup="userGroup"> </user-group-button-save>
 
             <user-group-button-close> </user-group-button-close>
           </div>

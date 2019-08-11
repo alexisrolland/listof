@@ -9,12 +9,8 @@
     <!-- Button Menu -->
     <div>
       <value-button-add-value v-bind:listId="list.id"> </value-button-add-value>
-
       <value-button-download v-bind:list="list"> </value-button-download>
-
-      <value-button-upload v-bind:list="list" v-on:fileUploaded="getList">
-      </value-button-upload>
-
+      <value-button-upload v-bind:list="list" v-on:fileUploaded="getList"> </value-button-upload>
       <value-button-edit-list v-bind:listId="list.id"> </value-button-edit-list>
     </div>
 

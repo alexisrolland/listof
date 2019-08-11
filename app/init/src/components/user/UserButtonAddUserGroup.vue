@@ -1,10 +1,5 @@
 <template>
-  <button
-    v-if="show"
-    type="button"
-    class="btn btn-success"
-    v-on:click="addUserGroup"
-  >
+  <button v-if="show" type="button" class="btn btn-success" v-on:click="addUserGroup">
     Add User to Groups
   </button>
 </template>
@@ -22,10 +17,10 @@ export default {
     addUserGroup() {
       // Method to create a relationship between a user and a user group
       // Get list of current user groups
-      const memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
-      const currentUserGroups = memberships.map(
-        membership => membership.userGroupId
-      );
+      let currentUserGroups = [];
+      for (let i = 0; i < this.user.sysUserGroupMembershipsByUserId.nodes.length; i++) {
+        currentUserGroups.push(this.user.sysUserGroupMembershipsByUserId.nodes[i]["userGroupId"]);
+      }
 
       // For selected list of user groups
       // If current user group does not contain the new group, add user to it
@@ -45,24 +40,20 @@ export default {
           if (this.$session.exists()) {
             headers = { Authorization: "Bearer " + this.$session.get("jwt") };
           }
-          this.$http
-            .post(this.$store.state.graphqlUrl, payload, { headers })
-            .then(
-              function(response) {
-                if (response.data.errors) {
-                  this.displayError(response);
-                } else {
-                  let userGroupMembership =
-                    response.data.data.createSysUserGroupMembership
-                      .sysUserGroupMembership;
-                  this.$emit("addUserGroupMembership", userGroupMembership);
-                }
-              },
-              // Error callback
-              function(response) {
+          this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+            function(response) {
+              if (response.data.errors) {
                 this.displayError(response);
+              } else {
+                let userGroupMembership = response.data.data.createSysUserGroupMembership.sysUserGroupMembership;
+                this.$emit("addUserGroupMembership", userGroupMembership);
               }
-            );
+            },
+            // Error callback
+            function(response) {
+              this.displayError(response);
+            }
+          );
         }
       });
 
@@ -87,12 +78,11 @@ export default {
             this.displayError(response);
           } else {
             // Prepare list of current user groups
-            let memberships =
-              response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId
-                .nodes;
-            const currentUserGroups = memberships.map(
-              membership => membership.sysUserGroupByUserGroupId
-            );
+            let memberships = response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId.nodes;
+            let currentUserGroups = [];
+            for (let i = 0; i < memberships.length; i++) {
+              currentUserGroups.push(memberships[i]["sysUserGroupByUserGroupId"]);
+            }
 
             // Reset current user groups
             this.$session.set("userGroups", currentUserGroups);

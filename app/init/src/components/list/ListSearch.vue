@@ -11,19 +11,10 @@
     />
 
     <!-- Lists table -->
-    <list-table
-      v-bind:lists="lists"
-      v-bind:sortAttribute="sortAttribute"
-      v-on:sortAttribute="setSortAttribute"
-    ></list-table>
+    <list-table v-bind:lists="lists" v-bind:sortAttribute="sortAttribute" v-on:sortAttribute="setSortAttribute"></list-table>
 
     <!-- Lists pagination -->
-    <list-pagination
-      v-if="showPagination"
-      v-bind:totalCount="nbLists"
-      v-bind:currentPage="currentPage"
-      v-on:goToPage="getAllLists"
-    ></list-pagination>
+    <list-pagination v-if="showPagination" v-bind:totalCount="nbLists" v-bind:currentPage="currentPage" v-on:goToPage="getAllLists"></list-pagination>
   </div>
 </template>
 
@@ -64,11 +55,7 @@ export default {
         variables: {
           first: page.nbItems,
           offset: page.offset,
-          orderBy: [
-            lodash.toUpper(
-              this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder
-            )
-          ]
+          orderBy: [lodash.toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
         }
       };
       let headers = {};
@@ -120,21 +107,19 @@ export default {
         if (this.$session.exists()) {
           headers = { Authorization: "Bearer " + this.$session.get("jwt") };
         }
-        this.$http
-          .post(this.$store.state.graphqlUrl, payload, { headers })
-          .then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              } else {
-                this.lists = response.data.data.searchList.sysLists;
-              }
-            },
-            // Error callback
-            function(response) {
+        this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+          function(response) {
+            if (response.data.errors) {
               this.displayError(response);
+            } else {
+              this.lists = response.data.data.searchList.sysLists;
             }
-          );
+          },
+          // Error callback
+          function(response) {
+            this.displayError(response);
+          }
+        );
       }
     },
     setSortAttribute(attribute) {
