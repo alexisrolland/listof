@@ -102,7 +102,9 @@ export default {
       this.user.sysUserGroupMembershipsByUserId.nodes.push(userGroupMembership);
     },
     removeUserGroupMembership(id) {
-      this.user.sysUserGroupMembershipsByUserId.nodes = remove(this.user.sysUserGroupMembershipsByUserId.nodes, membership => membership.id == id);
+      this.user.sysUserGroupMembershipsByUserId.nodes = remove(this.user.sysUserGroupMembershipsByUserId.nodes, function(membership) {
+        return membership.id == id;
+      });
     },
     resetPassword(value) {
       this.showPasswordField = value;
