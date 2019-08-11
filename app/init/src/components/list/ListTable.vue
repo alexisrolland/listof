@@ -26,7 +26,7 @@
           </router-link>
         </td>
         <td>
-          {{ list.description.substring(0, 70) + "..." }}
+          {{ list.description.length > 70 ? list.description.substring(0, 70) + "..." : list.description }}
         </td>
         <td>
           {{ list.sysUserGroupByUserGroupId.name }}
