@@ -167,6 +167,26 @@ export default {
             this.files[attributeIndex]["nbRows"] = row.length;
             this.files[attributeIndex]["nbRowsError"] = 0;
           }
+
+          // Reset Id sequence in sys_user_group table
+          let payload = {
+            query: this.$store.state.mutationResetIdSequence,
+            variables: {
+              schema: "base",
+              tableName: "sys_attribute"
+            }
+          };
+          this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+            function(response) {
+              if (response.data.errors) {
+                this.displayError(response);
+              }
+            },
+            // Error callback
+            function(response) {
+              this.displayError(response);
+            }
+          );
         }.bind(this)
       );
     },
