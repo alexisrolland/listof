@@ -200,8 +200,7 @@ export default {
             }
 
             // Sort attributes
-            let lodash = require("lodash");
-            this.list["attributes"] = lodash.sortBy(attributes, "order");
+            this.list["attributes"] = sortBy(attributes, "order");
             delete this.list.sysAttributesByListId;
 
             // If valueId == new then default attributes in form

@@ -74,7 +74,6 @@
 <script>
 import findIndex from "lodash/findIndex";
 import isEmpty from "lodash/isEmpty";
-
 import Mixins from "../utils/Mixins.vue";
 import ValueButtonDownloadTemplate from "./ValueButtonDownloadTemplate";
 
@@ -139,7 +138,6 @@ export default {
     },
     parseFiles() {
       let papa = require("papaparse");
-      console.log($("input[type=file]"));
       $("input[type=file]").parse({
         config: {
           header: true,
@@ -177,11 +175,11 @@ export default {
       let payloadBatch = results.data.map(
         function(row) {
           // Build update or create mutation payload if row is not empty
-          if (!lodash.isEmpty(row)) {
+          if (!isEmpty(row)) {
             // Loop over each column of the record
             for (let key in row) {
               // Drop invalid column if it's not in graphQlAttributeNames
-              let i = lodash.findIndex(this.graphQlAttributeNames, function(obj) {
+              let i = findIndex(this.graphQlAttributeNames, function(obj) {
                 return obj.graphQlAttributeName == key;
               });
 

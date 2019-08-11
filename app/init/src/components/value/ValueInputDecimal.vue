@@ -41,12 +41,12 @@ export default {
     }
   },
   watch: {
-    value(val) {
+    value() {
       this.inputValue = this.value;
     }
   },
   methods: {
-    change(val) {
+    change() {
       let attributeValue = {
         attribute: this.attribute.graphQlAttributeName,
         value: this.inputValue
