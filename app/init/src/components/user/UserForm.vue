@@ -62,14 +62,14 @@
           v-bind:user="user"
           v-on:addUserGroupMembership="addUserGroupMembership"
           v-on:removeUserGroupMembership="removeUserGroupMembership"
-        >
-        </user-user-group>
+        ></user-user-group>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import remove from "lodash/remove";
 import UserButtonSave from "./UserButtonSave.vue";
 import UserButtonResetPassword from "./UserButtonResetPassword.vue";
 import UserButtonClose from "./UserButtonClose.vue";
@@ -102,12 +102,7 @@ export default {
       this.user.sysUserGroupMembershipsByUserId.nodes.push(userGroupMembership);
     },
     removeUserGroupMembership(id) {
-      let memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
-      for (let i = 0; i < relationships.length; i++) {
-        if (memberships[i]["id"] == id) {
-          this.user.sysUserGroupMembershipsByUserId.nodes.splice(i, 1);
-        }
-      }
+      this.user.sysUserGroupMembershipsByUserId.nodes = remove(this.user.sysUserGroupMembershipsByUserId.nodes, membership => membership.id == id);
     },
     resetPassword(value) {
       this.showPasswordField = value;

@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import omit from "lodash/omit";
 import Mixins from "../utils/Mixins.vue";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";

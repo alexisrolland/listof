@@ -2,7 +2,8 @@
   <div>
     <h1 class="mt-5">{{ list.name }}</h1>
     <p v-if="list.id">
-      User Group: {{ list.sysUserGroupByUserGroupId.name }}<br />
+      User Group: {{ list.sysUserGroupByUserGroupId.name }}
+      <br />
       Description: {{ list.description }}
     </p>
 
@@ -25,8 +26,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-checkbox>
+              ></value-input-checkbox>
 
               <!-- Date input, used for data types date (id: 3) -->
               <value-input-date
@@ -34,8 +34,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-date>
+              ></value-input-date>
 
               <!-- Timestamp input, used for data types timestamp (id: 9) -->
               <value-input-timestamp
@@ -43,8 +42,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-timestamp>
+              ></value-input-timestamp>
 
               <!-- Text input, used for data types decimal (id: 4) -->
               <value-input-decimal
@@ -52,8 +50,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-decimal>
+              ></value-input-decimal>
 
               <!-- Number input, used for data types bigint (id: 1), integer (id: 5), smallint (id: 7) -->
               <value-input-integer
@@ -61,8 +58,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-integer>
+              ></value-input-integer>
 
               <!-- Text input, used for data types real (id: 6) -->
               <value-input-real
@@ -70,8 +66,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-real>
+              ></value-input-real>
 
               <!-- Text input, used for all other data types text (id: 8) -->
               <value-input-text
@@ -79,8 +74,7 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-input-text>
+              ></value-input-text>
 
               <!-- Select input, used for attributes which are linked to another list -->
               <value-select-dropdown
@@ -88,17 +82,14 @@
                 v-bind:attribute="attribute"
                 v-bind:value="value[attribute.graphQlAttributeName]"
                 v-on:changeAttributeValue="getAttributeValue"
-              >
-              </value-select-dropdown>
+              ></value-select-dropdown>
             </div>
           </div>
 
           <!-- Button Menu -->
           <div>
             <value-button-save v-bind:graphQlListName="list.graphQlListName" v-bind:value="value" v-on:updatedValue="updateMetaData"> </value-button-save>
-
-            <value-button-close v-bind:listId="list.id"> </value-button-close>
-
+            <value-button-close v-bind:listId="list.id"></value-button-close>
             <value-button-delete v-if="value.id" v-bind:graphQlListName="list.graphQlListName" v-bind:valueId="value.id" v-bind:listId="list.id">
             </value-button-delete>
           </div>
@@ -119,6 +110,7 @@
 </template>
 
 <script>
+import sortBy from "lodash/sortBy";
 import ValueInputCheckbox from "./ValueInputCheckbox.vue";
 import ValueInputDate from "./ValueInputDate.vue";
 import ValueInputTimestamp from "./ValueInputTimestamp.vue";

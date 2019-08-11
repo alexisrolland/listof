@@ -72,6 +72,9 @@
 </template>
 
 <script>
+import findIndex from "lodash/findIndex";
+import isEmpty from "lodash/isEmpty";
+
 import Mixins from "../utils/Mixins.vue";
 import ValueButtonDownloadTemplate from "./ValueButtonDownloadTemplate";
 
@@ -112,18 +115,14 @@ export default {
   methods: {
     previewFiles() {
       // Fetch files metadata
-      this.files = [];
-      let files = this.$refs.selectedFiles.files;
-      for (let i = 0; i < files.length; i++) {
-        let file = {
-          id: i,
-          name: files[i]["name"],
-          size: this.formatSize(files[i]["size"]),
-          status: "Ready",
-          statusClass: "badge-secondary"
-        };
-        this.files.push(file);
-      }
+      const files = this.$refs.selectedFiles.files;
+      this.files = files.map((file, i) => ({
+        id: i,
+        name: file.name,
+        size: this.formatSize(file.size),
+        status: "Ready",
+        statusClass: "badge-secondary"
+      }));
     },
     formatSize(size) {
       // Format file size to human readable format
@@ -151,8 +150,7 @@ export default {
     },
     uploadFiles(results, file) {
       //Find file index in files list
-      let lodash = require("lodash");
-      let fileIndex = lodash.findIndex(this.files, function(obj) {
+      let fileIndex = findIndex(this.files, function(obj) {
         return obj.name == file.name;
       });
       this.files[fileIndex]["status"] = "Uploading";
