@@ -24,17 +24,19 @@ export default {
   computed: {
     pages() {
       let nbPages = Math.ceil(this.totalCount / this.nbItems);
-      return Array.from({ length: nbPages }).map((_, index) => {
-        const page = {
-          pageNum: index + 1,
-          offset: index * this.nbItems,
+      let pages = [];
+      for (let i = 0; i < nbPages; i++) {
+        let page = {
+          pageNum: i + 1,
+          offset: i * this.nbItems,
           nbItems: this.nbItems
         };
-        if (this.currentPage.pageNum == index + 1) {
+        if (this.currentPage.pageNum == i + 1) {
           page["isActive"] = true;
         }
-        return page;
-      });
+        pages.push(page);
+      }
+      return pages;
     }
   },
   methods: {
