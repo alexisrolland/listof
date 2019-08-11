@@ -105,19 +105,21 @@ export default {
       );
     },
     duplicateAttributes(headers, attributes) {
-      const payloads = attributes.map(attribute => ({
-        query: this.$store.state.mutationCreateAttribute,
-        variables: {
-          sysAttribute: {
-            name: attribute.name,
-            description: attribute.description,
-            order: attribute.order,
-            flagUnique: attribute.flagUnique,
-            flagMandatory: attribute.flagMandatory,
-            linkedAttributeId: attribute.linkedAttributeId,
-            dataTypeId: attribute.dataTypeId,
-            defaultValue: attribute.defaultValue,
-            listId: this.listId
+      for (let i = 0; i < attributes.length; i++) {
+        let payload = {
+          query: this.$store.state.mutationCreateAttribute,
+          variables: {
+            sysAttribute: {
+              name: attributes[i].name,
+              description: attributes[i].description,
+              order: attributes[i].order,
+              flagUnique: attributes[i].flagUnique,
+              flagMandatory: attributes[i].flagMandatory,
+              linkedAttributeId: attributes[i].linkedAttributeId,
+              dataTypeId: attributes[i].dataTypeId,
+              defaultValue: attributes[i].defaultValue,
+              listId: this.listId
+            }
           }
         };
         this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
