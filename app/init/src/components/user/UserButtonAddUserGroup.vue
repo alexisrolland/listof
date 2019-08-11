@@ -18,13 +18,13 @@ export default {
       // Method to create a relationship between a user and a user group
       // Get list of current user groups
       let currentUserGroups = [];
-      for (let i = 0; i < this.user.sysUserGroupMembershipsByUserId.nodes.length; i++) {
-        currentUserGroups.push(this.user.sysUserGroupMembershipsByUserId.nodes[i]["userGroupId"]);
-      }
+      this.user.sysUserGroupMembershipsByUserId.nodes.forEach(function(userGroupMembership) {
+        currentUserGroups.push(userGroupMembership["userGroupId"]);
+      });
 
       // For selected list of user groups
       // If current user group does not contain the new group, add user to it
-      this.userGroups.forEach(userGroup => {
+      this.userGroups.forEach(function(userGroup) {
         if (currentUserGroups.includes(userGroup) == false) {
           // Method to insert a relationship between a user and a user group
           let payload = {
