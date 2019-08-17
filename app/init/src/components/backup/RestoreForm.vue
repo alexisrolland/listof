@@ -43,7 +43,7 @@
         v-model="packageType"
         v-on:change="files = []">
       <label class="form-check-label" for="listData">
-        Lists data (all values of all lists) - <i>Not implemented yet, use the 'Upload CSV' feature in lists views instead</i>
+        Lists data (all values of all lists) - <i>Not implemented yet</i>
       </label>
     </div>
 
