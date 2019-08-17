@@ -83,6 +83,8 @@
 </template>
 
 <script>
+import findIndex from "lodash/findIndex";
+import sortBy from "lodash/sortBy";
 import ListAttributeButtonAdd from "./ListAttributeButtonAdd.vue";
 import Mixins from "../utils/Mixins.vue";
 
@@ -100,8 +102,7 @@ export default {
       return roles.includes(this.$store.state.currentUser.role);
     },
     sortedAttributes() {
-      let lodash = require("lodash");
-      return lodash.sortBy(this.list.sysAttributesByListId.nodes, "order");
+      return sortBy(this.list.sysAttributesByListId.nodes, "order");
     }
   },
   methods: {
@@ -145,8 +146,7 @@ export default {
             let id = response.data.data.updateSysAttributeById.sysAttribute.id;
 
             // Update order in frontend
-            let lodash = require("lodash");
-            let attributeIndex = lodash.findIndex(this.list.sysAttributesByListId.nodes, ["id", id]);
+            let attributeIndex = findIndex(this.list.sysAttributesByListId.nodes, ["id", id]);
             this.list.sysAttributesByListId.nodes[attributeIndex].order = order;
           }
         },

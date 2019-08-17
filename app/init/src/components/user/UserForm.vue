@@ -69,7 +69,6 @@
 </template>
 
 <script>
-import remove from "lodash/remove";
 import UserButtonSave from "./UserButtonSave.vue";
 import UserButtonResetPassword from "./UserButtonResetPassword.vue";
 import UserButtonClose from "./UserButtonClose.vue";
@@ -94,7 +93,7 @@ export default {
   },
   computed: {
     userId() {
-      return this.$route.params.userId;
+      return this.$route.params.userId.toString();
     }
   },
   methods: {

@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import snakeCase from "lodash/snakeCase";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -127,9 +128,8 @@ export default {
       // Change header to snake_case
       let rows = text.split(/\r\n|\r|\n/);
       let headers = rows[0].split(",");
-      let lodash = require("lodash");
       for (let i = 0; i < headers.length; i++) {
-        headers[i] = lodash.snakeCase(headers[i]);
+        headers[i] = snakeCase(headers[i]);
       }
       rows[0] = headers.join(",");
       text = rows.join("\r\n");

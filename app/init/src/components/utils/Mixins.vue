@@ -1,4 +1,8 @@
 <script>
+import upperFirst from "lodash/upperFirst";
+import camelCase from "lodash/camelCase";
+import inflection from "inflection";
+
 export default {
   methods: {
     displayError(response, batchErrors = null) {
@@ -20,13 +24,10 @@ export default {
         this.$store.state.errorObject.message = response.bodyText;
       }
     },
-    getGraphQlName(name, number = null, upperFirst = false) {
+    getGraphQlName(name, number = null, setUpperFirst = false) {
       // Method to compute GraphQL queries, mutations and fields names based on tables and columns names
       // Use case is to transform the input: my_list
       // In an output such as: allMyLists, myListById, etc...
-
-      let inflection = require("inflection");
-      let lodash = require("lodash");
 
       // Apply number
       if (number == "singular") {
@@ -36,11 +37,11 @@ export default {
       }
 
       // Camel case
-      name = lodash.camelCase(name);
+      name = camelCase(name);
 
       // Upper case first letter
-      if (upperFirst == true) {
-        name = lodash.upperFirst(name);
+      if (setUpperFirst == true) {
+        name = upperFirst(name);
       }
 
       return name;
