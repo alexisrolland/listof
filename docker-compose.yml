@@ -45,6 +45,8 @@ services:
                 "base.sys_token",
                 "--body-size-limit",
                 "6MB", # Needed to allow batch request for files up to 3Mb (2*3MB=6MB)
+                "--append-plugins",
+                "postgraphile-plugin-connection-filter",
                 "--cors",
                 "--enable-query-batching",
                 "--watch",
