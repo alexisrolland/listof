@@ -43,7 +43,7 @@
         v-model="packageType"
         v-on:change="files = []">
       <label class="form-check-label" for="listData">
-        Lists data (all values of all lists) - <i>Not implemented yet, use the import feature in lists views instead</i>
+        Lists data (all values of all lists) - <i>Not implemented yet, use the 'Upload CSV' feature in lists views instead</i>
       </label>
     </div>
 
@@ -92,6 +92,8 @@
 </template>
 
 <script>
+import findIndex from "lodash/findIndex";
+import isEmpty from "lodash/isEmpty";
 import Mixins from "../utils/Mixins.vue";
 import RestoreButtonUpload from "./RestoreButtonUpload.vue";
 
@@ -190,23 +192,25 @@ export default {
       );
     },
     buildPayloadUserGroup(results, graphQlListName, graphQlCreateMutation, fileIndex) {
-      let lodash = require("lodash");
-      let payloadBatch = results.data.map(function(row) {
-        // Build create mutation payload if row is not empty
-        if (!lodash.isEmpty(row)) {
-          // Format columns
-          row["id"] = parseInt(row["id"]);
+      // Remove empty rows
+      let data = results.data.filter(function(row) {
+        return row.id != "";
+      });
 
-          // Build create mutation
-          let payload = {};
-          let variables = {};
-          variables[graphQlListName] = row;
-          payload = {
-            query: graphQlCreateMutation,
-            variables: variables
-          };
-          return payload;
-        }
+      // Build create mutation payload
+      let payloadBatch = data.map(function(row) {
+        // Format columns
+        row["id"] = parseInt(row["id"]);
+
+        // Build create mutation
+        let payload = {};
+        let variables = {};
+        variables[graphQlListName] = row;
+        payload = {
+          query: graphQlCreateMutation,
+          variables: variables
+        };
+        return payload;
       });
 
       // Update file status in table
@@ -215,24 +219,26 @@ export default {
       this.files[fileIndex]["statusClass"] = "badge-secondary";
     },
     buildPayloadList(results, graphQlListName, graphQlCreateMutation, fileIndex) {
-      let lodash = require("lodash");
-      let payloadBatch = results.data.map(function(row) {
-        // Build create mutation payload if row is not empty
-        if (!lodash.isEmpty(row)) {
-          // Format columns
-          row["id"] = parseInt(row["id"]);
-          row["userGroupId"] = parseInt(row["userGroupId"]);
+      // Remove empty rows
+      let data = results.data.filter(function(row) {
+        return row.id != "";
+      });
 
-          // Build create mutation
-          let payload = {};
-          let variables = {};
-          variables[graphQlListName] = row;
-          payload = {
-            query: graphQlCreateMutation,
-            variables: variables
-          };
-          return payload;
-        }
+      // Build create mutation payload
+      let payloadBatch = data.map(function(row) {
+        // Format columns
+        row["id"] = parseInt(row["id"]);
+        row["userGroupId"] = parseInt(row["userGroupId"]);
+
+        // Build create mutation
+        let payload = {};
+        let variables = {};
+        variables[graphQlListName] = row;
+        payload = {
+          query: graphQlCreateMutation,
+          variables: variables
+        };
+        return payload;
       });
 
       // Update file status in table
@@ -241,50 +247,48 @@ export default {
       this.files[fileIndex]["statusClass"] = "badge-secondary";
     },
     buildPayloadAttribute(results, graphQlListName, graphQlCreateMutation, fileIndex) {
-      let lodash = require("lodash");
-      let payloadBatch = results.data.map(function(row) {
-        // Build create mutation payload if row is not empty
-        if (!lodash.isEmpty(row)) {
-          // Format columns
-          row["id"] = parseInt(row["id"]);
-          row["order"] = parseInt(row["order"]);
-          row["flagUnique"] = row["flagUnique"].toLowerCase() == "true";
-          row["flagMandatory"] = row["flagMandatory"].toLowerCase() == "true";
-          row["userGroupId"] = parseInt(row["userGroupId"]);
-          row["listId"] = parseInt(row["listId"]);
-          row["dataTypeId"] = parseInt(row["dataTypeId"]);
+      // Remove empty rows
+      let data = results.data.filter(function(row) {
+        return row.id != "";
+      });
 
-          // Description
-          if (row["description"] == "") {
-            delete row["description"];
-          }
+      // Build create mutation payload
+      let payloadBatch = data.map(function(row, index) {
+        // Format columns
+        row["id"] = parseInt(row["id"]);
+        row["order"] = parseInt(row["order"]);
+        row["flagUnique"] = row["flagUnique"].toLowerCase() == "true";
+        row["flagMandatory"] = row["flagMandatory"].toLowerCase() == "true";
+        row["userGroupId"] = parseInt(row["userGroupId"]);
+        row["listId"] = parseInt(row["listId"]);
+        row["dataTypeId"] = parseInt(row["dataTypeId"]);
 
-          // Default value
-          if (row["defaultValue"] != "") {
-            if (row["linkedAttributeId"] != "") {
-              row["defaultValue"] = parseInt(row["defaultValue"]);
-            }
-          } else {
-            delete row["defaultValue"];
-          }
-
-          // Linked attribute
-          if (row["linkedAttributeId"] != "") {
-            row["linkedAttributeId"] = parseInt(row["linkedAttributeId"]);
-          } else {
-            delete row["linkedAttributeId"];
-          }
-
-          // Build create mutation
-          let payload = {};
-          let variables = {};
-          variables[graphQlListName] = row;
-          payload = {
-            query: graphQlCreateMutation,
-            variables: variables
-          };
-          return payload;
+        // Description
+        if (row["description"] == "") {
+          delete row["description"];
         }
+
+        // Default value
+        if (row["defaultValue"] == "") {
+          delete row["defaultValue"];
+        }
+
+        // Linked attribute
+        if (row["linkedAttributeId"] != "") {
+          row["linkedAttributeId"] = parseInt(row["linkedAttributeId"]);
+        } else {
+          delete row["linkedAttributeId"];
+        }
+
+        // Convert object to string for GraphQL mutation
+        // Remove double quotes from object keys since they are failing GraphQL mutation
+        row = JSON.stringify(row);
+        row = row.replace(/\"([^(\")"]+)\":/g, "$1:");
+
+        // Add an alias in the mutation createAttribute<index>
+        let mutationCreateAttribute = `createAttribute` + index + `: createSysAttribute(input: {sysAttribute: <SysAttributeInput>}) { sysAttribute { id } }`;
+        mutationCreateAttribute = mutationCreateAttribute.replace(/<SysAttributeInput>/g, row);
+        return mutationCreateAttribute;
       });
 
       // Update file status in table
@@ -294,7 +298,6 @@ export default {
     },
     buildPayloadValue(results, graphQlListName, graphQlCreateMutation, fileIndex, tableName) {
       // Method to get the attributes of a list to validate CSV file header
-      let lodash = require("lodash");
       let payload = {
         query: this.$store.state.queryRestoreGetList,
         variables: {
@@ -331,11 +334,11 @@ export default {
               let payloadBatch = results.data.map(
                 function(row) {
                   // Build create mutation payload if row is not empty
-                  if (!lodash.isEmpty(row)) {
+                  if (!isEmpty(row)) {
                     // Loop over each column of the record
                     for (let key in row) {
                       // Drop invalid column if it's not in list attributes definition
-                      let i = lodash.findIndex(graphQlAttributeNames, function(obj) {
+                      let i = findIndex(graphQlAttributeNames, function(obj) {
                         return obj.graphQlAttributeName == key;
                       });
 
@@ -392,8 +395,7 @@ export default {
     },
     prepareHttpRequest(results, file) {
       //Find file index in files list
-      let lodash = require("lodash");
-      let fileIndex = lodash.findIndex(this.files, function(obj) {
+      let fileIndex = findIndex(this.files, function(obj) {
         return obj.name == file.name;
       });
 

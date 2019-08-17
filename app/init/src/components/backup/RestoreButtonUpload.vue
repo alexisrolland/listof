@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import findIndex from "lodash/findIndex";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -15,6 +16,10 @@ export default {
   },
   methods: {
     uploadUserGroup(headers, userGroupIndex, listIndex, attributeIndex) {
+      // Update badge info to Uploading
+      this.files[userGroupIndex]["status"] = "Uploading";
+      this.files[userGroupIndex]["statusClass"] = "badge-info";
+
       this.$http.post(this.$store.state.graphqlUrl, this.files[userGroupIndex].payloadBatch, { headers }).then(
         function(response) {
           // Get queries which returned an error
@@ -35,24 +40,10 @@ export default {
             this.files[userGroupIndex]["nbRowsError"] = 0;
 
             // Reset Id sequence in sys_user_group table
-            let payload = {
-              query: this.$store.state.mutationResetIdSequence,
-              variables: {
-                schema: "base",
-                tableName: "sys_user_group"
-              }
-            };
-            this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-              function(response) {
-                if (response.data.errors) {
-                  this.displayError(response);
-                }
-              },
-              // Error callback
-              function(response) {
-                this.displayError(response);
-              }
-            );
+            this.resetIdSequence("sys_user_group");
+
+            // Refresh current user groups for current user
+            this.refreshCurrentUserGroups();
 
             // Upload following files
             if (listIndex != -1) {
@@ -71,6 +62,10 @@ export default {
       );
     },
     uploadList(headers, listIndex, attributeIndex) {
+      // Update badge info to Uploading
+      this.files[listIndex]["status"] = "Uploading";
+      this.files[listIndex]["statusClass"] = "badge-info";
+
       this.$http.post(this.$store.state.graphqlUrl, this.files[listIndex].payloadBatch, { headers }).then(
         function(response) {
           // Get queries which returned an error
@@ -90,25 +85,8 @@ export default {
             this.files[listIndex]["nbRows"] = response.data.length;
             this.files[listIndex]["nbRowsError"] = 0;
 
-            // Reset Id sequence in sys_user_group table
-            let payload = {
-              query: this.$store.state.mutationResetIdSequence,
-              variables: {
-                schema: "base",
-                tableName: "sys_list"
-              }
-            };
-            this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-              function(response) {
-                if (response.data.errors) {
-                  this.displayError(response);
-                }
-              },
-              // Error callback
-              function(response) {
-                this.displayError(response);
-              }
-            );
+            // Reset Id sequence in sys_list table
+            this.resetIdSequence("sys_list");
 
             // Upload following files
             if (attributeIndex != -1) {
@@ -125,69 +103,38 @@ export default {
       );
     },
     uploadAttribute(headers, attributeIndex) {
-      // Use loop instead of query batching to avoid deadlock
-      let results = this.files[attributeIndex].payloadBatch.map(
-        function(payload) {
-          let row = this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-            function(response) {
-              let result = {};
-              if (response.data.errors) {
-                result["status"] = "Error";
-                result["errors"] = response.data.errors;
-                return result;
-              } else {
-                result["status"] = "Complete";
-                return result;
-              }
-            },
-            // Error callback
-            function(response) {
-              this.displayError(response);
-            }
-          );
-          return row;
-        }.bind(this)
-      );
+      // Update badge info to Uploading
+      this.files[attributeIndex]["status"] = "Uploading";
+      this.files[attributeIndex]["statusClass"] = "badge-info";
 
-      // Fetch results from promise
-      Promise.all(results).then(
-        function(row) {
-          let errors = row.filter(function(obj) {
-            return obj.hasOwnProperty("errors");
-          });
+      // Use multiple mutations in one single operation to ensure sequential execution of mutations
+      // Query batching could not be used as it triggered some deadlock due to parallelism of mutations executions
+      let graphQlCreateMutation = `mutation createAttributes { <mutationCreateAttribute> }`;
+      graphQlCreateMutation = graphQlCreateMutation.replace(/<mutationCreateAttribute>/g, this.files[attributeIndex].payloadBatch.join(" "));
+      let payload = { query: graphQlCreateMutation };
 
-          if (errors.length > 0) {
+      this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+        function(response) {
+          if (response.data.errors) {
             this.files[attributeIndex]["status"] = "Error";
             this.files[attributeIndex]["statusClass"] = "badge-danger";
-            this.files[attributeIndex]["nbRows"] = row.length - errors.length;
-            this.files[attributeIndex]["nbRowsError"] = errors.length;
+            this.files[attributeIndex]["nbRows"] = Object.keys(response.data.data).length - response.data.errors.length;
+            this.files[attributeIndex]["nbRowsError"] = response.data.errors.length;
+            this.displayError(response, response.data.errors);
           } else {
             this.files[attributeIndex]["status"] = "Complete";
             this.files[attributeIndex]["statusClass"] = "badge-success";
-            this.files[attributeIndex]["nbRows"] = row.length;
+            this.files[attributeIndex]["nbRows"] = Object.keys(response.data.data).length;
             this.files[attributeIndex]["nbRowsError"] = 0;
-          }
 
-          // Reset Id sequence in sys_user_group table
-          let payload = {
-            query: this.$store.state.mutationResetIdSequence,
-            variables: {
-              schema: "base",
-              tableName: "sys_attribute"
-            }
-          };
-          this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
-            function(response) {
-              if (response.data.errors) {
-                this.displayError(response);
-              }
-            },
-            // Error callback
-            function(response) {
-              this.displayError(response);
-            }
-          );
-        }.bind(this)
+            // Reset Id sequence in sys_attribute table
+            this.resetIdSequence("sys_attribute");
+          }
+        },
+        // Error callback
+        function(response) {
+          this.displayError(response);
+        }
       );
     },
     uploadValue(headers) {
@@ -249,14 +196,13 @@ export default {
       }
       if (this.packageType == "definitionData") {
         // Find if list of files contains user group, list, attribute files
-        let lodash = require("lodash");
-        let userGroupIndex = lodash.findIndex(this.files, function(file) {
+        let userGroupIndex = findIndex(this.files, function(file) {
           return file.name == "sys_user_group.csv";
         });
-        let listIndex = lodash.findIndex(this.files, function(file) {
+        let listIndex = findIndex(this.files, function(file) {
           return file.name == "sys_list.csv";
         });
-        let attributeIndex = lodash.findIndex(this.files, function(file) {
+        let attributeIndex = findIndex(this.files, function(file) {
           return file.name == "sys_attribute.csv";
         });
 
@@ -270,8 +216,67 @@ export default {
         }
       } else if (this.packageType == "listData") {
         // Execute http requests to load values
+        // This is not supported yet, listData option is disabled in the UI
         this.uploadValue(headers);
       }
+    },
+    refreshCurrentUserGroups() {
+      // Method to refresh current user's user groups
+      let payload = {
+        query: this.$store.state.queryGetCurrentUser,
+        variables: { email: this.$session.get("email") }
+      };
+      let headers = {};
+      if (this.$session.exists()) {
+        headers = { Authorization: "Bearer " + this.$session.get("jwt") };
+      }
+      this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+        function(response) {
+          if (response.data.errors) {
+            this.displayError(response);
+          } else {
+            // Prepare list of current user groups
+            let memberships = response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId.nodes;
+            let currentUserGroups = [];
+            for (let i = 0; i < memberships.length; i++) {
+              currentUserGroups.push(memberships[i]["sysUserGroupByUserGroupId"]);
+            }
+
+            // Reset current user groups
+            this.$session.set("userGroups", currentUserGroups);
+            this.$store.state.currentUser.userGroups = currentUserGroups;
+          }
+        },
+        // Error callback
+        function(response) {
+          this.displayError(response);
+        }
+      );
+    },
+    resetIdSequence(table) {
+      // Reset Id sequence in table
+      let payload = {
+        query: this.$store.state.mutationResetIdSequence,
+        variables: {
+          schema: "base",
+          tableName: table
+        }
+      };
+      let headers = {};
+      if (this.$session.exists()) {
+        headers = { Authorization: "Bearer " + this.$session.get("jwt") };
+      }
+      this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+        function(response) {
+          if (response.data.errors) {
+            this.displayError(response);
+          }
+        },
+        // Error callback
+        function(response) {
+          this.displayError(response);
+        }
+      );
     }
   }
 };
