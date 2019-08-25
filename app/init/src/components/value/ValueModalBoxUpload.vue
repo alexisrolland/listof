@@ -141,7 +141,6 @@ export default {
       return size.toString() + " bytes";
     },
     parseFiles() {
-      let papa = require("papaparse");
       $("input[type=file]").parse({
         config: {
           header: true,
