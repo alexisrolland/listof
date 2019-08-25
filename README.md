@@ -2,13 +2,18 @@
 
 ![License](https://img.shields.io/github/license/alexisrolland/listof.svg "Apache-2.0")
 
-Many analytics teams face similar challenges to standardize data coming from different source systems, manage configuration data for their ETLs or local referential data. This often requires to manage **small dimension tables, lists of values or mappings**. It is frequent to do it in spreadsheets but as your project grows those can quickly become unmanageable...
+Analytics teams frequently face similar challenges to:
+* Standardize data coming from different source systems.
+* Manage configuration data for their ETLs.
+* Manage local referential data.
 
-**ListOf** provides a simple and flexible solution to manage configuration data. In particular:
+This often requires to build **small dimension tables, lists of values or mappings**. It is frequent to do it in spreadsheets or directly in the database but as your project grows such practices can quickly become unmanageable and prompt to error...
 
--   Create, update, delete lists of values with custom data structure.
--   Create relationships and mappings between lists of values.
--   Expose lists of values via a web API (GraphQL) or in a database (PostgreSQL).
+**ListOf provides a simple and flexible solution to manage configuration data, aka lists of values**.
+In particular:
+- Create, update, delete lists of values with custom structures.
+- Create relationships and mappings between your lists of values.
+- Expose your lists of values via a web API (GraphQL) or in a database (PostgreSQL).
 
 # Getting Started
 
