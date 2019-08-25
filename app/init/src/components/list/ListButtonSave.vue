@@ -39,6 +39,7 @@ export default {
             } else {
               this.list.updatedDate = response.data.data.updateSysListById.sysList.updatedDate;
               this.list.sysUserByUpdatedById.email = response.data.data.updateSysListById.sysList.sysUserByUpdatedById.email;
+              this.list.tableName = response.data.data.updateSysListById.sysList.tableName;
             }
           },
           // Error callback

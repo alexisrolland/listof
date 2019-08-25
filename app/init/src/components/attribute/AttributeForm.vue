@@ -166,6 +166,7 @@
             v-bind:createdBy="attribute.sysUserByCreatedById.email"
             v-bind:updatedDate="attribute.updatedDate"
             v-bind:updatedBy="attribute.sysUserByUpdatedById.email"
+            v-bind:columnName="attribute.columnName"
           ></attribute-meta-data>
         </div>
       </div>

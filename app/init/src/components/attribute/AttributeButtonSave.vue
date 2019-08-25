@@ -54,6 +54,7 @@ export default {
             } else {
               this.attribute.updatedDate = response.data.data.updateSysAttributeById.sysAttribute.updatedDate;
               this.attribute.sysUserByUpdatedById.email = response.data.data.updateSysAttributeById.sysAttribute.sysUserByUpdatedById.email;
+              this.attribute.columnName = response.data.data.updateSysAttributeById.sysAttribute.columnName;
             }
           },
           // Error callback
