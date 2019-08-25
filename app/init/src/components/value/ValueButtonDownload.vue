@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import papa from "papaparse";
+import snakeCase from "lodash/snakeCase";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -46,16 +48,13 @@ export default {
           } else {
             // Convert data to CSV format
             let data = response.data.data["all" + graphQl.listName].nodes;
-            let papa = require("papaparse");
             let text = papa.unparse(data);
 
             // Change header to snake_case
             let rows = text.split(/\r\n|\r|\n/);
-            let headers = rows[0].split(",");
-            let lodash = require("lodash");
-            for (let i = 0; i < headers.length; i++) {
-              headers[i] = lodash.snakeCase(headers[i]);
-            }
+            let headers = rows[0].split(",").map(function(header) {
+              return snakeCase(header);
+            });
             rows[0] = headers.join(",");
             text = rows.join("\r\n");
 

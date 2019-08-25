@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import toUpper from "lodash/toUpper";
 import Mixins from "../utils/Mixins.vue";
 import Pagination from "../utils/Pagination.vue";
 import ValueTable from "./ValueTable.vue";
@@ -82,13 +83,12 @@ export default {
   methods: {
     getAllValues(page) {
       // Execute GraphQL query to get values
-      let lodash = require("lodash");
       let payload = {
         query: this.graphQlQuery,
         variables: {
           first: page.nbItems,
           offset: page.offset,
-          orderBy: [lodash.toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
+          orderBy: [toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
         }
       };
       let headers = {};

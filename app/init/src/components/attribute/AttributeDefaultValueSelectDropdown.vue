@@ -7,7 +7,7 @@
 
     <!-- Select input, used for attributes which are linked to another list -->
     <treeselect
-      v-bind:placeholder="'Select value from ' + linkedList.sysListByListId.name"
+      v-bind:placeholder="'Select default value'"
       v-model="selectedValue"
       v-bind:options="options"
       v-bind:multiple="false"
@@ -29,7 +29,7 @@ export default {
   },
   props: {
     linkedAttributeId: Number,
-    value: Number
+    value: String
   },
   data() {
     return {

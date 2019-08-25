@@ -39,9 +39,7 @@
           <!-- Button Menu -->
           <div>
             <user-button-save v-bind:user="user" v-bind:showPasswordField="showPasswordField"> </user-button-save>
-
             <user-button-reset-password v-on:resetPassword="resetPassword" v-bind:userId="userId"> </user-button-reset-password>
-
             <user-button-close> </user-button-close>
           </div>
         </div>
@@ -64,8 +62,7 @@
           v-bind:user="user"
           v-on:addUserGroupMembership="addUserGroupMembership"
           v-on:removeUserGroupMembership="removeUserGroupMembership"
-        >
-        </user-user-group>
+        ></user-user-group>
       </div>
     </form>
   </div>
@@ -96,7 +93,7 @@ export default {
   },
   computed: {
     userId() {
-      return this.$route.params.userId;
+      return this.$route.params.userId.toString();
     }
   },
   methods: {
@@ -105,7 +102,7 @@ export default {
     },
     removeUserGroupMembership(id) {
       let memberships = this.user.sysUserGroupMembershipsByUserId.nodes;
-      for (let i = 0; i < relationships.length; i++) {
+      for (let i = 0; i < memberships.length; i++) {
         if (memberships[i]["id"] == id) {
           this.user.sysUserGroupMembershipsByUserId.nodes.splice(i, 1);
         }

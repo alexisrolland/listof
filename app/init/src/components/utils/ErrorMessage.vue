@@ -1,6 +1,6 @@
 <template>
   <div id="errorMessage" v-bind:class="cssClass">
-    <div class="row justify-content-center alert alert-danger alert-dismissable text-danger">
+    <div class="justify-content-center alert alert-danger alert-dismissable text-danger">
       Error: {{ errorMessage }}
       <button type="button" class="close" v-on:click="close()">
         &times;
@@ -21,7 +21,7 @@ export default {
     },
     errorMessage() {
       // Reroute user to login page if JWT expired
-      if (this.$store.state.errorObject.message == "jwt expired") {
+      if (this.$store.state.errorObject.message.includes("jwt expired")) {
         this.$router.push({
           name: "login"
         });

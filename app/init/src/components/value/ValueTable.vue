@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import sortBy from "lodash/sortBy";
 import TableSort from "../utils/TableSort.vue";
 
 export default {
@@ -69,8 +70,7 @@ export default {
       return roles.includes(this.$store.state.currentUser.role);
     },
     sortedAttributes() {
-      let lodash = require("lodash");
-      return lodash.sortBy(this.attributes, "order");
+      return sortBy(this.attributes, "order");
     }
   },
   methods: {

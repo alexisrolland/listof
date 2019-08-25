@@ -46,10 +46,28 @@ COMMENT ON FUNCTION base.revoke_user_group IS
 
 
 
+/*Create function to grant membership to newly created user group to admin user*/
+CREATE OR REPLACE FUNCTION base.grant_user_group_membership()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO base.sys_user_group_membership (user_group_id, user_id) VALUES (NEW.id, 1);
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.grant_user_group_membership IS
+'Function used to automatically grant membership to newly created user group to admin user.';
+
+
+
 /*Triggers on insert*/
 CREATE TRIGGER user_group_membership_grant_user_group AFTER INSERT
 ON base.sys_user_group_membership FOR EACH ROW EXECUTE PROCEDURE
 base.grant_user_group();
+
+CREATE TRIGGER user_group_grant_user_group_membership AFTER INSERT
+ON base.sys_user_group FOR EACH ROW EXECUTE PROCEDURE
+base.grant_user_group_membership();
 
 
 

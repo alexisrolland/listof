@@ -18,7 +18,6 @@
 </template>
 
 <script>
-/*import HeaderSelectUserGroup from './HeaderSelectUserGroup.vue';*/
 import ListButtonCreate from "../list/ListButtonCreate.vue";
 import HeaderButtonAdmin from "./HeaderButtonAdmin.vue";
 import HeaderButtonLogin from "./HeaderButtonLogin.vue";
@@ -26,7 +25,6 @@ import HeaderButtonLogout from "./HeaderButtonLogout.vue";
 
 export default {
   components: {
-    /*'header-select-user-group': HeaderSelectUserGroup,*/
     "list-button-create": ListButtonCreate,
     "header-button-admin": HeaderButtonAdmin,
     "header-button-login": HeaderButtonLogin,

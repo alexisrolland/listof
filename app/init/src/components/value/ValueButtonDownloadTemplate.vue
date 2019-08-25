@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import papa from "papaparse";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -16,7 +17,6 @@ export default {
   methods: {
     downloadTemplate() {
       // Convert data to CSV format
-      let papa = require("papaparse");
       let text = papa.unparse(this.columnNames);
 
       // Create CSV file

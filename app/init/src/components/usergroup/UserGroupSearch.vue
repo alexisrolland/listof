@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import toUpper from "lodash/toUpper";
 import Mixins from "../utils/Mixins.vue";
 import Pagination from "../utils/Pagination.vue";
 import UserGroupTable from "./UserGroupTable.vue";
@@ -54,13 +55,12 @@ export default {
   },
   methods: {
     getAllUserGroups(page) {
-      let lodash = require("lodash");
       let payload = {
         query: this.$store.state.queryGetAllUserGroups,
         variables: {
           first: page.nbItems,
           offset: page.offset,
-          orderBy: [lodash.toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
+          orderBy: [toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
         }
       };
       let headers = {};

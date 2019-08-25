@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import findIndex from "lodash/findIndex";
+import isEmpty from "lodash/isEmpty";
 import Mixins from "../utils/Mixins.vue";
 import ValueButtonDownloadTemplate from "./ValueButtonDownloadTemplate";
 
@@ -139,30 +141,17 @@ export default {
       return size.toString() + " bytes";
     },
     parseFiles() {
-      let papa = require("papaparse");
       $("input[type=file]").parse({
         config: {
           header: true,
           transformHeader: this.getGraphQlName,
           complete: this.uploadFiles
         }
-        /*before: function(file, inputElement) {
-          // executed before parsing each file begins
-          // what you return here controls the flow
-        },
-        error: function(error, file, inputElement, reason) {
-          // executed if an error occurs while loading the file,
-          // or if before callback aborted for some reason
-        },
-        complete: function() {
-          // executed after all files are complete
-        }*/
       });
     },
     uploadFiles(results, file) {
       //Find file index in files list
-      let lodash = require("lodash");
-      let fileIndex = lodash.findIndex(this.files, function(obj) {
+      let fileIndex = findIndex(this.files, function(obj) {
         return obj.name == file.name;
       });
       this.files[fileIndex]["status"] = "Uploading";
@@ -188,42 +177,42 @@ export default {
       // Loop over each record of the data set
       let payloadBatch = results.data.map(
         function(row) {
-          // Loop over each column of the record
-          for (let key in row) {
-            // Drop invalid column if it's not in graphQlAttributeNames
-            let i = lodash.findIndex(this.graphQlAttributeNames, function(obj) {
-              return obj.graphQlAttributeName == key;
-            });
-
-            if (i == -1) {
-              delete row[key];
-            }
-            // Format column value according to attribute data type
-            else {
-              let dataTypeId = this.graphQlAttributeNames[i]["dataTypeId"];
-              // Format to boolean
-              if ([2].includes(dataTypeId)) {
-                row[key] = row[key] == "true";
-              }
-              // Format to bigint, integer, smallint
-              else if ([1, 5, 7].includes(dataTypeId)) {
-                row[key] = parseInt(row[key]);
-              }
-              // Format to real
-              else if ([6].includes(dataTypeId)) {
-                row[key] = parseFloat(row[key]);
-              }
-            }
-          }
-
-          // Drop id column if it is empty
-          if (isNaN(row["id"])) {
-            delete row["id"];
-          }
-
           // Build update or create mutation payload if row is not empty
-          if (!lodash.isEmpty(row)) {
-            console.log("in if");
+          if (!isEmpty(row)) {
+            // Loop over each column of the record
+            for (let key in row) {
+              // Drop invalid column if it's not in graphQlAttributeNames
+              let i = findIndex(this.graphQlAttributeNames, function(obj) {
+                return obj.graphQlAttributeName == key;
+              });
+
+              if (i == -1) {
+                delete row[key];
+              }
+              // Format column value according to attribute data type
+              else {
+                let dataTypeId = this.graphQlAttributeNames[i]["dataTypeId"];
+                // Format to boolean
+                if ([2].includes(dataTypeId)) {
+                  row[key] = row[key].toLowerCase() == "true";
+                }
+                // Format to bigint, integer, smallint
+                else if ([1, 5, 7].includes(dataTypeId)) {
+                  row[key] = parseInt(row[key]);
+                }
+                // Format to real
+                else if ([6].includes(dataTypeId)) {
+                  row[key] = parseFloat(row[key]);
+                }
+              }
+            }
+
+            // Drop id column if it is empty
+            if (isNaN(row["id"])) {
+              delete row["id"];
+            }
+
+            // Build update or create mutation payload
             let payload = {};
             let variables = {};
             if (row.hasOwnProperty("id")) {
@@ -245,7 +234,6 @@ export default {
 
             return payload;
           }
-          console.log("after if");
         }.bind(this)
       );
 

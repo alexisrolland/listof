@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import * as Session from "./payloads/session";
+import * as BackupPayload from "./payloads/backup";
 import * as DataTypePayload from "./payloads/datatype";
 import * as ListPayload from "./payloads/list";
 import * as AttributePayload from "./payloads/attribute";
@@ -81,6 +82,16 @@ export const store = new Vuex.Store({
     queryGetUserUserGroups: UserGroupPayload.queryGetUserUserGroups, // Data for user groups drodpdown in user form
     mutationCreateUserGroup: UserGroupPayload.mutationCreateUserGroup,
     mutationUpdateUserGroup: UserGroupPayload.mutationUpdateUserGroup,
-    mutationSearchUserGroup: UserGroupPayload.mutationSearchUserGroup
+    mutationSearchUserGroup: UserGroupPayload.mutationSearchUserGroup,
+
+    // Backup queries
+    queryBackupAllUserGroups: BackupPayload.queryBackupAllUserGroups,
+    queryBackupAllLists: BackupPayload.queryBackupAllLists,
+    queryBackupAllAttributes: BackupPayload.queryBackupAllAttributes,
+    queryBackupAllListsValues: BackupPayload.queryBackupAllListsValues,
+
+    // Restore queries
+    queryRestoreGetList: BackupPayload.queryRestoreGetList,
+    mutationResetIdSequence: BackupPayload.mutationResetIdSequence
   }
 });

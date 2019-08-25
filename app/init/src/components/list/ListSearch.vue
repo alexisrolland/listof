@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import toUpper from "lodash/toUpper";
 import ListTable from "./ListTable.vue";
 import Pagination from "../utils/Pagination.vue";
 import Mixins from "../utils/Mixins.vue";
@@ -49,13 +50,12 @@ export default {
   },
   methods: {
     getAllLists(page) {
-      let lodash = require("lodash");
       let payload = {
         query: this.$store.state.queryGetAllLists,
         variables: {
           first: page.nbItems,
           offset: page.offset,
-          orderBy: [lodash.toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
+          orderBy: [toUpper(this.sortAttribute.columnName + "_" + this.sortAttribute.sortOrder)]
         }
       };
       let headers = {};

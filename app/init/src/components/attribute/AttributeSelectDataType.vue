@@ -46,12 +46,12 @@ export default {
     }
   },
   watch: {
-    value(val) {
+    value() {
       this.dataTypeId = this.value;
     }
   },
   methods: {
-    change(val) {
+    change() {
       this.$emit("changeDataType", this.dataTypeId);
     }
   },

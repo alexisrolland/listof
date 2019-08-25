@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import omit from "lodash/omit";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -34,11 +35,7 @@ export default {
 
         // Build mutation payload
         let variables = { id: this.value.id };
-        let patch = Object.assign({}, this.value); // Clone object
-        delete patch["createdDate"];
-        delete patch["sysUserByCreatedById"];
-        delete patch["updatedDate"];
-        delete patch["sysUserByUpdatedById"];
+        let patch = omit(this.value, ["createdDate", "sysUserByCreatedById", "updatedDate", "sysUserByUpdatedById"]);
         variables[this.graphQlListName + "Patch"] = patch;
         let payload = {
           query: graphQlMutation,
