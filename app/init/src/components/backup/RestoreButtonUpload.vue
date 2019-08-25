@@ -138,8 +138,10 @@ export default {
       );
     },
     uploadValue(headers) {
-      this.files.map(
-        function(file) {
+      // For each file execute http request one after each other
+      // We use reduce here to ensure files are loaded in order due to referential integrity constraints
+      this.files.reduce(
+        function(accumulator, file) {
           this.$http.post(this.$store.state.graphqlUrl, file.payloadBatch, { headers }).then(
             function(response) {
               // Get queries which returned an error
@@ -164,7 +166,7 @@ export default {
                   query: this.$store.state.mutationResetIdSequence,
                   variables: {
                     schema: "public",
-                    tableName: file["name"].slice(0, -4)
+                    tableName: file.tableName
                   }
                 };
                 this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
@@ -185,7 +187,8 @@ export default {
               this.displayError(response);
             }
           );
-        }.bind(this)
+        }.bind(this),
+        this.files[0]
       );
     },
     startUpload() {

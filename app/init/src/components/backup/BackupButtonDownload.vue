@@ -5,7 +5,11 @@
 </template>
 
 <script>
+import flatten from "lodash/flatten";
+import papa from "papaparse";
 import snakeCase from "lodash/snakeCase";
+import TopologicalSort from "topological-sort";
+import uniq from "lodash/uniq";
 import Mixins from "../utils/Mixins.vue";
 
 export default {
@@ -82,8 +86,51 @@ export default {
           if (response.data.errors) {
             this.displayError(response);
           } else {
-            // Build GraphQL queries
-            let payload = response.data.data["allSysLists"].nodes.map(this.buildGraphQlQuery);
+            // Rework response objects to prepare topological sort
+            let nodes = new Map();
+            let edges = [];
+            response.data.data["allSysLists"].nodes.forEach(
+              function(obj) {
+                // Flatten child lists in array
+                obj.childSysLists = obj.childSysLists.nodes.map(function(obj) {
+                  return obj.sysAttributesByLinkedAttributeId.nodes.map(function(obj) {
+                    return obj.sysListByListId.tableName;
+                  });
+                });
+                obj.childSysLists = flatten(obj.childSysLists);
+
+                // Remove potential duplicates in child lists
+                obj.childSysLists = uniq(obj.childSysLists);
+
+                // Push parent child relationship to edges
+                obj.childSysLists.forEach(function(child) {
+                  edges.push([obj.tableName, child]);
+                });
+
+                // Build GraphQL query
+                let node = this.buildGraphQlQuery(obj);
+
+                // Send node to map object
+                nodes.set(node.tableName, node);
+              }.bind(this)
+            );
+
+            // Provide nodes and edges to topological sort constructor
+            let sortOperator = new TopologicalSort(nodes);
+            edges.forEach(function(obj) {
+              if (obj[0] != obj[1]) {
+                sortOperator.addEdge(obj[0], obj[1]);
+              }
+            });
+
+            // Apply topological sort
+            let sortedNodes = sortOperator.sort();
+
+            // Build batch query payload with sorted lists in sequence order
+            let payload = [];
+            sortedNodes.forEach(function(value) {
+              payload.push(value.node.payload);
+            });
 
             // Execute queries
             let headers = {};
@@ -93,14 +140,20 @@ export default {
             this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
               function(response) {
                 // Convert data to CSV format
-                for (let i = 0; i < response.data.length; i++) {
-                  if (response.data[i].errors) {
-                    this.createCsvFile(response.data[i].errors, payload[i].tableName);
-                  } else {
-                    let data = response.data[i].data["all" + payload[i].graphQlListName].nodes;
-                    zip.file(payload[i].tableName + ".csv", this.createCsvFile(data));
-                  }
-                }
+                response.data.forEach(
+                  function(obj, index) {
+                    if (obj.errors) {
+                      this.createCsvFile(obj.errors, payload[index].tableName);
+                    } else {
+                      let nbRows = obj.data["all" + payload[index].graphQlListName].totalCount;
+                      let data = obj.data["all" + payload[index].graphQlListName].nodes;
+                      if (nbRows > 0) {
+                        let fileName = index + "_" + payload[index].tableName + ".csv";
+                        zip.file(fileName, this.createCsvFile(data));
+                      }
+                    }
+                  }.bind(this)
+                );
 
                 //Download file
                 let fileSaver = require("file-saver");
@@ -122,7 +175,6 @@ export default {
       );
     },
     createCsvFile(data) {
-      let papa = require("papaparse");
       let text = papa.unparse(data);
 
       // Change header to snake_case
@@ -137,8 +189,13 @@ export default {
     },
     buildGraphQlQuery(list) {
       // Method to build GraphQL query to fetch values of a list
+      list["payload"] = { tableName: list.tableName };
+
       // Compute GraphQL names for the list and attributes
       let graphQlListName = this.getGraphQlName(list.tableName, "plural", true); // Example table_name > TableNames
+      list.payload["graphQlListName"] = graphQlListName;
+
+      // Convert column names into GraphQL names
       let attributes = list.sysAttributesByListId.nodes;
       let graphQLAttributeName = "";
       for (let i = 0; i < attributes.length; i++) {
@@ -149,7 +206,10 @@ export default {
       // Build GraphQL query
       let graphQlQuery = this.$store.state.queryDownloadAllValues.replace(/<GraphQlListName>/g, graphQlListName);
       graphQlQuery = graphQlQuery.replace(/<graphQlAttributeName>/g, graphQLAttributeName);
-      return { tableName: list.tableName, graphQlListName: graphQlListName, query: graphQlQuery };
+      list.payload["query"] = graphQlQuery;
+
+      delete list.sysAttributesByListId;
+      return list;
     },
     downloadBackupPackage() {
       // Download user groups, lists definitions, lists values

@@ -38,12 +38,12 @@
         name="packageType"
         id="listData"
         value="listData"
-        v-bind:disabled="true"
-        v-bind:readonly="true"
+        v-bind:disabled="isReadOnly"
+        v-bind:readonly="isReadOnly"
         v-model="packageType"
         v-on:change="files = []">
       <label class="form-check-label" for="listData">
-        Lists data (all values of all lists) - <i>Not implemented yet</i>
+        Lists data (all values of all lists)
       </label>
     </div>
 
@@ -70,8 +70,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="file in files" v-bind:key="file.id">
-          <td>{{ file.id + 1 }}</td>
+        <tr v-for="(file, index) in files" v-bind:key="file.id">
+          <td>{{ index + 1 }}</td>
           <td>{{ file.name }}</td>
           <td>{{ file.size }}</td>
           <td>{{ file.nbRows }}</td>
@@ -94,6 +94,7 @@
 <script>
 import findIndex from "lodash/findIndex";
 import isEmpty from "lodash/isEmpty";
+import papa from "papaparse";
 import Mixins from "../utils/Mixins.vue";
 import RestoreButtonUpload from "./RestoreButtonUpload.vue";
 
@@ -105,7 +106,8 @@ export default {
   data: function() {
     return {
       packageType: "",
-      files: []
+      files: [],
+      nbFiles: 0
     };
   },
   computed: {
@@ -137,12 +139,14 @@ export default {
     previewZipFile() {
       this.files = [];
       let JSZip = require("jszip");
-      let papa = require("papaparse");
       let zip = new JSZip();
 
       // Read zip package
       zip.loadAsync(this.$refs.selectedZipFile.files[0]).then(
         function(zipContent) {
+          // Get number of files
+          this.nbFiles = Object.keys(zipContent.files).length;
+
           // For each file in zip package convert zip object to file object blob
           let i = 0;
           for (let key in zipContent.files) {
@@ -151,6 +155,9 @@ export default {
               .async("blob")
               .then(
                 function(blob) {
+                  // Increment iterator
+                  i = i + 1;
+
                   // Convert blob to file object
                   let fileObject = new File([blob], key);
 
@@ -161,8 +168,15 @@ export default {
                     size: this.formatSize(fileObject["size"]),
                     status: "Unpacking",
                     statusClass: "badge-info",
-                    nbRows: ""
+                    nbRows: "",
+                    tableName: key.slice(0, -4) // Remove file extension .csv
                   };
+
+                  // Remove file order number from table name if it's list data
+                  if (this.packageType == "listData") {
+                    file["importOrder"] = parseInt(key.split(/_(.+)/, 2)[0]); // Get file import order
+                    file["tableName"] = file.tableName.split(/_(.+)/, 2)[1]; // Remove import order from table name
+                  }
                   this.files.push(file);
 
                   // Convert CSV to JSON
@@ -172,18 +186,15 @@ export default {
                       transformHeader: this.getGraphQlName,
                       complete: this.prepareHttpRequest
                     });
-                    i = i + 1;
                   } else if (this.packageType == "listData") {
                     papa.parse(fileObject, {
                       header: true,
                       transformHeader: this.getGraphQlName,
                       complete: this.prepareHttpRequest
                     });
-                    i = i + 1;
                   } else {
                     this.files[i].status = "Invalid file name";
                     this.files[i].statusClass = "badge-danger";
-                    i = i + 1;
                   }
                 }.bind(this)
               );
@@ -283,7 +294,7 @@ export default {
         // Convert object to string for GraphQL mutation
         // Remove double quotes from object keys since they are failing GraphQL mutation
         row = JSON.stringify(row);
-        row = row.replace(/\"([^(\")"]+)\":/g, "$1:");
+        row = row.replace(/"([^(")"]+)":/g, "$1:");
 
         // Add an alias in the mutation createAttribute<index>
         let mutationCreateAttribute = `createAttribute` + index + `: createSysAttribute(input: {sysAttribute: <SysAttributeInput>}) { sysAttribute { id } }`;
@@ -311,6 +322,10 @@ export default {
       this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
         function(response) {
           if (response.data.errors) {
+            // Trigger array sort once the last file has been pushed
+            if (this.files[fileIndex]["id"] == this.nbFiles) {
+              this.files.sort(this.sortFiles);
+            }
             this.displayError(response);
           } else {
             // Fetch list of attributes to valide CSV file header
@@ -380,15 +395,29 @@ export default {
               this.files[fileIndex]["payloadBatch"] = payloadBatch;
               this.files[fileIndex]["status"] = "Ready";
               this.files[fileIndex]["statusClass"] = "badge-secondary";
+
+              // Trigger array sort once the last file has been pushed
+              if (this.files[fileIndex]["id"] == this.nbFiles) {
+                this.files.sort(this.sortFiles);
+              }
             } else {
               // Update file status in table
               this.files[fileIndex]["status"] = "List does not exist";
               this.files[fileIndex]["statusClass"] = "badge-danger";
+
+              // Trigger array sort once the last file has been pushed
+              if (this.files[fileIndex]["id"] == this.nbFiles) {
+                this.files.sort(this.sortFiles);
+              }
             }
           }
         }.bind(this),
         // Error callback
         function(response) {
+          // Trigger array sort once the last file has been pushed
+          if (this.files[fileIndex]["id"] == this.nbFiles) {
+            this.files.sort(this.sortFiles);
+          }
           this.displayError(response);
         }
       );
@@ -400,7 +429,7 @@ export default {
       });
 
       // Build GraphQL create mutation
-      let tableName = file.name.slice(0, -4); // Remove file extension .csv
+      let tableName = this.files[fileIndex]["tableName"];
       let graphQlListName = this.getGraphQlName(tableName, "singular");
       let graphQlListNameUpperCase = this.getGraphQlName(tableName, "singular", true);
       let graphQlCreateMutation = this.$store.state.mutationCreateValue.replace(/<GraphQlListName>/g, graphQlListNameUpperCase);
@@ -408,11 +437,11 @@ export default {
 
       // Loop over each record of the file data to prepare payload
       if (this.packageType == "definitionData") {
-        if (file.name == "sys_user_group.csv") {
+        if (tableName == "sys_user_group") {
           this.buildPayloadUserGroup(results, graphQlListName, graphQlCreateMutation, fileIndex);
-        } else if (file.name == "sys_list.csv") {
+        } else if (tableName == "sys_list") {
           this.buildPayloadList(results, graphQlListName, graphQlCreateMutation, fileIndex);
-        } else if (file.name == "sys_attribute.csv") {
+        } else if (tableName == "sys_attribute") {
           this.buildPayloadAttribute(results, graphQlListName, graphQlCreateMutation, fileIndex);
         } else {
           // Error
@@ -420,8 +449,12 @@ export default {
         }
       } else if (this.packageType == "listData") {
         // Fetch attributes of a list to prepare payload
-        this.buildPayloadValue(results, graphQlListName, graphQlCreateMutation, fileIndex, tableName);
+        this.buildPayloadValue(results, graphQlListName, graphQlCreateMutation, fileIndex, this.files[fileIndex]["tableName"]);
       }
+    },
+    sortFiles(a, b) {
+      // Method used to compare the import order of each file to sort them in the files array
+      return a.importOrder - b.importOrder;
     }
   }
 };

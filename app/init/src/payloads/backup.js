@@ -53,6 +53,26 @@ export const queryBackupAllListsValues = `query backupAllListsValues{
                     columnName
                 }
             }
+            parentSysLists: sysAttributesByListId(filter: {linkedAttributeId: {isNull: false}}) {
+                nodes {
+                    sysAttributeByLinkedAttributeId {
+                        sysListByListId {
+                            tableName
+                        }
+                    }
+                }
+            }
+            childSysLists: sysAttributesByListId {
+                nodes {
+                    sysAttributesByLinkedAttributeId {
+                        nodes {
+                            sysListByListId {
+                                tableName
+                            }
+                        }
+                    }
+                }
+              }
         }
     }
 }`;
