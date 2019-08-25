@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/github/license/alexisrolland/listof.svg "Apache-2.0")
 
-Analytics teams frequently face similar challenges to:
+Analytics and data engineering teams who build data pipelines frequently need to:
 * Standardize data coming from different source systems.
 * Manage configuration data for their ETLs.
 * Manage local referential data.
