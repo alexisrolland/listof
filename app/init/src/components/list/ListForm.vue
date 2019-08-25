@@ -57,6 +57,7 @@
             v-bind:createdBy="list.sysUserByCreatedById.email"
             v-bind:updatedDate="list.updatedDate"
             v-bind:updatedBy="list.sysUserByUpdatedById.email"
+            v-bind:tableName="list.tableName"
           ></list-meta-data>
         </div>
       </div>

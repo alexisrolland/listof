@@ -89,6 +89,7 @@ export const mutationUpdateList = `mutation updateList($id: Int!, $sysListPatch:
             id
             updatedDate
             sysUserByUpdatedById { email }
+            tableName
         }
     }
 }`;

@@ -22,6 +22,14 @@
         <td>Updated By:</td>
         <td>{{ updatedBy }}</td>
       </tr>
+      <tr v-if="tableName">
+        <td>Table Name:</td>
+        <td>{{ tableName }}</td>
+      </tr>
+      <tr v-if="columnName">
+        <td>Column Name:</td>
+        <td>{{ columnName }}</td>
+      </tr>
     </table>
   </div>
 </template>
@@ -33,7 +41,9 @@ export default {
     createdDate: String,
     createdBy: String,
     updatedDate: String,
-    updatedBy: String
+    updatedBy: String,
+    tableName: String,
+    columnName: String
   },
   computed: {
     cleanCreatedDate() {

@@ -21,13 +21,13 @@
         class="form-check-input"
         type="radio"
         name="packageType"
-        id="definitionData"
+        id="restoreDefinitionData"
         value="definitionData"
         v-bind:disabled="isReadOnly"
         v-bind:readonly="isReadOnly"
         v-model="packageType"
         v-on:change="files = []">
-      <label class="form-check-label" for="definitionData">
+      <label class="form-check-label" for="restoreDefinitionData">
         Definition data (user groups, lists definition and their attributes).
       </label>
     </div>
@@ -36,13 +36,13 @@
         class="form-check-input"
         type="radio"
         name="packageType"
-        id="listData"
+        id="restoreListData"
         value="listData"
         v-bind:disabled="isReadOnly"
         v-bind:readonly="isReadOnly"
         v-model="packageType"
         v-on:change="files = []">
-      <label class="form-check-label" for="listData">
+      <label class="form-check-label" for="restoreListData">
         Lists data (all values of all lists)
       </label>
     </div>

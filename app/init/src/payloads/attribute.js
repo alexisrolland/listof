@@ -19,6 +19,7 @@ export const queryGetAttribute = `query getAttribute($id: Int!) {
         updatedDate
         sysUserByCreatedById { email }
         sysUserByUpdatedById { email }
+        columnName
     }
 }`;
 
@@ -47,6 +48,7 @@ export const mutationUpdateAttribute = `mutation updateAttribute($id: Int!, $sys
             id
             updatedDate
             sysUserByUpdatedById { email }
+            columnName
         }
     }
 }`;
