@@ -18,6 +18,6 @@ Follow the Getting Started page on the Github Wiki: [Getting Started](https://gi
 
 # Demo
 
-See the demo on Youtube: [ListOf Playlist](https://www.youtube.com/watch?v=yXRrzHEJEIo&list=PLBUyV209B5ULL6H6wqLnenQgdKwyMEwTM)
+See the demo on Youtube: [ListOf Playlist](https://youtu.be/3ScHiakIBFI)
 
-![Example](https://github.com/alexisrolland/listof/blob/master/doc/screenshot.png?raw=true)
+[![Example](https://github.com/alexisrolland/listof/blob/master/doc/screenshot.png?raw=true)](https://youtu.be/3ScHiakIBFI)
