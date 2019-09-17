@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/github/license/alexisrolland/listof.svg "Apache-2.0")
 
-ListOf provides a simple and flexible solution to manage lists of values such as small dimension tables, configuration tables or data mappings.
+ListOf provides a simple and flexible solution to manage lists of values such as **small dimension tables, configuration tables or data mappings**.
 It provides in particular the following features:
 - Create, update, delete lists of values with custom structures.
 - Create relationships and mappings between your lists of values.
