@@ -72,6 +72,12 @@ export default {
                   userGroupId: this.userGroup.id
                 }
               });
+
+              // If current user is admin, it is automatically added to the group
+              // Refresh list of current user groups
+              if (this.$session.get("email") == "admin") {
+                this.refreshCurrentUserGroups();
+              }
             }
           },
           // Error callback
@@ -80,6 +86,39 @@ export default {
           }
         );
       }
+    },
+    refreshCurrentUserGroups() {
+      // Method to refresh current user's user groups
+      let payload = {
+        query: this.$store.state.queryGetCurrentUser,
+        variables: { email: this.$session.get("email") }
+      };
+      let headers = {};
+      if (this.$session.exists()) {
+        headers = { Authorization: "Bearer " + this.$session.get("jwt") };
+      }
+      this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+        function(response) {
+          if (response.data.errors) {
+            this.displayError(response);
+          } else {
+            // Prepare list of current user groups
+            let memberships = response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId.nodes;
+            let currentUserGroups = [];
+            for (let i = 0; i < memberships.length; i++) {
+              currentUserGroups.push(memberships[i]["sysUserGroupByUserGroupId"]);
+            }
+
+            // Reset current user groups
+            this.$session.set("userGroups", currentUserGroups);
+            this.$store.state.currentUser.userGroups = currentUserGroups;
+          }
+        },
+        // Error callback
+        function(response) {
+          this.displayError(response);
+        }
+      );
     }
   },
   computed: {
