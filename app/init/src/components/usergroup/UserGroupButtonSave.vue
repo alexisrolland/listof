@@ -37,6 +37,9 @@ export default {
             } else {
               this.userGroup.updatedDate = response.data.data.updateSysUserGroupById.sysUserGroup.updatedDate;
               this.userGroup.sysUserByUpdatedById.email = response.data.data.updateSysUserGroupById.sysUserGroup.sysUserByUpdatedById.email;
+
+              // Refresh list of current user groups
+              this.refreshCurrentUserGroups();
             }
           },
           // Error callback
@@ -73,11 +76,8 @@ export default {
                 }
               });
 
-              // If current user is admin, it is automatically added to the group
               // Refresh list of current user groups
-              if (this.$session.get("email") == "admin") {
-                this.refreshCurrentUserGroups();
-              }
+              this.refreshCurrentUserGroups();
             }
           },
           // Error callback
@@ -88,6 +88,7 @@ export default {
       }
     },
     refreshCurrentUserGroups() {
+      console.log(1);
       // Method to refresh current user's user groups
       let payload = {
         query: this.$store.state.queryGetCurrentUser,
