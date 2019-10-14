@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     isReadOnly() {
-      let roles = ["admin", "advanced"];
+      let roles = ["admin", "advanced", "standard"];
       return !roles.includes(this.$store.state.currentUser.role);
     }
   },
