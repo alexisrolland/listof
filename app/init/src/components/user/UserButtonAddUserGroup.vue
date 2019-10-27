@@ -61,10 +61,8 @@ export default {
         }.bind(this)
       );
 
-      // If modified user is the current user, refresh current user groups
-      if (this.$session.get("email") == this.user.email) {
-        this.refreshCurrentUserGroups();
-      }
+      // Refresh current user groups
+      this.refreshCurrentUserGroups();
     },
     refreshCurrentUserGroups() {
       // Method to refresh current user's user groups

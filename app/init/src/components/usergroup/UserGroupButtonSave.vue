@@ -37,6 +37,9 @@ export default {
             } else {
               this.userGroup.updatedDate = response.data.data.updateSysUserGroupById.sysUserGroup.updatedDate;
               this.userGroup.sysUserByUpdatedById.email = response.data.data.updateSysUserGroupById.sysUserGroup.sysUserByUpdatedById.email;
+
+              // Refresh list of current user groups
+              this.refreshCurrentUserGroups();
             }
           },
           // Error callback
@@ -72,6 +75,9 @@ export default {
                   userGroupId: this.userGroup.id
                 }
               });
+
+              // Refresh list of current user groups
+              this.refreshCurrentUserGroups();
             }
           },
           // Error callback
@@ -80,6 +86,40 @@ export default {
           }
         );
       }
+    },
+    refreshCurrentUserGroups() {
+      console.log(1);
+      // Method to refresh current user's user groups
+      let payload = {
+        query: this.$store.state.queryGetCurrentUser,
+        variables: { email: this.$session.get("email") }
+      };
+      let headers = {};
+      if (this.$session.exists()) {
+        headers = { Authorization: "Bearer " + this.$session.get("jwt") };
+      }
+      this.$http.post(this.$store.state.graphqlUrl, payload, { headers }).then(
+        function(response) {
+          if (response.data.errors) {
+            this.displayError(response);
+          } else {
+            // Prepare list of current user groups
+            let memberships = response.data.data.sysUserByEmail.sysUserGroupMembershipsByUserId.nodes;
+            let currentUserGroups = [];
+            for (let i = 0; i < memberships.length; i++) {
+              currentUserGroups.push(memberships[i]["sysUserGroupByUserGroupId"]);
+            }
+
+            // Reset current user groups
+            this.$session.set("userGroups", currentUserGroups);
+            this.$store.state.currentUser.userGroups = currentUserGroups;
+          }
+        },
+        // Error callback
+        function(response) {
+          this.displayError(response);
+        }
+      );
     }
   },
   computed: {
