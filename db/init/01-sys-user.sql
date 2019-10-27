@@ -110,7 +110,7 @@ CREATE TRIGGER user_update_updated_date BEFORE UPDATE
 ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
 base.update_updated_date();
 
-CREATE TRIGGER user_updated_by_id BEFORE UPDATE
+CREATE TRIGGER user_update_updated_by_id BEFORE UPDATE
 ON base.sys_user FOR EACH ROW EXECUTE PROCEDURE
 base.update_updated_by_id();
 

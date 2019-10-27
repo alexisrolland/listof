@@ -71,22 +71,22 @@ COMMENT ON FUNCTION base.authenticate_user IS
 
 
 /*Triggers on insert*/
-CREATE TRIGGER user_hash_password BEFORE INSERT
+CREATE TRIGGER password_create_hash_password BEFORE INSERT
 ON base.sys_password FOR EACH ROW EXECUTE PROCEDURE
 base.hash_password();
 
 
 
 /*Triggers on update*/
-CREATE TRIGGER user_update_password BEFORE UPDATE
+CREATE TRIGGER password_update_hash_password BEFORE UPDATE
 ON base.sys_password FOR EACH ROW EXECUTE PROCEDURE
 base.hash_password();
 
-CREATE TRIGGER user_update_updated_date BEFORE UPDATE
+CREATE TRIGGER password_update_updated_date BEFORE UPDATE
 ON base.sys_password FOR EACH ROW EXECUTE PROCEDURE
 base.update_updated_date();
 
-CREATE TRIGGER user_updated_by_id BEFORE UPDATE
+CREATE TRIGGER password_update_updated_by_id BEFORE UPDATE
 ON base.sys_password FOR EACH ROW EXECUTE PROCEDURE
 base.update_updated_by_id();
 
