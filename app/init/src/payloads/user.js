@@ -48,6 +48,24 @@ export const mutationUpdateUser = `mutation updateUser($id: Int!, $sysUserPatch:
     }
 }`;
 
+export const mutationCreatePassword = `mutation createPassword($sysPassword: SysPasswordInput!) {
+    createSysPassword(input: {sysPassword: $sysPassword}) {
+        sysPassword {
+            id
+        }
+    }
+}`;
+
+export const mutationUpdatePassword = `mutation updatePassword($userId: Int!, $sysPasswordPatch: SysPasswordPatch!) {
+    updateSysPasswordByUserId(input: {userId: $userId, sysPasswordPatch: $sysPasswordPatch}) {
+        sysPassword {
+            id
+            updatedDate
+            sysUserByUpdatedById { email }
+        }
+    }
+}`;
+
 export const mutationSearchUser = `mutation searchUser($searchKeyword: String, $sortAttribute: String, $sortOrder: String) {
     searchUser(input: {searchKeyword: $searchKeyword, sortAttribute: $sortAttribute, sortOrder: $sortOrder}) {
         sysUsers {

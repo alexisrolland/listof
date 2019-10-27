@@ -50,6 +50,20 @@ COMMENT ON FUNCTION base.update_updated_date IS
 
 
 
+/*Create function to update updated_by_id column*/
+CREATE OR REPLACE FUNCTION base.update_updated_by_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_by_id = base.get_current_user_id();
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+COMMENT ON FUNCTION base.update_updated_by_id IS
+'Function used to automatically update the updated_by_id column in tables.';
+
+
+
 /*Create function to delete children record*/
 CREATE OR REPLACE FUNCTION base.delete_children()
 RETURNS TRIGGER AS $$

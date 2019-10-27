@@ -72,6 +72,8 @@ export const store = new Vuex.Store({
     queryGetUser: UserPayload.queryGetUser,
     mutationCreateUser: UserPayload.mutationCreateUser,
     mutationUpdateUser: UserPayload.mutationUpdateUser,
+    mutationCreatePassword: UserPayload.mutationCreatePassword,
+    mutationUpdatePassword: UserPayload.mutationUpdatePassword,
     mutationSearchUser: UserPayload.mutationSearchUser,
     mutationCreateUserGroupMembership: UserPayload.mutationCreateUserGroupMembership,
     mutationDeleteUserGroupMembership: UserPayload.mutationDeleteUserGroupMembership,
