@@ -244,11 +244,7 @@ export default {
     },
     isReadOnly() {
       let roles = ["admin", "advanced"];
-      if (!roles.includes(this.$store.state.currentUser.role)) {
-        return true;
-      } else {
-        return false;
-      }
+      return !roles.includes(this.$store.state.currentUser.role);
     },
     preventUpdate() {
       if (!this.isReadOnly) {
