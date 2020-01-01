@@ -38,11 +38,7 @@ export default {
       return this.$route.params.attributeId;
     },
     isReadOnly() {
-      if (this.attributeId != "new") {
-        return true;
-      } else {
-        return false;
-      }
+      return this.attributeId != "new";
     }
   },
   watch: {
