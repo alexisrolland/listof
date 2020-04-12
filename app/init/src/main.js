@@ -42,7 +42,7 @@ const routes = [
 // Configure router
 const router = new VueRouter({
   routes,
-  mode: "history"
+  mode: "hash"
 });
 
 Vue.config.productionTip = false; // Not sure what this is for
